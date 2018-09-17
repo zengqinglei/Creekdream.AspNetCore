@@ -1,0 +1,17 @@
+﻿<Project>
+  
+  <PropertyGroup>
+    <Version>0.2.0</Version>
+    <Authors>zengql</Authors>
+    <Product>Creekdream Asp.NetCore for .net standard 2.0</Product>
+    <Copyright>Copyright © 2018</Copyright>
+    <Description>Based on the application framework developed by .Net Standard, it is committed to rapid development, standardization of some standards, and so on.</Description>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageProjectUrl>https://github.com/zengqinglei/Creekdream.AspNetCore</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/zengqinglei/Creekdream.AspNetCore/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/zengqinglei/Creekdream.AspNetCore</RepositoryUrl>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+</Project>

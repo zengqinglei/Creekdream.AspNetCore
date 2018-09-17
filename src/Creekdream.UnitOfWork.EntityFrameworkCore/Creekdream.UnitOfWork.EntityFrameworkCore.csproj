@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Creekdream.UnitOfWork</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Creekdream.Orm.EntityFrameworkCore\Creekdream.Orm.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Creekdream.UnitOfWork.Core\Creekdream.UnitOfWork.Core.csproj" />
+  </ItemGroup>
+
+</Project>
+
