@@ -6,16 +6,21 @@ Creekdream AspNetCore 致力于打造原生、简洁、清晰化结构的 .NET C
 框架吸收了 [**ABP**](https://github.com/aspnetboilerplate/aspnetboilerplate) 等一些开源框架的优秀设计，由于近几年微服务盛行，框架设计原则尽可能从简单、易用。
 在模块化设计上尽可能独立，在核心类库上尽可能减少依赖，致力打造干净、整洁、易理解、快速开发的友好体验。
 
+## 应用架构图
+
+![image](doc/images/app-arc.png)
+
 ## 框架特性
 
 **框架基础核心模块：**
-* 依赖注入：Autofac、Castle.Windsor
-* 模块化
-* Model映射：AutoMapper
-* ORM：EntityFrameworkCore、Dapper支持主流数据库
-* 工作单元支持
-* AOP切面拦截器
-* 单元测试：xunit
+* [快速搭建新项目](doc/QuickStart.md)
+* [依赖注入](doc/Dependency.md)：Autofac、Castle.Windsor
+* [模块化](doc/Module.md)
+* [Model映射](doc/Mapping.md)：AutoMapper
+* [ORM](doc/Orm.md)：EntityFrameworkCore、Dapper支持主流数据库
+* [工作单元支持](doc/UnitOfWork.md)
+* [AOP切面拦截器](doc/Aop.md)
+* [单元测试](doc/UnitTest.md)：xunit
 
 **框架独立模块**
 
@@ -40,6 +45,10 @@ Creekdream AspNetCore 致力于打造原生、简洁、清晰化结构的 .NET C
 ## 微服务独立项目
 * [API网关](https://github.com/zengqinglei/Creekdream.ApiGateway)(Ocelot + Consul + Skywalking)
 * [IdentityServer4 认证授权项目](https://github.com/zengqinglei/FabricDemo)
+
+## 微服务架构图
+
+![image](doc/images/mic-service-arc.png)
 
 ## 参与贡献
 1. Fork Creekdream.AspNetCore 开源框架
