@@ -25,10 +25,6 @@ Creekdream AspNetCore 致力于打造原生、简洁、清晰化结构的 .NET C
 * [Apollo配置中心](https://github.com/zengqinglei/Creekdream.Configuration.Apollo)
 * [Consul服务中心](https://github.com/zengqinglei/Creekdream.Discovery.Consul)
 
-## 微服务独立项目
-* [API网关](https://github.com/zengqinglei/Creekdream.ApiGateway)(Ocelot + Consul + Skywalking)
-* [IdentityServer4 认证授权项目](https://github.com/zengqinglei/FabricDemo)
-
 ## 框架示例及模板
 
 * [快速创建项目模板](https://github.com/zengqinglei/Creekdream.AspNetCore.Template)
@@ -40,6 +36,10 @@ Creekdream AspNetCore 致力于打造原生、简洁、清晰化结构的 .NET C
 * 核心领域层
 * 仓储层
 * UI层
+
+## 微服务独立项目
+* [API网关](https://github.com/zengqinglei/Creekdream.ApiGateway)(Ocelot + Consul + Skywalking)
+* [IdentityServer4 认证授权项目](https://github.com/zengqinglei/FabricDemo)
 
 ## 参与贡献
 1. Fork Creekdream.AspNetCore 开源框架
