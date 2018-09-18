@@ -1,9 +1,10 @@
-﻿# Creekdream AspNetCore 框架
+# Creekdream AspNetCore 框架
 Creekdream AspNetCore 致力于打造原生、简洁、清晰化结构的 .NET CORE 项目架构设计，在组件以及框架的封装尽可能遵从 .NET CORE 的设计理念。
 
 ## 框架特点
+
 框架吸收了 [**ABP**](https://github.com/aspnetboilerplate/aspnetboilerplate) 等一些开源框架的优秀设计，由于近几年微服务盛行，框架设计原则尽可能从简单、易用。
-在模块化设计上尽可能独立，在核心类库上尽可能减少依赖，开发者一个干净整洁的体验。
+在模块化设计上尽可能独立，在核心类库上尽可能减少依赖，致力打造干净、整洁、易理解、快速开发的友好体验。
 
 ## 框架特性
 
@@ -19,14 +20,14 @@ Creekdream AspNetCore 致力于打造原生、简洁、清晰化结构的 .NET C
 **框架独立模块**
 
 不依赖项目框架，独立模块有自己的核心接口层，可自行根据不同需求多实现。
-* 缓存模块：Redis、MemoryCache
-* 消息队列
-* Apollo配置中心
-* Consul服务中心
+* [缓存模块](https://github.com/zengqinglei/Creekdream.Cache)：Redis、MemoryCache
+* [消息队列](https://github.com/zengqinglei/Creekdream.RabbitMQ)
+* [Apollo配置中心](https://github.com/zengqinglei/Creekdream.Configuration.Apollo)
+* [Consul服务中心](https://github.com/zengqinglei/Creekdream.Discovery.Consul)
 
 ## 微服务独立项目
-* API网关(Ocelot + Consul)
-* IdentityServer4认证授权项目
+* [API网关](https://github.com/zengqinglei/Creekdream.ApiGateway)(Ocelot + Consul + Skywalking)
+* [IdentityServer4 认证授权项目](https://github.com/zengqinglei/FabricDemo)
 
 ## 框架示例及模板
 
