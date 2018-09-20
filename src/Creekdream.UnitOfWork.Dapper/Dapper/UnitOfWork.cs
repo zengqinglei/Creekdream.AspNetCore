@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Data.Common;
+﻿using System.Data.Common;
 using Creekdream.Orm.Dapper;
 
 namespace Creekdream.UnitOfWork.Dapper
@@ -11,7 +9,7 @@ namespace Creekdream.UnitOfWork.Dapper
     public class UnitOfWork : UnitOfWorkBase
     {
         private UnitOfWorkOptions _uowOptions;
-        private IDatabaseProvider _dbConnectionProvider;
+        private readonly IDatabaseProvider _dbConnectionProvider;
         private readonly DbConnection _dbConnection;
 
         /// <inheritdoc />
@@ -25,7 +23,7 @@ namespace Creekdream.UnitOfWork.Dapper
         protected override void BeginUow(UnitOfWorkOptions uowOptions)
         {
             _uowOptions = uowOptions;
-            if (_uowOptions.IsTransactional == true && _dbConnectionProvider.DbTransaction == null)
+            if (_uowOptions.IsTransactional && _dbConnectionProvider.DbTransaction == null)
             {
                 var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
                 _dbConnectionProvider.DbTransaction = _dbConnection.BeginTransaction(isoLationLevel);
@@ -48,32 +46,6 @@ namespace Creekdream.UnitOfWork.Dapper
             if (_uowOptions.IsTransactional == true && _dbConnectionProvider.DbTransaction != null)
             {
                 _dbConnectionProvider.DbTransaction.Dispose();
-            }
-        }
-
-        /// <summary>
-        /// Transaction conversion
-        /// </summary>
-        private IsolationLevel ToSystemDataIsolationLevel(System.Transactions.IsolationLevel isolationLevel)
-        {
-            switch (isolationLevel)
-            {
-                case System.Transactions.IsolationLevel.Chaos:
-                    return IsolationLevel.Chaos;
-                case System.Transactions.IsolationLevel.ReadCommitted:
-                    return IsolationLevel.ReadCommitted;
-                case System.Transactions.IsolationLevel.ReadUncommitted:
-                    return IsolationLevel.ReadUncommitted;
-                case System.Transactions.IsolationLevel.RepeatableRead:
-                    return IsolationLevel.RepeatableRead;
-                case System.Transactions.IsolationLevel.Serializable:
-                    return IsolationLevel.Serializable;
-                case System.Transactions.IsolationLevel.Snapshot:
-                    return IsolationLevel.Snapshot;
-                case System.Transactions.IsolationLevel.Unspecified:
-                    return IsolationLevel.Unspecified;
-                default:
-                    throw new Exception("Unknown isolation level: " + isolationLevel);
             }
         }
     }

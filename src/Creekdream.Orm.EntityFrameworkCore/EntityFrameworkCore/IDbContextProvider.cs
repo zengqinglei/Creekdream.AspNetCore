@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using Creekdream.Dependency;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Creekdream.Orm.EntityFrameworkCore
 {
@@ -13,6 +14,11 @@ namespace Creekdream.Orm.EntityFrameworkCore
         /// Get data context operation object
         /// </summary>
         DbContext GetDbContext();
+
+        /// <summary>
+        /// DbContext transaction
+        /// </summary>
+        IDbContextTransaction DbContextTransaction { get; set; }
     }
 }
 

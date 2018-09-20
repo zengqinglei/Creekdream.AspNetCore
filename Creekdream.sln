@@ -47,6 +47,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Orm.Dapper.MySql
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Orm.Dapper.Oracle", "src\Creekdream.Orm.Dapper.Oracle\Creekdream.Orm.Dapper.Oracle.csproj", "{296578AD-E67E-4A40-B736-3423BD658E44}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Dependency.Autofac.Tests", "test\Creekdream.Dependency.Autofac.Tests\Creekdream.Dependency.Autofac.Tests.csproj", "{C13CF2C2-07ED-4F73-96BF-F83C7AF90873}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Creekdream.Dependency.TestBase", "test\Creekdream.Dependency.TestBase\Creekdream.Dependency.TestBase.csproj", "{2E5FA962-8FD7-42F7-9CBE-983F3FC22D13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Creekdream.Dependency.Windsor.Tests", "test\Creekdream.Dependency.Windsor.Tests\Creekdream.Dependency.Windsor.Tests.csproj", "{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +115,18 @@ Global
 		{296578AD-E67E-4A40-B736-3423BD658E44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{296578AD-E67E-4A40-B736-3423BD658E44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{296578AD-E67E-4A40-B736-3423BD658E44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C13CF2C2-07ED-4F73-96BF-F83C7AF90873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C13CF2C2-07ED-4F73-96BF-F83C7AF90873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C13CF2C2-07ED-4F73-96BF-F83C7AF90873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C13CF2C2-07ED-4F73-96BF-F83C7AF90873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E5FA962-8FD7-42F7-9CBE-983F3FC22D13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E5FA962-8FD7-42F7-9CBE-983F3FC22D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E5FA962-8FD7-42F7-9CBE-983F3FC22D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E5FA962-8FD7-42F7-9CBE-983F3FC22D13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +146,9 @@ Global
 		{9E130A02-50F3-403D-A390-8AB81C72887A} = {11550172-7975-4644-B8D3-EBB27A81FF78}
 		{C18E9ED1-0EB4-4582-853C-B6772F4BCBEA} = {11550172-7975-4644-B8D3-EBB27A81FF78}
 		{296578AD-E67E-4A40-B736-3423BD658E44} = {11550172-7975-4644-B8D3-EBB27A81FF78}
+		{C13CF2C2-07ED-4F73-96BF-F83C7AF90873} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
+		{2E5FA962-8FD7-42F7-9CBE-983F3FC22D13} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
+		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8CE44CA3-C5B3-4202-A754-97F27E9C9939}

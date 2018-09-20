@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Transactions;
 using Creekdream.Orm.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Creekdream.UnitOfWork.EntityFrameworkCore
 {
@@ -10,12 +10,13 @@ namespace Creekdream.UnitOfWork.EntityFrameworkCore
     public class UnitOfWork : UnitOfWorkBase
     {
         private UnitOfWorkOptions _uowOptions;
-        private TransactionScope _transactionScope;
+        private readonly IDbContextProvider _dbContextProvider;
         private readonly DbContext _dbContext;
 
         /// <inheritdoc />
         public UnitOfWork(IDbContextProvider dbContextProvider) : base()
         {
+            _dbContextProvider = dbContextProvider;
             _dbContext = dbContextProvider.GetDbContext();
         }
 
@@ -23,23 +24,18 @@ namespace Creekdream.UnitOfWork.EntityFrameworkCore
         protected override void BeginUow(UnitOfWorkOptions uowOptions)
         {
             _uowOptions = uowOptions;
-            if (_uowOptions.IsTransactional == true && _transactionScope == null)
+            if (_uowOptions.IsTransactional)
             {
-                var transactionOptions = new TransactionOptions
+                if (_dbContextProvider.DbContextTransaction == null)
                 {
-                    IsolationLevel = _uowOptions.IsolationLevel,
-                };
-
-                if (_uowOptions.Timeout.HasValue)
-                {
-                    transactionOptions.Timeout = _uowOptions.Timeout.Value;
+                    var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
+                    _dbContextProvider.DbContextTransaction = _dbContext.Database.BeginTransaction(isoLationLevel);
                 }
-
-                _transactionScope = new TransactionScope(
-                    _uowOptions.Scope,
-                    transactionOptions,
-                    _uowOptions.AsyncFlowOption
-                );
+                else
+                {
+                    var dbTransaction = _dbContextProvider.DbContextTransaction.GetDbTransaction();
+                    _dbContext.Database.UseTransaction(dbTransaction);
+                }
             }
         }
 
@@ -48,7 +44,7 @@ namespace Creekdream.UnitOfWork.EntityFrameworkCore
         {
             if (_uowOptions.IsTransactional == true)
             {
-                _transactionScope.Complete();
+                _dbContextProvider.DbContextTransaction.Commit();
             }
         }
 
@@ -56,9 +52,9 @@ namespace Creekdream.UnitOfWork.EntityFrameworkCore
         protected override void DisposeUow()
         {
             _dbContext.Dispose();
-            if (_uowOptions.IsTransactional == true && _transactionScope != null)
+            if (_uowOptions.IsTransactional == true && _dbContextProvider.DbContextTransaction != null)
             {
-                _transactionScope.Dispose();
+                _dbContextProvider.DbContextTransaction.Dispose();
             }
         }
     }

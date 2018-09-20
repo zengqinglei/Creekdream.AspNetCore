@@ -11,10 +11,13 @@ namespace Creekdream.Dependency.Windsor
         private readonly IDisposable _disposable;
 
         /// <inheritdoc />
-        public WindsorIocResolver(IWindsorContainer container)
+        public WindsorIocResolver(IWindsorContainer container, bool isBenginScope = true)
         {
             _container = container;
-            _disposable = _container.BeginScope();
+            if (isBenginScope)
+            {
+                _disposable = _container.BeginScope();
+            }
         }
 
         /// <inheritdoc />
@@ -62,7 +65,7 @@ namespace Creekdream.Dependency.Windsor
         /// <inheritdoc />
         public void Dispose()
         {
-            _disposable.Dispose();
+            _disposable?.Dispose();
         }
     }
 }

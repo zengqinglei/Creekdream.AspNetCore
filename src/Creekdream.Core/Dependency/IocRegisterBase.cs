@@ -37,44 +37,10 @@ namespace Creekdream.Dependency
         /// <summary>
         /// Register an instance obtained through the factory to service generics
         /// </summary>
-        public virtual void Register<TService>(
-            Func<IIocResolver, object> implementationFactory,
-            DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-            where TService : class
-        {
-            Register(typeof(TService), implementationFactory);
-        }
-
-        /// <summary>
-        /// Register an instance obtained through the factory to service type
-        /// </summary>
-        public abstract void Register(
-            Type serviceType,
-            Func<IIocResolver, object> implementationFactory,
-            DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton);
-
-        /// <summary>
-        /// Register an instance obtained through the factory to service generics
-        /// </summary>
-        public virtual void Register<TService>(
+        public abstract void Register<TService>(
             Func<IIocResolver, TService> implementationFactory,
             DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-            where TService : class
-        {
-            Register(typeof(TService), implementationFactory);
-        }
-
-        /// <summary>
-        /// Register an instance obtained through the factory to service generics
-        /// </summary>
-        public virtual void Register<TService, TImplementation>(
-            Func<IIocResolver, TImplementation> implementationFactory,
-            DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-            where TService : class
-            where TImplementation : class, TService
-        {
-            Register(typeof(TService), implementationFactory);
-        }
+            where TService : class;
 
         /// <summary>
         /// Register implementation to service interfaces

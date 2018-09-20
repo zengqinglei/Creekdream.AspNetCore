@@ -29,7 +29,7 @@ namespace Creekdream.Dependency.Windsor
         /// <inheritdoc />
         public override void Register<TService>(TService implementationInstance)
         {
-            _container.Register(ApplyLifestyle(Component.For().Instance(implementationInstance), DependencyLifeStyle.Singleton));
+            _container.Register(ApplyLifestyle(Component.For<TService>().Instance(implementationInstance), DependencyLifeStyle.Singleton));
         }
 
         /// <inheritdoc />
@@ -39,15 +39,14 @@ namespace Creekdream.Dependency.Windsor
         }
 
         /// <inheritdoc />
-        public override void Register(
-            Type serviceType,
-            Func<IIocResolver, object> implementationFactory,
+        public override void Register<TService>(
+            Func<IIocResolver, TService> implementationFactory,
             DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
         {
             _container.Register(
                 ApplyLifestyle(
-                    Component.For(serviceType).UsingFactoryMethod(
-                        serviceLocator => implementationFactory.Invoke(serviceLocator.Resolve<IIocResolver>())),
+                    Component.For<TService>().UsingFactoryMethod(
+                        kernel => implementationFactory.Invoke(kernel.Resolve<IIocResolver>(new { isBenginScope = false }))),
                     lifeStyle
                 )
             );

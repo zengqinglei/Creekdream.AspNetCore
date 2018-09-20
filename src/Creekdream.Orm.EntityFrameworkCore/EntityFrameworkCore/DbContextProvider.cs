@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Creekdream.Dependency;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Creekdream.Orm.EntityFrameworkCore
 {
@@ -25,6 +26,9 @@ namespace Creekdream.Orm.EntityFrameworkCore
             }
             return _dbContext;
         }
+
+        /// <inheritdoc />
+        public IDbContextTransaction DbContextTransaction { get; set; }
 
         /// <inheritdoc />
         public void Dispose()

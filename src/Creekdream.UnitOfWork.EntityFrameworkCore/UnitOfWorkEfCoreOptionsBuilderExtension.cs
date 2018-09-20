@@ -8,7 +8,7 @@ namespace Creekdream.UnitOfWork
     public static class UnitOfWorkEfCoreOptionsBuilderExtension
     {
         /// <summary>
-        /// Use unit of work
+        /// Use unit of work，note that only relational databases are supported
         /// </summary>
         public static AppOptionsBuilder UseUnitOfWork(this AppOptionsBuilder builder, Action<UnitOfWorkCoreOptionsBuilder> options = null)
         {
