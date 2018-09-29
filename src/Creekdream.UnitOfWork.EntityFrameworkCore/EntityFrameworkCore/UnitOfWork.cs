@@ -51,11 +51,11 @@ namespace Creekdream.UnitOfWork.EntityFrameworkCore
         /// <inheritdoc />
         protected override void DisposeUow()
         {
-            _dbContext.Dispose();
-            if (_uowOptions.IsTransactional == true && _dbContextProvider.DbContextTransaction != null)
+            if (_uowOptions.IsTransactional && _dbContextProvider.DbContextTransaction != null)
             {
                 _dbContextProvider.DbContextTransaction.Dispose();
             }
+            _dbContext.Dispose();
         }
     }
 }

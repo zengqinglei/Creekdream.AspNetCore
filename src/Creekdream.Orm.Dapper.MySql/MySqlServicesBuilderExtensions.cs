@@ -6,7 +6,7 @@ namespace Creekdream.Orm
     /// <summary>
     /// MySql specific extension methods for <see cref="DapperOptionsBuilder" />.
     /// </summary>
-    public static class MySqlOptionsBuilderExtensions
+    public static class MySqlServicesBuilderExtensions
     {
         /// <summary>
         /// Use Mysql

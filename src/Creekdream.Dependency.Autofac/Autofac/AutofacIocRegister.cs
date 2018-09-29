@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Autofac.Builder;
 using System;
-//using Autofac.Extras.IocManager.DynamicProxy;
 using System.Reflection;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,14 +25,17 @@ namespace Creekdream.Dependency.Autofac
         /// <inheritdoc />
         public override IServiceProvider GetServiceProvider(IServiceCollection services)
         {
+            IContainer container = null;
             _builder.Populate(services);
-            return new AutofacServiceProvider(_builder.Build());
+            _builder.Register(c => container).SingleInstance();
+            container = _builder.Build();
+            return new AutofacServiceProvider(container);
         }
 
         /// <inheritdoc />
         public override void Register<TService>(TService implementationInstance)
         {
-            AddLifeStyle(_builder.Register(c => implementationInstance), DependencyLifeStyle.Singleton);
+            _builder.Register(c => implementationInstance).AddLifeStyle(DependencyLifeStyle.Singleton);
         }
 
         /// <inheritdoc />
@@ -41,11 +43,8 @@ namespace Creekdream.Dependency.Autofac
             Func<IIocResolver, TService> implementationFactory,
             DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
         {
-            AddLifeStyle(
-                _builder.Register(
-                    context => implementationFactory.Invoke(context.Resolve<IIocResolver>())
-                ),
-                lifeStyle);
+            _builder.Register(context => implementationFactory.Invoke(context.Resolve<IIocResolver>()))
+                    .AddLifeStyle(lifeStyle);
         }
 
         /// <inheritdoc />
@@ -53,11 +52,11 @@ namespace Creekdream.Dependency.Autofac
         {
             if (serviceType.IsGenericType)
             {
-                AddLifeStyle(_builder.RegisterGeneric(serviceType), lifeStyle);
+                _builder.RegisterGeneric(serviceType).AddLifeStyle(lifeStyle);
             }
             else
             {
-                AddLifeStyle(_builder.RegisterType(serviceType), lifeStyle);
+                _builder.RegisterType(serviceType).AddLifeStyle(lifeStyle);
             }
         }
 
@@ -69,11 +68,15 @@ namespace Creekdream.Dependency.Autofac
         {
             if (implementationType.IsGenericType)
             {
-                AddLifeStyle(_builder.RegisterGeneric(implementationType).As(serviceType), lifeStyle);
+                _builder.RegisterGeneric(implementationType)
+                    .As(serviceType)
+                    .AddLifeStyle(lifeStyle);
             }
             else
             {
-                AddLifeStyle(_builder.RegisterType(implementationType).As(serviceType), lifeStyle);
+                _builder.RegisterType(implementationType)
+                    .As(serviceType)
+                    .AddLifeStyle(lifeStyle);
             }
         }
 
@@ -95,12 +98,12 @@ namespace Creekdream.Dependency.Autofac
                         IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> rb;
                         if (types.Any(t => t.IsClass))
                         {
-                            rb = RegistrationBuilder.ForType(types.First(t => t.IsClass)).EnableClassInterceptors();
-                            ((ComponentRegistration)registration).Activator = rb.ActivatorData.Activator;
+                            rb = RegistrationBuilder.ForType(implType).EnableClassInterceptors();
                         }
                         else
                         {
-                            rb = RegistrationBuilder.ForType(types.First(t => t.IsInterface)).EnableInterfaceInterceptors();
+                            rb = RegistrationBuilder.ForType(implType).AsImplementedInterfaces().EnableInterfaceInterceptors();
+                            ((ComponentRegistration)registration).Activator = rb.ActivatorData.Activator;
                         }
                         rb.InterceptedBy(typeof(TInterceptor));
 
@@ -128,45 +131,42 @@ namespace Creekdream.Dependency.Autofac
         /// <inheritdoc />
         public override void RegisterAssemblyByBasicInterface(Assembly assembly)
         {
-            var transientItem = _builder.RegisterAssemblyTypes(assembly)
-                   .Where(type => typeof(IScopedDependency).IsAssignableFrom(type) && !type.IsAbstract)
-                   .AsSelf()
-                   .AsImplementedInterfaces();
-            AddLifeStyle(transientItem, DependencyLifeStyle.Transient);
+            var assemblyTypes = assembly.GetTypes();
 
-            var scopedItem = _builder.RegisterAssemblyTypes(assembly)
-                   .Where(type => typeof(ITransientDependency).IsAssignableFrom(type) && !type.IsAbstract)
-                   .AsSelf()
-                   .AsImplementedInterfaces();
-            AddLifeStyle(scopedItem, DependencyLifeStyle.Scoped);
-
-            var singletonItem = _builder.RegisterAssemblyTypes(assembly)
-                   .Where(type => typeof(ISingletonDependency).IsAssignableFrom(type) && !type.IsAbstract)
-                   .AsSelf()
-                   .AsImplementedInterfaces();
-            AddLifeStyle(singletonItem, DependencyLifeStyle.Singleton);
-        }
-
-        /// <summary>
-        /// Set the lifestyle of the registered builder
-        /// </summary>
-        private void AddLifeStyle<TLimit, TActiatorData, TRegistrationStyle>(
-            IRegistrationBuilder<TLimit, TActiatorData, TRegistrationStyle> item,
-            DependencyLifeStyle lifeStyle)
-        {
-            switch (lifeStyle)
+            var transientTypes = assemblyTypes
+                .Where(type =>
+                    type.GetInterfaces().Any(i => i.GetTypeInfo() == typeof(ITransientDependency)) &&
+                    !type.IsAbstract &&
+                    !type.GetTypeInfo().IsGenericTypeDefinition)
+                .ToArray();
+            foreach (var transientType in transientTypes)
             {
-                case DependencyLifeStyle.Transient:
-                    item.InstancePerDependency();
-                    break;
-                case DependencyLifeStyle.Scoped:
-                    item.InstancePerLifetimeScope();
-                    break;
-                case DependencyLifeStyle.Singleton:
-                    item.SingleInstance();
-                    break;
-                default:
-                    throw new ArgumentException(nameof(lifeStyle));
+                _builder.RegisterType(transientType).AsImplementedInterfaces().AddLifeStyle(DependencyLifeStyle.Transient);
+                _builder.RegisterType(transientType).AddLifeStyle(DependencyLifeStyle.Transient);
+            }
+
+            var scopedTypes = assemblyTypes
+                .Where(type =>
+                    type.GetInterfaces().Any(i => i.GetTypeInfo() == typeof(IScopedDependency)) &&
+                    !type.IsAbstract &&
+                    !type.GetTypeInfo().IsGenericTypeDefinition)
+                .ToArray();
+            foreach (var scopedType in scopedTypes)
+            {
+                _builder.RegisterType(scopedType).AsImplementedInterfaces().AddLifeStyle(DependencyLifeStyle.Scoped);
+                _builder.RegisterType(scopedType).AddLifeStyle(DependencyLifeStyle.Scoped);
+            }
+
+            var singletonTypes = assemblyTypes
+                .Where(type =>
+                    type.GetInterfaces().Any(i => i.GetTypeInfo() == typeof(ISingletonDependency)) &&
+                    !type.IsAbstract &&
+                    !type.GetTypeInfo().IsGenericTypeDefinition)
+                .ToArray();
+            foreach (var singletonType in singletonTypes)
+            {
+                _builder.RegisterType(singletonType).AsImplementedInterfaces().AddLifeStyle(DependencyLifeStyle.Singleton);
+                _builder.RegisterType(singletonType).AddLifeStyle(DependencyLifeStyle.Singleton);
             }
         }
     }

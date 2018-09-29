@@ -6,7 +6,7 @@ namespace Creekdream.Orm
     /// <summary>
     /// Oracle specific extension methods for <see cref="DapperOptionsBuilder" />.
     /// </summary>
-    public static class OracleOptionsBuilderExtensions
+    public static class OracleServicesBuilderExtensions
     {
         /// <summary>
         /// Use Oracle

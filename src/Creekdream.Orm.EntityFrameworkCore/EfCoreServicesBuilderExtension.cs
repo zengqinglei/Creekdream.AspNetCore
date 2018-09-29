@@ -5,19 +5,19 @@ using Creekdream.Orm.EntityFrameworkCore;
 namespace Creekdream.Orm
 {
     /// <summary>
-    /// EfCore specific extension methods for <see cref="AppOptionsBuilder" />.
+    /// EfCore specific extension methods for <see cref="ServicesBuilderOptions" />.
     /// </summary>
-    public static class EfCoreOptionsBuilderExtension
+    public static class EfCoreServicesBuilderExtension
     {
         /// <summary>
         /// Use EfCore Module
         /// </summary>
-        public static AppOptionsBuilder UseEfCore(this AppOptionsBuilder builder)
+        public static ServicesBuilderOptions UseEfCore(this ServicesBuilderOptions builder)
         {
             builder.IocRegister.Register(
                 typeof(IRepository<,>), typeof(RepositoryBase<,>),
                 lifeStyle: DependencyLifeStyle.Transient);
-            builder.IocRegister.RegisterAssemblyByBasicInterface(typeof(EfCoreOptionsBuilderExtension).Assembly);
+            builder.IocRegister.RegisterAssemblyByBasicInterface(typeof(EfCoreServicesBuilderExtension).Assembly);
             return builder;
         }
     }

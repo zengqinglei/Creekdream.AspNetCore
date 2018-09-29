@@ -3,14 +3,14 @@
 namespace Creekdream.Dependency
 {
     /// <summary>
-    /// Windsor specific extension methods for <see cref="AppOptionsBuilder" />.
+    /// Windsor specific extension methods for <see cref="ServicesBuilderOptions" />.
     /// </summary>
-    public static class WindsorOptionsBuilderExtension
+    public static class WindsorServicesBuilderExtension
     {
         /// <summary>
         /// Use Autofac as an injection container
         /// </summary>
-        public static AppOptionsBuilder UseWindsor(this AppOptionsBuilder builder)
+        public static ServicesBuilderOptions UseWindsor(this ServicesBuilderOptions builder)
         {
             builder.IocRegister = new WindsorIocRegister();
             builder.IocRegister.Register<IIocResolver, WindsorIocResolver>(DependencyLifeStyle.Transient);

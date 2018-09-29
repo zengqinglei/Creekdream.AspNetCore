@@ -5,6 +5,9 @@ using System.Reflection;
 using Castle.Core;
 using Castle.Windsor.MsDependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Castle.MicroKernel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Creekdream.Dependency.Windsor
 {
@@ -12,16 +15,24 @@ namespace Creekdream.Dependency.Windsor
     public class WindsorIocRegister : IocRegisterBase
     {
         private readonly IWindsorContainer _container;
+        private readonly List<Action<List<IHandler>>> _componentRegistedEvents;
 
         /// <inheritdoc />
         public WindsorIocRegister()
         {
             _container = new WindsorContainer();
+            _componentRegistedEvents = new List<Action<List<IHandler>>>();
         }
 
         /// <inheritdoc />
         public override IServiceProvider GetServiceProvider(IServiceCollection services)
         {
+            var handlers = _container.Kernel.GetAssignableHandlers(typeof(object));
+            foreach (var componentRegistedEvent in _componentRegistedEvents)
+            {
+                componentRegistedEvent.Invoke(handlers.ToList());
+            }
+
             services.AddSingleton(_container);
             return WindsorRegistrationHelper.CreateServiceProvider(_container, services);
         }
@@ -29,13 +40,13 @@ namespace Creekdream.Dependency.Windsor
         /// <inheritdoc />
         public override void Register<TService>(TService implementationInstance)
         {
-            _container.Register(ApplyLifestyle(Component.For<TService>().Instance(implementationInstance), DependencyLifeStyle.Singleton));
+            _container.Register(Component.For<TService>().Instance(implementationInstance).ApplyLifestyle(DependencyLifeStyle.Singleton));
         }
 
         /// <inheritdoc />
         public override void Register(Type serviceType, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
         {
-            _container.Register(ApplyLifestyle(Component.For(serviceType), lifeStyle));
+            _container.Register(Component.For(serviceType).ApplyLifestyle(lifeStyle));
         }
 
         /// <inheritdoc />
@@ -44,11 +55,9 @@ namespace Creekdream.Dependency.Windsor
             DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
         {
             _container.Register(
-                ApplyLifestyle(
-                    Component.For<TService>().UsingFactoryMethod(
-                        kernel => implementationFactory.Invoke(kernel.Resolve<IIocResolver>(new { isBenginScope = false }))),
-                    lifeStyle
-                )
+                Component.For<TService>()
+                    .UsingFactoryMethod(kernel => implementationFactory.Invoke(kernel.Resolve<IIocResolver>()))
+                    .ApplyLifestyle(lifeStyle)
             );
         }
 
@@ -58,22 +67,25 @@ namespace Creekdream.Dependency.Windsor
             Type implementationType,
             DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
         {
-            _container.Register(ApplyLifestyle(Component.For(serviceType, implementationType).ImplementedBy(implementationType), lifeStyle));
+            _container.Register(Component.For(serviceType, implementationType).ImplementedBy(implementationType).ApplyLifestyle(lifeStyle));
         }
 
         /// <inheritdoc />
         public override void RegisterInterceptor<TInterceptor>(Func<TypeInfo, bool> filterCondition)
         {
             _container.Register(Component.For<TInterceptor>().LifestyleSingleton());
-            _container.Kernel.ComponentRegistered +=
-                (key, handler) =>
+            _componentRegistedEvents.Add(
+                handlers =>
                 {
-                    var implType = handler.ComponentModel.Implementation.GetTypeInfo();
-                    if (filterCondition(implType))
+                    foreach (var handler in handlers)
                     {
-                        handler.ComponentModel.Interceptors.Add(new InterceptorReference(typeof(TInterceptor)));
+                        var implType = handler.ComponentModel.Implementation.GetTypeInfo();
+                        if (filterCondition(implType))
+                        {
+                            handler.ComponentModel.Interceptors.Add(new InterceptorReference(typeof(TInterceptor)));
+                        }
                     }
-                };
+                });
         }
 
         /// <inheritdoc />
@@ -86,7 +98,7 @@ namespace Creekdream.Dependency.Windsor
                     .If(type => !type.GetTypeInfo().IsGenericTypeDefinition)
                     .WithService.Self()
                     .WithService.DefaultInterfaces()
-                    .LifestyleScoped()
+                    .LifestyleScoped<LocalLifetimeScopeAccessor>()
                 );
 
             _container.Register(
@@ -108,25 +120,6 @@ namespace Creekdream.Dependency.Windsor
                     .WithService.DefaultInterfaces()
                     .LifestyleSingleton()
                 );
-        }
-
-        /// <summary>
-        /// Set the lifestyle of the registered builder
-        /// </summary>
-        private ComponentRegistration<T> ApplyLifestyle<T>(ComponentRegistration<T> registration, DependencyLifeStyle lifeStyle)
-            where T : class
-        {
-            switch (lifeStyle)
-            {
-                case DependencyLifeStyle.Transient:
-                    return registration.LifestyleTransient();
-                case DependencyLifeStyle.Scoped:
-                    return registration.LifestyleScoped();
-                case DependencyLifeStyle.Singleton:
-                    return registration.LifestyleSingleton();
-                default:
-                    throw new ArgumentException(nameof(lifeStyle));
-            }
         }
     }
 }

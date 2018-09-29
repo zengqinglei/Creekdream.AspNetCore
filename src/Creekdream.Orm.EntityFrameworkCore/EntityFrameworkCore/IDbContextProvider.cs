@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using Creekdream.Dependency;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -8,7 +7,7 @@ namespace Creekdream.Orm.EntityFrameworkCore
     /// <summary>
     /// DbContext provider
     /// </summary>
-    public interface IDbContextProvider : ITransientDependency, IDisposable
+    public interface IDbContextProvider : ISingletonDependency
     {
         /// <summary>
         /// Get data context operation object

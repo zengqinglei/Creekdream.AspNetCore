@@ -9,15 +9,15 @@ namespace Creekdream.AspNetCore
     public static class CreekdreamServiceCollectionExtensions
     {
         /// <summary>
-        /// Add an application framework service
+        /// Add application framework service
         /// </summary>
-        public static IServiceProvider AddCreekdream(this IServiceCollection services, Action<AppOptionsBuilder> options = null)
+        public static IServiceProvider AddCreekdream(this IServiceCollection services, Action<ServicesBuilderOptions> options = null)
         {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
-            var builder = new AppOptionsBuilder();
+            var builder = new ServicesBuilderOptions();
             options?.Invoke(builder);
             return builder.Build(services);
         }

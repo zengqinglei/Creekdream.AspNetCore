@@ -7,7 +7,7 @@ namespace Creekdream
     /// <summary>
     /// Application framework initialization
     /// </summary>
-    public class AppOptionsBuilder
+    public class ServicesBuilderOptions
     {
         /// <summary>
         /// Ioc register

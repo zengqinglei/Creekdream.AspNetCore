@@ -1,14 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Creekdream.Dependency;
 using Microsoft.EntityFrameworkCore.Storage;
+using System;
+using System.Threading;
 
 namespace Creekdream.Orm.EntityFrameworkCore
 {
     /// <inheritdoc />
     public class DbContextProvider : IDbContextProvider
     {
-        private DbContext _dbContext;
+        private class LocalDbContextWapper
+        {
+            public DbContext DbContext { get; set; }
 
+            public IDbContextTransaction DbContextTransaction { get; set; }
+        }
+
+        private static readonly AsyncLocal<LocalDbContextWapper> AsyncLocalDbContext = new AsyncLocal<LocalDbContextWapper>();
+        
         private readonly IIocResolver _iocResolver;
 
         /// <inheritdoc />
@@ -20,22 +29,26 @@ namespace Creekdream.Orm.EntityFrameworkCore
         /// <inheritdoc />
         public DbContext GetDbContext()
         {
-            if (_dbContext == null)
+            if (AsyncLocalDbContext.Value == null)
             {
-                _dbContext = _iocResolver.Resolve<DbContext>();
+                AsyncLocalDbContext.Value = new LocalDbContextWapper()
+                {
+                    DbContext = _iocResolver.Resolve<DbContext>()
+                };
             }
-            return _dbContext;
+            return AsyncLocalDbContext.Value.DbContext;
         }
 
         /// <inheritdoc />
-        public IDbContextTransaction DbContextTransaction { get; set; }
-
-        /// <inheritdoc />
-        public void Dispose()
+        public IDbContextTransaction DbContextTransaction
         {
-            if (_dbContext != null)
+            get
             {
-                _dbContext = null;
+                return AsyncLocalDbContext.Value.DbContextTransaction;
+            }
+            set
+            {
+                AsyncLocalDbContext.Value.DbContextTransaction = value;
             }
         }
     }

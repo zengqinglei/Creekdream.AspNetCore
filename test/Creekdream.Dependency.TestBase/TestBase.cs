@@ -61,7 +61,7 @@ namespace Creekdream.Dependency.TestBase
         }
 
         [Fact]
-        public void Test_Register_ServicesFactory()
+        public virtual void Test_Register_ServicesFactory()
         {
             var iocRegister = GetIocRegister();
             iocRegister.Register(
@@ -171,10 +171,27 @@ namespace Creekdream.Dependency.TestBase
         }
 
         [Fact]
-        public void Test_Register_Assemblies()
+        public virtual void Test_Register_Assemblies()
         {
             var iocRegister = GetIocRegister();
             iocRegister.RegisterAssemblyByBasicInterface(typeof(TestBase).Assembly);
+            iocRegister.RegisterInterceptor<ServiceInterceptor>(
+                implementationType =>
+                {
+                    if (typeof(ISingletonService).IsAssignableFrom(implementationType))
+                    {
+                        return true;
+                    }
+                    if (typeof(IScopedService).IsAssignableFrom(implementationType))
+                    {
+                        return true;
+                    }
+                    if (typeof(ITransientService).IsAssignableFrom(implementationType))
+                    {
+                        return true;
+                    }
+                    return false;
+                });
 
             var iocResolver = GetIocResolver(iocRegister);
 
@@ -182,6 +199,7 @@ namespace Creekdream.Dependency.TestBase
             serviceOptions.ShouldNotBeNull();
 
             var singletonService = iocResolver.Resolve<ISingletonService>();
+            var singletonServiceName = singletonService.GetName();
             singletonService.ShouldNotBeNull();
 
             var scopedService = iocResolver.Resolve<IScopedService>();

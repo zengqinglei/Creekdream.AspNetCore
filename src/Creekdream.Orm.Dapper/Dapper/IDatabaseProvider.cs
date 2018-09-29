@@ -8,7 +8,7 @@ namespace Creekdream.Orm.Dapper
     /// <summary>
     /// Database provider
     /// </summary>
-    public interface IDatabaseProvider : ITransientDependency, IDisposable
+    public interface IDatabaseProvider : ISingletonDependency
     {
         /// <summary>
         /// Get a database

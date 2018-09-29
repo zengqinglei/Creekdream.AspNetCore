@@ -6,77 +6,45 @@ using System.Collections.Generic;
 namespace Creekdream.Dependency.Autofac
 {
     /// <inheritdoc />
-    public class AutofacIocResolver : IIocResolver
+    public class AutofacIocResolver : IocResolverBase
     {
-        private readonly ILifetimeScope _lifetimeScope;
+        private readonly IContainer _container;
 
         /// <inheritdoc />
-        public AutofacIocResolver(ILifetimeScope lifetimeScope)
+        public AutofacIocResolver(IContainer container)
         {
-            _lifetimeScope = lifetimeScope;
+            _container = container;
         }
 
         /// <inheritdoc />
-        public T Resolve<T>()
+        public override object Resolve(Type serviceType, object argumentsAsAnonymousType = null)
         {
-            return _lifetimeScope.Resolve<T>();
-        }
-
-        /// <inheritdoc />
-        public T Resolve<T>(object argumentsAsAnonymousType)
-        {
+            if (argumentsAsAnonymousType == null)
+            {
+                return _container.Resolve(serviceType);
+            }
             var namedParameters = new List<Parameter>();
             foreach (var property in argumentsAsAnonymousType.GetType().GetProperties())
             {
                 var namedParameter = new NamedParameter(property.Name, property.GetValue(argumentsAsAnonymousType));
                 namedParameters.Add(namedParameter);
             }
-            return _lifetimeScope.Resolve<T>(namedParameters);
+            return _container.Resolve(serviceType, namedParameters);
         }
 
         /// <inheritdoc />
-        public object Resolve(Type serviceType)
+        public override bool IsRegistered(Type serviceType)
         {
-            return _lifetimeScope.Resolve(serviceType);
+            return _container.IsRegistered(serviceType);
         }
 
         /// <inheritdoc />
-        public object Resolve(Type serviceType, object argumentsAsAnonymousType)
-        {
-            var namedParameters = new List<Parameter>();
-            foreach (var property in argumentsAsAnonymousType.GetType().GetProperties())
-            {
-                var namedParameter = new NamedParameter(property.Name, property.GetValue(argumentsAsAnonymousType));
-                namedParameters.Add(namedParameter);
-            }
-            return _lifetimeScope.Resolve(serviceType, namedParameters);
-        }
-
-        /// <inheritdoc />
-        public bool IsRegistered(Type serviceType)
-        {
-            return _lifetimeScope.IsRegistered(serviceType);
-        }
-
-        /// <inheritdoc />
-        public bool IsRegistered<TService>()
-        {
-            return _lifetimeScope.IsRegistered<TService>();
-        }
-
-        /// <inheritdoc />
-        public void Release(object obj)
+        public override void Release(object obj)
         {
             if (obj is IDisposable)
             {
                 ((IDisposable)obj).Dispose();
             }
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            _lifetimeScope.Dispose();
         }
     }
 }

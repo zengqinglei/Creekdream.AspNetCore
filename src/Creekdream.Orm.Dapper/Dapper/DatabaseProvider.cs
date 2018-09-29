@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Threading;
 using Creekdream.Dependency;
 using DapperExtensions;
 using DapperExtensions.Sql;
@@ -8,7 +9,15 @@ namespace Creekdream.Orm.Dapper
     /// <inheritdoc />
     public class DatabaseProvider : IDatabaseProvider
     {
-        private IDatabase _database;
+        private class LocalDatabaseWapper
+        {
+            public IDatabase Database { get; set; }
+
+            public DbTransaction DbTransaction { get; set; }
+        }
+
+        private static readonly AsyncLocal<LocalDatabaseWapper> AsyncLocalDatabase = new AsyncLocal<LocalDatabaseWapper>();
+
         private readonly IIocResolver _iocResolver;
 
         /// <inheritdoc />
@@ -20,7 +29,7 @@ namespace Creekdream.Orm.Dapper
         /// <inheritdoc />
         public IDatabase GetDatabase()
         {
-            if (_database == null)
+            if (AsyncLocalDatabase.Value == null)
             {
                 var dapperOptions = _iocResolver.Resolve<DapperOptionsBuilder>();
                 var config = new DapperExtensionsConfiguration(
@@ -28,20 +37,24 @@ namespace Creekdream.Orm.Dapper
                     dapperOptions.MapperAssemblies,
                     dapperOptions.SqlDialect);
                 var sqlGenerator = new SqlGeneratorImpl(config);
-                _database = new Database(dapperOptions.GetDbConnection(), sqlGenerator);
+                AsyncLocalDatabase.Value = new LocalDatabaseWapper()
+                {
+                    Database = new Database(dapperOptions.GetDbConnection(), sqlGenerator)
+                };
             }
-            return _database;
+            return AsyncLocalDatabase.Value.Database;
         }
 
         /// <inheritdoc />
-        public DbTransaction DbTransaction { get; set; }
-
-        /// <inheritdoc />
-        public void Dispose()
+        public DbTransaction DbTransaction
         {
-            if (_database != null)
+            get
             {
-                _database = null;
+                return AsyncLocalDatabase.Value.DbTransaction;
+            }
+            set
+            {
+                AsyncLocalDatabase.Value.DbTransaction = value;
             }
         }
     }
