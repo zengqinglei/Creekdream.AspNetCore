@@ -13,6 +13,11 @@ namespace Creekdream.SimpleDemo.Books.Dto
         public Guid Id { get; set; }
 
         /// <summary>
+        /// User name
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Book name
         /// </summary>
         public string Name { get; set; }

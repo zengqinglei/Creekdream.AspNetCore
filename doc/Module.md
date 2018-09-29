@@ -6,7 +6,7 @@
 
 本项目并不推荐这两种实现方案，主要结合.NET CORE 新的设计模式，应尽量将模块的初始化工作放到Startup中，并能明确的列出所使用的模块，应尽量不依赖各自的执行顺序关系，避免产生侵入或耦合。
 
-## 项目采用扩展AppOptionsBuilder方法进行模块化初始化
+## 项目采用扩展ServicesBuilderOptions方法进行模块化初始化
 新建一个模块,在模块中可通过AppOptionsBuilder中的注入组件初始化该模块的相关内容
 ``` csharp
 /// <summary>
@@ -17,7 +17,7 @@ public static class ProjectNameApplicationOptionsBuilderExtension
     /// <summary>
     /// Add a ProjectName application module
     /// </summary>
-    public static AppOptionsBuilder AddProjectNameApplication(this AppOptionsBuilder builder)
+    public static ServicesBuilderOptions AddProjectNameApplication(this ServicesBuilderOptions builder)
     {
         builder.IocRegister.RegisterAssemblyByBasicInterface(typeof(ProjectNameApplicationOptionsBuilderExtension).Assembly);
         return builder;

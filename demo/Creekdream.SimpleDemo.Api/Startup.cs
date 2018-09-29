@@ -5,6 +5,7 @@ using Creekdream.Orm;
 using Creekdream.SimpleDemo.Api.Filters;
 using Creekdream.SimpleDemo.Api.Middlewares;
 using Creekdream.SimpleDemo.EntityFrameworkCore;
+using Creekdream.SimpleDemo.MapperProfiles;
 using Creekdream.SimpleDemo.Migrations;
 using Creekdream.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
@@ -78,7 +79,11 @@ namespace Creekdream.SimpleDemo.Api
             app.UseCreekdream(
                 options =>
                 {
-                    options.UseAutoMapper();
+                    options.UseAutoMapper(
+                        config =>
+                        {
+                            config.AddProfile(options.IocResolver.Resolve<BookProfile>());
+                        });
                 });
 
             SeedData.Initialize(app.ApplicationServices).Wait();

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Linq.Dynamic.Core;
+using System.Threading.Tasks;
 
 namespace Creekdream.SimpleDemo.Books
 {
@@ -37,7 +37,7 @@ namespace Creekdream.SimpleDemo.Books
         /// <inheritdoc />
         public async Task<PagedResultOutput<GetBookOutput>> GetPaged(GetPagedBookInput input)
         {
-            var query = _bookRepository.GetQueryIncluding();
+            var query = _bookRepository.GetQueryIncluding(p => p.User);
             if (!string.IsNullOrEmpty(input.Name))
             {
                 query = query.Where(m => m.Name.Contains(input.Name));
