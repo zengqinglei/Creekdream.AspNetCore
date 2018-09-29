@@ -9,6 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{11550172-797
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}"
+	ProjectSection(SolutionItems) = preProject
+		test\Directory.Build.props = test\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Core", "src\Creekdream.Core\Creekdream.Core.csproj", "{26698320-5F68-4D9A-A356-F3E1FB369211}"
 EndProject
@@ -58,6 +61,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.AspNetCore.Tests", "test\Creekdream.AspNetCore.Tests\Creekdream.AspNetCore.Tests.csproj", "{30F0940C-3126-4478-8D11-9857A296CA8B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{2802FE22-66E2-49D2-8C5E-6EFEBD7BA617}"
+	ProjectSection(SolutionItems) = preProject
+		demo\Directory.Build.props = demo\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.SimpleDemo.Core", "demo\Creekdream.SimpleDemo.Core\Creekdream.SimpleDemo.Core.csproj", "{54295B93-05D1-4D2F-A531-927342A8488B}"
 EndProject
