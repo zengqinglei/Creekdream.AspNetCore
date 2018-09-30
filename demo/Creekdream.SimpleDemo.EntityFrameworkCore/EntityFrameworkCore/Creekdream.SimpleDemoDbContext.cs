@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Creekdream.SimpleDemo.Books;
 using Creekdream.SimpleDemo.UserManage;
+using System;
 
 namespace Creekdream.SimpleDemo.EntityFrameworkCore
 {
@@ -10,10 +11,12 @@ namespace Creekdream.SimpleDemo.EntityFrameworkCore
     /// </summary>
     public class SimpleDemoDbContext : DbContextBase
     {
+        private readonly string _id;
+
         public SimpleDemoDbContext(DbContextOptions<SimpleDemoDbContext> options)
             : base(options)
         {
-
+            _id = Guid.NewGuid().ToString();
         }
 
         /// <summary>

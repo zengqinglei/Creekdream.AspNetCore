@@ -5,6 +5,7 @@ using Creekdream.SimpleDemo.EntityFrameworkCore;
 using Creekdream.SimpleDemo.UserManage;
 using System;
 using System.Threading.Tasks;
+using Creekdream.Orm.EntityFrameworkCore;
 
 namespace Creekdream.SimpleDemo.Migrations
 {
@@ -18,7 +19,7 @@ namespace Creekdream.SimpleDemo.Migrations
         {
             using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                var context = scope.ServiceProvider.GetService<DbContext>() as SimpleDemoDbContext;
+                var context = scope.ServiceProvider.GetService<DbContextBase>() as SimpleDemoDbContext;
                 context.Database.Migrate();
 
                 var user = new User

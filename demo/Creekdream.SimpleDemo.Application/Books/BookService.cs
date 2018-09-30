@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Creekdream.SimpleDemo.Books
@@ -59,6 +60,11 @@ namespace Creekdream.SimpleDemo.Books
         [UnitOfWork]
         public async Task<GetBookOutput> Add(AddBookInput input)
         {
+            var task = Task.Run(() =>
+            {
+                Thread.Sleep(10000);
+                var books = _bookRepository.GetListAsync(m => m.Name.Contains("test")).GetAwaiter().GetResult();
+            });
             using (var uow = _unitOfWorkManager.Begin())
             {
                 var book = input.MapTo<Book>();

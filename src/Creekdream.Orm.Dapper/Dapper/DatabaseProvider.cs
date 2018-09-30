@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
-using System.Threading;
 using Creekdream.Dependency;
+using Creekdream.Threading;
 using DapperExtensions;
 using DapperExtensions.Sql;
 
@@ -16,20 +16,21 @@ namespace Creekdream.Orm.Dapper
             public DbTransaction DbTransaction { get; set; }
         }
 
-        private static readonly AsyncLocal<LocalDatabaseWapper> AsyncLocalDatabase = new AsyncLocal<LocalDatabaseWapper>();
-
+        private readonly IAsyncLocalObjectProvider _asyncLocalObjectProvider;
         private readonly IIocResolver _iocResolver;
 
         /// <inheritdoc />
-        public DatabaseProvider(IIocResolver iocResolver)
+        public DatabaseProvider(IAsyncLocalObjectProvider asyncLocalObjectProvider, IIocResolver iocResolver)
         {
+            _asyncLocalObjectProvider = asyncLocalObjectProvider;
             _iocResolver = iocResolver;
         }
 
         /// <inheritdoc />
         public IDatabase GetDatabase()
         {
-            if (AsyncLocalDatabase.Value == null)
+            var localDatabase = _asyncLocalObjectProvider.GetCurrent<LocalDatabaseWapper>();
+            if (localDatabase == null || localDatabase.Database == null)
             {
                 var dapperOptions = _iocResolver.Resolve<DapperOptionsBuilder>();
                 var config = new DapperExtensionsConfiguration(
@@ -37,25 +38,20 @@ namespace Creekdream.Orm.Dapper
                     dapperOptions.MapperAssemblies,
                     dapperOptions.SqlDialect);
                 var sqlGenerator = new SqlGeneratorImpl(config);
-                AsyncLocalDatabase.Value = new LocalDatabaseWapper()
+                localDatabase = new LocalDatabaseWapper()
                 {
                     Database = new Database(dapperOptions.GetDbConnection(), sqlGenerator)
                 };
+                _asyncLocalObjectProvider.SetCurrent(localDatabase);
             }
-            return AsyncLocalDatabase.Value.Database;
+            return localDatabase.Database;
         }
 
         /// <inheritdoc />
         public DbTransaction DbTransaction
         {
-            get
-            {
-                return AsyncLocalDatabase.Value.DbTransaction;
-            }
-            set
-            {
-                AsyncLocalDatabase.Value.DbTransaction = value;
-            }
+            get => _asyncLocalObjectProvider.GetCurrent<LocalDatabaseWapper>()?.DbTransaction;
+            set => _asyncLocalObjectProvider.GetCurrent<LocalDatabaseWapper>().DbTransaction = value;
         }
     }
 }

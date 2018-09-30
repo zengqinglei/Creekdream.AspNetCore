@@ -19,6 +19,7 @@ namespace Creekdream
         /// </summary>
         public IServiceProvider Build(IServiceCollection services)
         {
+            IocRegister.RegisterAssemblyByBasicInterface(GetType().Assembly);
             return IocRegister.GetServiceProvider(services);
         }
     }

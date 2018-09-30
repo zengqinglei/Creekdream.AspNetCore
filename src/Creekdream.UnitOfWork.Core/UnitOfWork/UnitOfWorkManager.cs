@@ -1,24 +1,35 @@
 ﻿using System.Transactions;
 using Creekdream.Dependency;
+using Creekdream.Threading;
 
 namespace Creekdream.UnitOfWork
 {
     /// <inheritdoc />
     public class UnitOfWorkManager : IUnitOfWorkManager
     {
+        private class LocalUowWrapper
+        {
+            public IUnitOfWork UnitOfWork { get; set; }
+
+            public LocalUowWrapper(IUnitOfWork unitOfWork)
+            {
+                UnitOfWork = unitOfWork;
+            }
+        }
+
         private readonly UnitOfWorkOptions _defaultUowOptions;
         private readonly IIocResolver _iocResolver;
-        private readonly ICurrentUnitOfWorkProvider _currentUnitOfWorkProvider;
+        private readonly IAsyncLocalObjectProvider _asyncLocalObjectProvider;
 
         /// <inheritdoc />
         public UnitOfWorkManager(
             UnitOfWorkOptions uowOptions,
             IIocResolver iocManager,
-            ICurrentUnitOfWorkProvider currentUnitOfWorkProvider)
+            IAsyncLocalObjectProvider asyncLocalObjectProvider)
         {
             _defaultUowOptions = uowOptions;
             _iocResolver = iocManager;
-            _currentUnitOfWorkProvider = currentUnitOfWorkProvider;
+            _asyncLocalObjectProvider = asyncLocalObjectProvider;
         }
 
         /// <inheritdoc />
@@ -29,7 +40,7 @@ namespace Creekdream.UnitOfWork
                 options = _defaultUowOptions;
             }
 
-            var outerUow = _currentUnitOfWorkProvider.Current;
+            var outerUow = GetCurrentUow();
 
             if (options.Scope == TransactionScopeOption.Required && outerUow != null)
             {
@@ -40,9 +51,60 @@ namespace Creekdream.UnitOfWork
 
             uow.Begin(options);
 
-            _currentUnitOfWorkProvider.Current = uow;
+            SetCurrentUow(uow);
 
             return uow;
+        }
+
+        private IUnitOfWork GetCurrentUow()
+        {
+            var uow = _asyncLocalObjectProvider.GetCurrent<LocalUowWrapper>()?.UnitOfWork;
+            if (uow == null)
+            {
+                return null;
+            }
+
+            if (uow.IsDisposed)
+            {
+                _asyncLocalObjectProvider.SetCurrent<LocalUowWrapper>(null);
+                return null;
+            }
+
+            return uow;
+        }
+
+        private void SetCurrentUow(IUnitOfWork value)
+        {
+            lock (_asyncLocalObjectProvider)
+            {
+                var currentUowWrapper = _asyncLocalObjectProvider.GetCurrent<LocalUowWrapper>();
+                if (value == null)
+                {
+                    if (currentUowWrapper == null)
+                    {
+                        return;
+                    }
+
+                    if (currentUowWrapper.UnitOfWork?.Outer == null)
+                    {
+                        _asyncLocalObjectProvider.SetCurrent<LocalUowWrapper>(null);
+                        return;
+                    }
+
+                    currentUowWrapper.UnitOfWork = currentUowWrapper.UnitOfWork.Outer;
+                }
+                else
+                {
+                    if (currentUowWrapper?.UnitOfWork == null)
+                    {
+                        _asyncLocalObjectProvider.SetCurrent(new LocalUowWrapper(value));
+                        return;
+                    }
+
+                    value.Outer = currentUowWrapper.UnitOfWork;
+                    currentUowWrapper.UnitOfWork = value;
+                }
+            }
         }
     }
 }

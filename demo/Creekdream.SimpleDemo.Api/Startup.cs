@@ -2,6 +2,7 @@
 using Creekdream.Dependency;
 using Creekdream.Mapping;
 using Creekdream.Orm;
+using Creekdream.Orm.EntityFrameworkCore;
 using Creekdream.SimpleDemo.Api.Filters;
 using Creekdream.SimpleDemo.Api.Middlewares;
 using Creekdream.SimpleDemo.EntityFrameworkCore;
@@ -43,7 +44,7 @@ namespace Creekdream.SimpleDemo.Api
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddDbContext<DbContext, SimpleDemoDbContext>(
+            services.AddDbContext<DbContextBase, SimpleDemoDbContext>(
                 options =>
                 {
                     options.UseLazyLoadingProxies().UseSqlServer(

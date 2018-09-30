@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Creekdream.Dependency;
+﻿using Creekdream.Dependency;
+using Creekdream.Threading;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Threading;
 
 namespace Creekdream.Orm.EntityFrameworkCore
 {
@@ -11,45 +9,41 @@ namespace Creekdream.Orm.EntityFrameworkCore
     {
         private class LocalDbContextWapper
         {
-            public DbContext DbContext { get; set; }
+            public DbContextBase DbContext { get; set; }
 
             public IDbContextTransaction DbContextTransaction { get; set; }
         }
 
-        private static readonly AsyncLocal<LocalDbContextWapper> AsyncLocalDbContext = new AsyncLocal<LocalDbContextWapper>();
-        
+        private readonly IAsyncLocalObjectProvider _asyncLocalObjectProvider;
         private readonly IIocResolver _iocResolver;
 
         /// <inheritdoc />
-        public DbContextProvider(IIocResolver iocResolver)
+        public DbContextProvider(IAsyncLocalObjectProvider asyncLocalObjectProvider, IIocResolver iocResolver)
         {
+            _asyncLocalObjectProvider = asyncLocalObjectProvider;
             _iocResolver = iocResolver;
         }
 
         /// <inheritdoc />
-        public DbContext GetDbContext()
+        public DbContextBase GetDbContext()
         {
-            if (AsyncLocalDbContext.Value == null)
+            var localDbContext = _asyncLocalObjectProvider.GetCurrent<LocalDbContextWapper>();
+            if (localDbContext == null || localDbContext.DbContext == null || localDbContext.DbContext.IsDisposed)
             {
-                AsyncLocalDbContext.Value = new LocalDbContextWapper()
+                localDbContext = new LocalDbContextWapper()
                 {
-                    DbContext = _iocResolver.Resolve<DbContext>()
+                    DbContext = _iocResolver.Resolve<DbContextBase>()
                 };
+                _asyncLocalObjectProvider.SetCurrent(localDbContext);
             }
-            return AsyncLocalDbContext.Value.DbContext;
+            return localDbContext.DbContext;
         }
 
         /// <inheritdoc />
         public IDbContextTransaction DbContextTransaction
         {
-            get
-            {
-                return AsyncLocalDbContext.Value.DbContextTransaction;
-            }
-            set
-            {
-                AsyncLocalDbContext.Value.DbContextTransaction = value;
-            }
+            get => _asyncLocalObjectProvider.GetCurrent<LocalDbContextWapper>()?.DbContextTransaction;
+            set => _asyncLocalObjectProvider.GetCurrent<LocalDbContextWapper>().DbContextTransaction = value;
         }
     }
 }

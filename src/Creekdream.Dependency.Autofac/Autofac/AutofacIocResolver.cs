@@ -8,12 +8,27 @@ namespace Creekdream.Dependency.Autofac
     /// <inheritdoc />
     public class AutofacIocResolver : IocResolverBase
     {
+        private bool isDispose = false;
+        private readonly ILifetimeScope _lifetimeScope;
         private readonly IContainer _container;
 
         /// <inheritdoc />
-        public AutofacIocResolver(IContainer container)
+        public AutofacIocResolver(ILifetimeScope lifetimeScope)
         {
-            _container = container;
+            _lifetimeScope = lifetimeScope;
+            _container = _lifetimeScope.Resolve<IContainer>();
+        }
+
+        private IComponentContext GetComponentContext()
+        {
+            if (isDispose)
+            {
+                return _container.BeginLifetimeScope();
+            }
+            else
+            {
+                return _lifetimeScope;
+            }
         }
 
         /// <inheritdoc />
@@ -21,7 +36,7 @@ namespace Creekdream.Dependency.Autofac
         {
             if (argumentsAsAnonymousType == null)
             {
-                return _container.Resolve(serviceType);
+                return GetComponentContext().Resolve(serviceType);
             }
             var namedParameters = new List<Parameter>();
             foreach (var property in argumentsAsAnonymousType.GetType().GetProperties())
@@ -29,13 +44,13 @@ namespace Creekdream.Dependency.Autofac
                 var namedParameter = new NamedParameter(property.Name, property.GetValue(argumentsAsAnonymousType));
                 namedParameters.Add(namedParameter);
             }
-            return _container.Resolve(serviceType, namedParameters);
+            return GetComponentContext().Resolve(serviceType, namedParameters);
         }
 
         /// <inheritdoc />
         public override bool IsRegistered(Type serviceType)
         {
-            return _container.IsRegistered(serviceType);
+            return GetComponentContext().IsRegistered(serviceType);
         }
 
         /// <inheritdoc />
@@ -45,6 +60,13 @@ namespace Creekdream.Dependency.Autofac
             {
                 ((IDisposable)obj).Dispose();
             }
+        }
+
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            isDispose = true;
+            base.Dispose();
         }
     }
 }
