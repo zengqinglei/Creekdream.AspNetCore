@@ -64,7 +64,7 @@ namespace Creekdream.SimpleDemo.Api
             return services.AddCreekdream(
                 options =>
                 {
-                    options.UseAutofac();
+                    options.UseWindsor();
                     options.UseEfCore();
                     options.UseUnitOfWork();
                     options.AddSimpleDemoCore();

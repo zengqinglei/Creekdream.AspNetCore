@@ -10,6 +10,7 @@ using System.Data;
 using System.Data.Common;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Creekdream.Orm.EntityFrameworkCore
 {
@@ -50,11 +51,8 @@ namespace Creekdream.Orm.EntityFrameworkCore
             DbParameter[] parameters = null)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var command = repository.GetDbCommand(sql, parameters: parameters);
-            using (var reader = await command.ExecuteReaderAsync())
-            {
-                return reader.Parse<TOutput>();
-            }
+            var command = await repository.GetDbCommand(sql, parameters: parameters);
+            return command.Parse<TOutput>();
         }
 
         /// <summary>
@@ -66,14 +64,14 @@ namespace Creekdream.Orm.EntityFrameworkCore
             DbParameter[] parameters = null)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var command = repository.GetDbCommand(sql, parameters: parameters);
+            var command = await repository.GetDbCommand(sql, parameters: parameters);
             return await command.ExecuteNonQueryAsync();
         }
 
         /// <summary>
         /// Get an database command
         /// </summary>
-        private static DbCommand GetDbCommand<TEntity, TPrimaryKey>(
+        private static async Task<DbCommand> GetDbCommand<TEntity, TPrimaryKey>(
             this IRepository<TEntity, TPrimaryKey> repository,
             string sql,
             DbParameter[] parameters = null)
@@ -83,9 +81,10 @@ namespace Creekdream.Orm.EntityFrameworkCore
             var database = efcoreRepository.DbContext.Database;
             var dbConnection = database.GetDbConnection();
             var command = dbConnection.CreateCommand();
+            command.Transaction = database.CurrentTransaction?.GetDbTransaction();
             if (command.Connection.State != ConnectionState.Open)
             {
-                command.Connection.Open();
+                await command.Connection.OpenAsync();
             }
 
             command.CommandText = sql;
@@ -101,25 +100,28 @@ namespace Creekdream.Orm.EntityFrameworkCore
         /// <summary>
         /// Map data from datareader to object
         /// </summary>
-        private static IEnumerable<T> Parse<T>(this DbDataReader reader)
+        private static IEnumerable<T> Parse<T>(this DbCommand command)
         {
-            if (reader.Read())
+            using (var reader = command.ExecuteReader())
             {
-                var props = typeof(T).GetRuntimeProperties();
-                var colMapping = new Dictionary<string, int>();
-                for (var i = 0; i < reader.FieldCount; i++)
+                if (reader.Read())
                 {
-                    var columnName = reader.GetName(i);
-                    if (props.Any(p => p.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase) ||
-                       columnName.Equals(p.GetCustomAttribute<ColumnAttribute>()?.Name, StringComparison.OrdinalIgnoreCase)))
+                    var props = typeof(T).GetRuntimeProperties();
+                    var colMapping = new Dictionary<string, int>();
+                    for (var i = 0; i < reader.FieldCount; i++)
                     {
-                        colMapping.Add(columnName.ToLower(), i);
+                        var columnName = reader.GetName(i);
+                        if (props.Any(p => p.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase) ||
+                           columnName.Equals(p.GetCustomAttribute<ColumnAttribute>()?.Name, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            colMapping.Add(columnName.ToLower(), i);
+                        }
                     }
+                    do
+                    {
+                        yield return reader.Map<T>(props, colMapping);
+                    } while (reader.Read());
                 }
-                do
-                {
-                    yield return reader.Map<T>(props, colMapping);
-                } while (reader.Read());
             }
         }
 
