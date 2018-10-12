@@ -56,9 +56,9 @@ namespace Creekdream.Orm.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Sql statement execution
+        /// Execute sql statement and return the number of affected rows
         /// </summary>
-        public static async Task<int> ExecuteAsync<TEntity, TPrimaryKey>(
+        public static async Task<int> ExecuteNonQueryAsync<TEntity, TPrimaryKey>(
             this IRepository<TEntity, TPrimaryKey> repository,
             string sql,
             DbParameter[] parameters = null)
@@ -66,6 +66,19 @@ namespace Creekdream.Orm.EntityFrameworkCore
         {
             var command = await repository.GetDbCommand(sql, parameters: parameters);
             return await command.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Execute the sql statement and query the first column value of the first row of the result
+        /// </summary>
+        public static async Task<object> ExecuteScalarAsync<TEntity, TPrimaryKey>(
+            this IRepository<TEntity, TPrimaryKey> repository,
+            string sql,
+            DbParameter[] parameters = null)
+            where TEntity : class, IEntity<TPrimaryKey>
+        {
+            var command = await repository.GetDbCommand(sql, parameters: parameters);
+            return await command.ExecuteScalarAsync();
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Creekdream.Domain.Entities;
 using Creekdream.Domain.Repositories;
+using System.Data.Common;
 
 namespace Creekdream.Orm.Dapper
 {
@@ -34,9 +35,9 @@ namespace Creekdream.Orm.Dapper
         }
 
         /// <summary>
-        /// Sql statement execution
+        /// Execute sql statement and return the number of affected rows
         /// </summary>
-        public static async Task<int> ExecuteAsync<TEntity, TPrimaryKey>(
+        public static async Task<int> ExecuteNonQueryAsync<TEntity, TPrimaryKey>(
             this IRepository<TEntity, TPrimaryKey> repository,
             string sql,
             object parameters = null)
@@ -47,6 +48,25 @@ namespace Creekdream.Orm.Dapper
             var dbConnection = dapperRepository.Database.Connection;
 
             return await dbConnection.ExecuteAsync(
+                sql,
+                param: parameters,
+                transaction: dbTransaction);
+        }
+
+        /// <summary>
+        /// Execute the sql statement and query the first column value of the first row of the result
+        /// </summary>
+        public static async Task<object> ExecuteScalarAsync<TEntity, TPrimaryKey>(
+            this IRepository<TEntity, TPrimaryKey> repository,
+            string sql,
+            object parameters = null)
+            where TEntity : class, IEntity<TPrimaryKey>
+        {
+            var dapperRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
+            var dbTransaction = dapperRepository.DbTransaction;
+            var dbConnection = dapperRepository.Database.Connection;
+
+            return await dbConnection.ExecuteScalarAsync(
                 sql,
                 param: parameters,
                 transaction: dbTransaction);
@@ -65,11 +85,11 @@ namespace Creekdream.Orm.Dapper
         {
             var dapperRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
             var dbTransaction = dapperRepository.DbTransaction;
-            var dbConnection = dapperRepository.Database;
-
+            var database = dapperRepository.Database;
             var predicateGroup = dapperRepository.CreatePredicateGroup(predicate);
+
             return await Task.FromResult(
-                dbConnection.GetPage<TEntity>(
+                database.GetPage<TEntity>(
                     predicateGroup,
                     ToSortable(ordering),
                     pageIndex,
