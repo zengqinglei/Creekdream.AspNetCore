@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Creekdream.Domain.Entities;
+using Creekdream.Domain.Entities.Auditing;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Creekdream.Domain.Entities;
-using Creekdream.Domain.Entities.Auditing;
 
 namespace Creekdream.Domain.Repositories
 {
@@ -20,7 +20,7 @@ namespace Creekdream.Domain.Repositories
         /// <inheritdoc />
         public abstract Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
         /// <inheritdoc />
-        public abstract Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null);
+        public abstract Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null);
 
         #endregion
 

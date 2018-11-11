@@ -1,12 +1,11 @@
-﻿using Dapper;
+﻿using Creekdream.Domain.Entities;
+using Creekdream.Domain.Repositories;
+using Dapper;
 using DapperExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Creekdream.Domain.Entities;
-using Creekdream.Domain.Repositories;
-using System.Data.Common;
 
 namespace Creekdream.Orm.Dapper
 {
@@ -15,6 +14,26 @@ namespace Creekdream.Orm.Dapper
     /// </summary>
     public static class RepositoryExtensions
     {
+        /// <summary>
+        /// Get entity as enumerable based on criteria
+        /// </summary>
+        public static async Task<IEnumerable<TEntity>> GetEnumerable<TEntity, TPrimaryKey>(
+            this IRepository<TEntity, TPrimaryKey> repository,
+            Expression<Func<TEntity, bool>> predicate = null)
+            where TEntity : class, IEntity<TPrimaryKey>
+        {
+            var dapperRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
+            var dbTransaction = dapperRepository.DbTransaction;
+            var database = dapperRepository.Database;
+            var predicateGroup = dapperRepository.CreatePredicateGroup(predicate);
+
+            return await Task.FromResult(
+                database.GetList<TEntity>(
+                    predicateGroup,
+                    null,
+                    transaction: dbTransaction));
+        }
+
         /// <summary>
         /// Sql statement query result
         /// </summary>

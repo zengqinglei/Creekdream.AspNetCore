@@ -57,7 +57,7 @@ namespace Creekdream.Orm.EntityFrameworkCore
         }
 
         /// <inheritdoc />
-        public override async Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null)
+        public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
             var query = Table.AsQueryable();
             if (predicate != null)

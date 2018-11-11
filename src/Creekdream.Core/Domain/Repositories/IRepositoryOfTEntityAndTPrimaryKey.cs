@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Creekdream.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Creekdream.Domain.Entities;
 
 namespace Creekdream.Domain.Repositories
 {
@@ -31,7 +31,7 @@ namespace Creekdream.Domain.Repositories
         /// <summary>
         /// Get entity collections based on criteria
         /// </summary>
-        Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null);
+        Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null);
 
         #endregion
 

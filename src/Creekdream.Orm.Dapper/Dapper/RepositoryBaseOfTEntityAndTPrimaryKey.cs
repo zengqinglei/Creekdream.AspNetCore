@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Creekdream.Domain.Entities;
+using Creekdream.Domain.Repositories;
+using DapperExtensions;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Creekdream.Domain.Entities;
-using Creekdream.Domain.Repositories;
-using DapperExtensions;
 
 namespace Creekdream.Orm.Dapper
 {
@@ -56,14 +56,14 @@ namespace Creekdream.Orm.Dapper
         }
 
         /// <inheritdoc />
-        public override async Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null)
+        public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
             var predicateGroup = CreatePredicateGroup(predicate);
             var entities = Database.GetList<TEntity>(
                 predicateGroup,
                 null,
                 transaction: DbTransaction);
-            return await Task.FromResult(entities);
+            return await Task.FromResult(entities.ToList());
         }
 
         /// <inheritdoc />
