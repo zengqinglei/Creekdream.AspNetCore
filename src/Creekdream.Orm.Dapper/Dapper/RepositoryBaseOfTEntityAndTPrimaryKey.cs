@@ -72,7 +72,11 @@ namespace Creekdream.Orm.Dapper
             var id = Database.Insert(
                 entity,
                 transaction: DbTransaction);
-            return await GetAsync(id);
+            if (id == null && entity.Id == null)
+            {
+                return entity;
+            }
+            return await GetAsync(id ?? entity.Id);
         }
 
         /// <inheritdoc />

@@ -84,6 +84,7 @@ namespace Creekdream.SimpleDemo.Api
                         config =>
                         {
                             config.AddProfile(options.IocResolver.Resolve<BookProfile>());
+                            config.AddProfile(options.IocResolver.Resolve<UserProfile>());
                         });
                 });
 
