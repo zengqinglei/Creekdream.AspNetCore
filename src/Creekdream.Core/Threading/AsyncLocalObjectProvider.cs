@@ -15,7 +15,7 @@ namespace Creekdream.Threading
             {
                 _asyncLocalObjects.Value = new List<object>();
             }
-            return _asyncLocalObjects.Value;
+            return _asyncLocalObjects.Value.Where(value => value != null).ToList();
         }
 
         /// <inheritdoc />

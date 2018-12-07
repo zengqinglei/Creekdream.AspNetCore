@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Creekdream.Dependency;
 using Creekdream.Threading;
 
-namespace Creekdream.UnitOfWork
+namespace Creekdream.Uow
 {
     /// <summary>
     /// Unit of work interceptor
@@ -19,6 +19,7 @@ namespace Creekdream.UnitOfWork
             UnitOfWorkOptions unitOfWorkOptions,
             IUnitOfWorkManager unitOfWorkManager)
         {
+
             _unitOfWorkOptions = unitOfWorkOptions;
             _unitOfWorkManager = unitOfWorkManager;
         }
@@ -35,51 +36,35 @@ namespace Creekdream.UnitOfWork
                 method = invocation.GetConcreteMethod();
             }
 
-            var unitOfWorkAttr = GetUnitOfWorkAttribute(method);
-            if (unitOfWorkAttr == null || unitOfWorkAttr.IsDisabled)
+            var unitOfWorkOptions = GetUnitOfWorkAttribute(method);
+            if (unitOfWorkOptions == null)
             {
                 //No need to a uow
                 invocation.Proceed();
                 return;
             }
 
-            var unitOfWorkOptions = _unitOfWorkOptions;
-            if (unitOfWorkAttr != null)
-            {
-                if (unitOfWorkAttr.IsTransactional.HasValue)
-                {
-                    unitOfWorkOptions.IsTransactional = unitOfWorkAttr.IsTransactional.Value;
-                }
-                if (unitOfWorkAttr.IsolationLevel.HasValue)
-                {
-                    unitOfWorkOptions.IsolationLevel = unitOfWorkAttr.IsolationLevel.Value;
-                }
-                if (unitOfWorkAttr.Timeout.HasValue)
-                {
-                    unitOfWorkOptions.Timeout = unitOfWorkAttr.Timeout.Value;
-                }
-                if (unitOfWorkAttr.Scope.HasValue)
-                {
-                    unitOfWorkOptions.Scope = unitOfWorkAttr.Scope.Value;
-                }
-            }
-
             //No current uow, run a new one
             PerformUow(invocation, unitOfWorkOptions);
         }
 
-        private UnitOfWorkAttribute GetUnitOfWorkAttribute(MethodInfo methodInfo)
+        private UnitOfWorkOptions GetUnitOfWorkAttribute(MethodInfo methodInfo)
         {
             var attrs = methodInfo.GetCustomAttributes(true).OfType<UnitOfWorkAttribute>().ToArray();
             if (attrs.Length > 0)
             {
-                return attrs[0];
+                return attrs[0].CreateOptionsFromDefault(_unitOfWorkOptions);
             }
 
             attrs = methodInfo.DeclaringType.GetTypeInfo().GetCustomAttributes(true).OfType<UnitOfWorkAttribute>().ToArray();
             if (attrs.Length > 0)
             {
-                return attrs[0];
+                return attrs[0].CreateOptionsFromDefault(_unitOfWorkOptions);
+            }
+
+            if (_unitOfWorkOptions.ConventionalUowSelectors.Any(selector => selector(methodInfo.DeclaringType)))
+            {
+                return _unitOfWorkOptions;
             }
 
             return null;

@@ -138,7 +138,10 @@ namespace Creekdream.Orm.EntityFrameworkCore
             }
         }
 
-        private static TEntity Map<TEntity>(this DbDataReader reader, IEnumerable<PropertyInfo> props, Dictionary<string, int> colMapping)
+        private static TEntity Map<TEntity>(
+            this DbDataReader reader,
+            IEnumerable<PropertyInfo> props,
+            Dictionary<string, int> colMapping)
         {
             var item = Activator.CreateInstance<TEntity>();
             foreach (var prop in props)

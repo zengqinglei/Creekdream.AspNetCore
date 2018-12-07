@@ -24,12 +24,12 @@ namespace Creekdream.Orm.EntityFrameworkCore
         /// <summary>
         /// Gets EF DbContext object.
         /// </summary>
-        public DbContext DbContext => _dbContextProvider.GetDbContext();
+        public virtual DbContext DbContext => _dbContextProvider.GetDbContext();
 
         /// <summary>
         /// Gets DbSet for given entity.
         /// </summary>
-        public DbSet<TEntity> Table => DbContext.Set<TEntity>();
+        public virtual DbSet<TEntity> Table => DbContext.Set<TEntity>();
 
         #region Select
 

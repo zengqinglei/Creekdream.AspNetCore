@@ -1,4 +1,4 @@
-﻿namespace Creekdream.UnitOfWork
+﻿namespace Creekdream.Uow
 {
     /// <summary>
     /// Unit of work interface

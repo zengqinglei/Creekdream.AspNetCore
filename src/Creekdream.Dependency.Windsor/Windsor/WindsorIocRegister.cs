@@ -73,7 +73,7 @@ namespace Creekdream.Dependency.Windsor
         /// <inheritdoc />
         public override void RegisterInterceptor<TInterceptor>(Func<TypeInfo, bool> filterCondition)
         {
-            _container.Register(Component.For<TInterceptor>().LifestyleSingleton());
+            _container.Register(Component.For<TInterceptor>().LifestyleTransient());
             _componentRegistedEvents.Add(
                 handlers =>
                 {

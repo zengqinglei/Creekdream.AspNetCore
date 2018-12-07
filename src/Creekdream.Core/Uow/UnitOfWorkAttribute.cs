@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Transactions;
 
-namespace Creekdream.UnitOfWork
+namespace Creekdream.Uow
 {
     /// <summary>
     /// Unit of work attribute
@@ -13,12 +13,6 @@ namespace Creekdream.UnitOfWork
         /// Transaction scope
         /// </summary>
         public TransactionScopeOption? Scope { get; set; }
-
-        /// <summary>
-        /// Is this UOW transactional?
-        /// Uses default value if not supplied.
-        /// </summary>
-        public bool? IsTransactional { get; set; }
 
         /// <summary>
         /// Timeout of UOW As milliseconds.
@@ -36,6 +30,18 @@ namespace Creekdream.UnitOfWork
         /// Is disabled transaction (default: false)
         /// </summary>
         public bool IsDisabled { get; set; }
+
+        internal UnitOfWorkOptions CreateOptionsFromDefault(UnitOfWorkOptions defaultUnitOfWorkOptions)
+        {
+            return new UnitOfWorkOptions
+            {
+                Scope = Scope ?? defaultUnitOfWorkOptions.Scope,
+                IsTransactional = !IsDisabled,
+                IsolationLevel = IsolationLevel ?? defaultUnitOfWorkOptions.IsolationLevel,
+                Timeout = Timeout ?? defaultUnitOfWorkOptions.Timeout,
+                AsyncFlowOption = defaultUnitOfWorkOptions.AsyncFlowOption
+            };
+        }
     }
 }
 

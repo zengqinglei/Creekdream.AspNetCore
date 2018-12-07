@@ -2,7 +2,7 @@
 using Creekdream.Orm.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Creekdream.UnitOfWork.EntityFrameworkCore
+namespace Creekdream.Uow
 {
     /// <summary>
     /// EfCore implemented based on work unit

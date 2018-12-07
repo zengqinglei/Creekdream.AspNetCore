@@ -8,7 +8,6 @@ using Creekdream.SimpleDemo.Api.Middlewares;
 using Creekdream.SimpleDemo.EntityFrameworkCore;
 using Creekdream.SimpleDemo.MapperProfiles;
 using Creekdream.SimpleDemo.Migrations;
-using Creekdream.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +46,7 @@ namespace Creekdream.SimpleDemo.Api
             services.AddDbContext<DbContextBase, SimpleDemoDbContext>(
                 options =>
                 {
-                    options.UseLazyLoadingProxies().UseSqlServer(
+                    options.UseSqlServer(
                         _configuration.GetConnectionString("Default"),
                         option => option.UseRowNumberForPaging());
                 });
@@ -66,7 +65,6 @@ namespace Creekdream.SimpleDemo.Api
                 {
                     options.UseWindsor();
                     options.UseEfCore();
-                    options.UseUnitOfWork();
                     options.AddSimpleDemoCore();
                     options.AddSimpleDemoApplication();
                 });

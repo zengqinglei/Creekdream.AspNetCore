@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 
-namespace Creekdream.UnitOfWork
+namespace Creekdream.Uow
 {
     /// <summary>
     /// Base for all Unit Of Work classes.

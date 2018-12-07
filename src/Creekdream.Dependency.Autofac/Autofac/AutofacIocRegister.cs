@@ -83,7 +83,7 @@ namespace Creekdream.Dependency.Autofac
         /// <inheritdoc />
         public override void RegisterInterceptor<TInterceptor>(Func<TypeInfo, bool> filterCondition)
         {
-            _builder.RegisterType<TInterceptor>();
+            _builder.RegisterType<TInterceptor>().AddLifeStyle(DependencyLifeStyle.Transient);
             _builder.RegisterBuildCallback(c =>
             {
                 foreach (var registration in c.ComponentRegistry.Registrations)

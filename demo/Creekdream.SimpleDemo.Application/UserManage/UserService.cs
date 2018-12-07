@@ -2,7 +2,7 @@
 using Creekdream.Domain.Repositories;
 using Creekdream.Mapping;
 using Creekdream.SimpleDemo.UserManage.Dto;
-using Creekdream.UnitOfWork;
+using Creekdream.Uow;
 using System;
 using System.Threading.Tasks;
 

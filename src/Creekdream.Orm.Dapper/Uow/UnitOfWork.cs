@@ -1,7 +1,7 @@
-﻿using System.Data.Common;
-using Creekdream.Orm.Dapper;
+﻿using Creekdream.Orm.Dapper;
+using DapperExtensions;
 
-namespace Creekdream.UnitOfWork.Dapper
+namespace Creekdream.Uow
 {
     /// <summary>
     /// Dapper implemented based on work unit
@@ -10,13 +10,13 @@ namespace Creekdream.UnitOfWork.Dapper
     {
         private UnitOfWorkOptions _uowOptions;
         private readonly IDatabaseProvider _dbConnectionProvider;
-        private readonly DbConnection _dbConnection;
+        private readonly IDatabase _database;
 
         /// <inheritdoc />
         public UnitOfWork(IDatabaseProvider dbConnectionProvider) : base()
         {
             _dbConnectionProvider = dbConnectionProvider;
-            _dbConnection = _dbConnectionProvider.GetDatabase().Connection;
+            _database = _dbConnectionProvider.GetDatabase();
         }
 
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace Creekdream.UnitOfWork.Dapper
             if (_uowOptions.IsTransactional && _dbConnectionProvider.DbTransaction == null)
             {
                 var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
-                _dbConnectionProvider.DbTransaction = _dbConnection.BeginTransaction(isoLationLevel);
+                _dbConnectionProvider.DbTransaction = _database.Connection.BeginTransaction(isoLationLevel);
             }
         }
 
@@ -42,7 +42,7 @@ namespace Creekdream.UnitOfWork.Dapper
         /// <inheritdoc />
         protected override void DisposeUow()
         {
-            _dbConnection.Dispose();
+            _database.Dispose();
             if (_uowOptions.IsTransactional == true && _dbConnectionProvider.DbTransaction != null)
             {
                 _dbConnectionProvider.DbTransaction.Dispose();

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Creekdream.Mapping.AutoMapper\Creekdream.Mapping.AutoMapper.csproj" />
-    <ProjectReference Include="..\..\src\Creekdream.UnitOfWork.EntityFrameworkCore\Creekdream.UnitOfWork.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Creekdream.SimpleDemo.EntityFrameworkCore\Creekdream.SimpleDemo.EntityFrameworkCore.csproj" />
   </ItemGroup>
 

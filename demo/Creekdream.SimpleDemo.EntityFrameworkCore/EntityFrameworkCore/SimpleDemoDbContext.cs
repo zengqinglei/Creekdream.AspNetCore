@@ -33,6 +33,11 @@ namespace Creekdream.SimpleDemo.EntityFrameworkCore
         /// book of linq queries
         /// </summary>
         public DbSet<Book> Books { get; set; }
+
+        public override void Dispose()
+        {
+           base.Dispose();
+        }
     }
 }
 

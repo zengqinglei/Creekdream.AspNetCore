@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Creekdream.Application.Service;
+using Creekdream.Domain.Repositories;
+using System;
+using System.Collections.Generic;
 using System.Transactions;
 
-namespace Creekdream.UnitOfWork
+namespace Creekdream.Uow
 {
     /// <summary>
     /// Unit of work options
@@ -17,7 +20,7 @@ namespace Creekdream.UnitOfWork
         /// Is this UOW transactional?
         /// Uses default value if not supplied.
         /// </summary>
-        public bool IsTransactional { get; set; } = true;
+        public bool IsTransactional { get; set; } = false;
 
         /// <summary>
         /// Timeout of UOW As milliseconds.
@@ -36,5 +39,20 @@ namespace Creekdream.UnitOfWork
         /// if unit of work is used in an async scope.
         /// </summary>
         public TransactionScopeAsyncFlowOption AsyncFlowOption { get; set; } = TransactionScopeAsyncFlowOption.Enabled;
+
+        /// <summary>
+        /// Apply uow type
+        /// </summary>
+        public List<Func<Type, bool>> ConventionalUowSelectors { get; set; }
+
+        /// <inheritdoc />
+        public UnitOfWorkOptions()
+        {
+            ConventionalUowSelectors = new List<Func<Type, bool>>
+            {
+                type => typeof(IRepository).IsAssignableFrom(type),
+                type => typeof(IApplicationService).IsAssignableFrom(type)
+            };
+        }
     }
 }

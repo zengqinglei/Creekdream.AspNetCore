@@ -1,6 +1,6 @@
 ﻿using Creekdream.Dependency;
 
-namespace Creekdream.UnitOfWork
+namespace Creekdream.Uow
 {
     /// <summary>
     /// Unit of work management service interface

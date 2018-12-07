@@ -4,7 +4,7 @@ using Creekdream.Domain.Repositories;
 using Creekdream.Mapping;
 using Creekdream.Orm.EntityFrameworkCore;
 using Creekdream.SimpleDemo.Books.Dto;
-using Creekdream.UnitOfWork;
+using Creekdream.Uow;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -60,15 +60,30 @@ namespace Creekdream.SimpleDemo.Books
         [UnitOfWork]
         public async Task<GetBookOutput> Add(AddBookInput input)
         {
-            var task = Task.Run(() =>
+            // 以下为工作单元多种适用场景
+            new Thread(() =>
             {
                 Thread.Sleep(10000);
-                var books = _bookRepository.GetListAsync(m => m.Name.Contains("test")).GetAwaiter().GetResult();
-            });
+                try
+                {
+                    var books = _bookRepository.GetListAsync(m => m.Name.Contains("test")).Result;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }).Start();
             using (var uow = _unitOfWorkManager.Begin())
             {
                 var book = input.MapTo<Book>();
                 book = await _bookRepository.InsertAsync(book);
+
+                var bookQuery1 = await _bookRepository.QueryAsync<Book, Guid, Book>("select * from Books");
+                var a1 = bookQuery1.Take(10).ToList();
+                var a2 = bookQuery1.Take(10).ToList();
+
+                var bookQuery2 = await _bookRepository.QueryAsync<Book, Guid, Book>("select * from Books");
+                var b1 = bookQuery2.Take(10).ToList();
 
                 uow.Complete();
 

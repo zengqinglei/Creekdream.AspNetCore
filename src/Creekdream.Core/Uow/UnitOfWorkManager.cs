@@ -2,7 +2,7 @@
 using Creekdream.Dependency;
 using Creekdream.Threading;
 
-namespace Creekdream.UnitOfWork
+namespace Creekdream.Uow
 {
     /// <inheritdoc />
     public class UnitOfWorkManager : IUnitOfWorkManager
