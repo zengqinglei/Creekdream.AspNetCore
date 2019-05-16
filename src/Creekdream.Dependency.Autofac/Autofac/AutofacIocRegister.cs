@@ -33,54 +33,6 @@ namespace Creekdream.Dependency.Autofac
         }
 
         /// <inheritdoc />
-        public override void Register<TService>(TService implementationInstance)
-        {
-            _builder.Register(c => implementationInstance).AddLifeStyle(DependencyLifeStyle.Singleton);
-        }
-
-        /// <inheritdoc />
-        public override void Register<TService>(
-            Func<IIocResolver, TService> implementationFactory,
-            DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-        {
-            _builder.Register(context => implementationFactory.Invoke(context.Resolve<IIocResolver>()))
-                    .AddLifeStyle(lifeStyle);
-        }
-
-        /// <inheritdoc />
-        public override void Register(Type serviceType, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-        {
-            if (serviceType.IsGenericType)
-            {
-                _builder.RegisterGeneric(serviceType).AddLifeStyle(lifeStyle);
-            }
-            else
-            {
-                _builder.RegisterType(serviceType).AddLifeStyle(lifeStyle);
-            }
-        }
-
-        /// <inheritdoc />
-        public override void Register(
-            Type serviceType,
-            Type implementationType,
-            DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-        {
-            if (implementationType.IsGenericType)
-            {
-                _builder.RegisterGeneric(implementationType)
-                    .As(serviceType)
-                    .AddLifeStyle(lifeStyle);
-            }
-            else
-            {
-                _builder.RegisterType(implementationType)
-                    .As(serviceType)
-                    .AddLifeStyle(lifeStyle);
-            }
-        }
-
-        /// <inheritdoc />
         public override void RegisterInterceptor<TInterceptor>(Func<TypeInfo, bool> filterCondition)
         {
             _builder.RegisterType<TInterceptor>().AddLifeStyle(DependencyLifeStyle.Transient);

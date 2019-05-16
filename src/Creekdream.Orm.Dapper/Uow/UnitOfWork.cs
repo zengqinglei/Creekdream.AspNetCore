@@ -1,33 +1,56 @@
-﻿using Creekdream.Orm.Dapper;
+﻿using Creekdream.Dependency;
+using Creekdream.Orm;
 using DapperExtensions;
+using DapperExtensions.Sql;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Data.Common;
 
 namespace Creekdream.Uow
 {
     /// <summary>
     /// Dapper implemented based on work unit
     /// </summary>
-    public class UnitOfWork : UnitOfWorkBase
+    public class UnitOfWork : UnitOfWorkBase, ITransientDependency
     {
+        private readonly IServiceProvider _serviceProvider;
         private UnitOfWorkOptions _uowOptions;
-        private readonly IDatabaseProvider _dbConnectionProvider;
-        private readonly IDatabase _database;
+        private IDatabase _database;
+        private DbTransaction _dbTransaction;
 
         /// <inheritdoc />
-        public UnitOfWork(IDatabaseProvider dbConnectionProvider) : base()
+        public UnitOfWork(IServiceProvider serviceProvider) : base()
         {
-            _dbConnectionProvider = dbConnectionProvider;
-            _database = _dbConnectionProvider.GetDatabase();
+            _serviceProvider = serviceProvider;
         }
 
         /// <inheritdoc />
         protected override void BeginUow(UnitOfWorkOptions uowOptions)
         {
             _uowOptions = uowOptions;
-            if (_uowOptions.IsTransactional && _dbConnectionProvider.DbTransaction == null)
+        }
+
+        /// <summary>
+        /// Get or create dbcontext
+        /// </summary>
+        public virtual IDatabase GetOrCreateDatabase()
+        {
+            if (_database == null)
             {
-                var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
-                _dbConnectionProvider.DbTransaction = _database.Connection.BeginTransaction(isoLationLevel);
+                var dapperOptions = _serviceProvider.GetRequiredService<DapperOptionsBuilder>();
+                var config = new DapperExtensionsConfiguration(
+                    dapperOptions.DefaultMapper,
+                    dapperOptions.MapperAssemblies,
+                    dapperOptions.SqlDialect);
+                var sqlGenerator = new SqlGeneratorImpl(config);
+                _database = new Database(dapperOptions.GetDbConnection(), sqlGenerator);
+                if (_uowOptions.IsTransactional && _dbTransaction == null)
+                {
+                    var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
+                    _dbTransaction = _database.Connection.BeginTransaction(isoLationLevel);
+                }
             }
+            return _database;
         }
 
         /// <inheritdoc />
@@ -35,18 +58,19 @@ namespace Creekdream.Uow
         {
             if (_uowOptions.IsTransactional == true)
             {
-                _dbConnectionProvider.DbTransaction.Commit();
+                _dbTransaction.Commit();
             }
         }
 
         /// <inheritdoc />
         protected override void DisposeUow()
         {
-            _database.Dispose();
-            if (_uowOptions.IsTransactional == true && _dbConnectionProvider.DbTransaction != null)
+            if (_uowOptions.IsTransactional == true && _dbTransaction != null)
             {
-                _dbConnectionProvider.DbTransaction.Dispose();
+                _dbTransaction.Dispose();
             }
+            _database.Dispose();
+            _database = null;
         }
     }
 }

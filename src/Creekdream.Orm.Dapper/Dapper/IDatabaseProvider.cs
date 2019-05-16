@@ -1,13 +1,12 @@
-﻿using System.Data.Common;
-using Creekdream.Dependency;
-using DapperExtensions;
+﻿using DapperExtensions;
+using System.Data.Common;
 
 namespace Creekdream.Orm.Dapper
 {
     /// <summary>
     /// Database provider
     /// </summary>
-    public interface IDatabaseProvider : ITransientDependency
+    public interface IDatabaseProvider
     {
         /// <summary>
         /// Get a database

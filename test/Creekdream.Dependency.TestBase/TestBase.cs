@@ -1,31 +1,31 @@
 ﻿using Creekdream.Dependency.TestBase.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
+using System;
 using Xunit;
 
 namespace Creekdream.Dependency.TestBase
 {
     public abstract class TestBase
     {
-        protected abstract IocRegisterBase GetIocRegister();
+        protected abstract IServiceCollection GetServices();
 
-        protected IIocResolver GetIocResolver(IocRegisterBase iocRegister)
+        protected IServiceProvider GetServiceProvider(IServiceCollection services)
         {
-            var serviceProvider = iocRegister.GetServiceProvider(new ServiceCollection());
-            return serviceProvider.GetService<IIocResolver>();
+            return services.GetServiceProvider();
         }
 
         [Fact]
         public void Test_Register_SingleInstance()
         {
-            var iocRegister = GetIocRegister();
-            iocRegister.Register(new ServiceOptions());
+            var services = GetServices();
+            services.AddSingleton(new ServiceOptions());
 
-            var iocResolver = GetIocResolver(iocRegister);
+            var serviceProvider = GetServiceProvider(services);
 
-            var serviceOptions1 = iocResolver.Resolve<ServiceOptions>();
+            var serviceOptions1 = serviceProvider.GetService<ServiceOptions>();
             serviceOptions1.ShouldNotBeNull();
-            var serviceOptions2 = iocResolver.Resolve<ServiceOptions>();
+            var serviceOptions2 = serviceProvider.GetService<ServiceOptions>();
             serviceOptions2.ShouldNotBeNull();
 
             serviceOptions1.Id.ShouldBe(serviceOptions2.Id);
@@ -34,28 +34,28 @@ namespace Creekdream.Dependency.TestBase
         [Fact]
         public void Test_Register_Services()
         {
-            var iocRegister = GetIocRegister();
-            iocRegister.Register<SingletonService>(DependencyLifeStyle.Singleton);
-            iocRegister.Register<ScopedService>(DependencyLifeStyle.Scoped);
-            iocRegister.Register<TransientService>(DependencyLifeStyle.Transient);
+            var services = GetServices();
+            services.AddSingleton<SingletonService>();
+            services.AddScoped<ScopedService>();
+            services.AddTransient<TransientService>();
 
-            var iocResolver = GetIocResolver(iocRegister);
+            var serviceProvider = GetServiceProvider(services);
 
-            var singletonService1 = iocResolver.Resolve<SingletonService>();
+            var singletonService1 = serviceProvider.GetService<SingletonService>();
             singletonService1.ShouldNotBeNull();
-            var singletonService2 = iocResolver.Resolve<SingletonService>();
+            var singletonService2 = serviceProvider.GetService<SingletonService>();
             singletonService2.ShouldNotBeNull();
             singletonService1.Id.ShouldBe(singletonService2.Id);
 
-            var scopedService1 = iocResolver.Resolve<ScopedService>();
+            var scopedService1 = serviceProvider.GetService<ScopedService>();
             scopedService1.ShouldNotBeNull();
-            var scopedService2 = iocResolver.Resolve<ScopedService>();
+            var scopedService2 = serviceProvider.GetService<ScopedService>();
             scopedService2.ShouldNotBeNull();
             scopedService1.Id.ShouldBe(scopedService2.Id);
 
-            var transientService1 = iocResolver.Resolve<TransientService>();
+            var transientService1 = serviceProvider.GetService<TransientService>();
             transientService1.ShouldNotBeNull();
-            var transientService2 = iocResolver.Resolve<TransientService>();
+            var transientService2 = serviceProvider.GetService<TransientService>();
             transientService2.ShouldNotBeNull();
             transientService1.Id.ShouldNotBe(transientService2.Id);
         }
@@ -63,40 +63,40 @@ namespace Creekdream.Dependency.TestBase
         [Fact]
         public virtual void Test_Register_ServicesFactory()
         {
-            var iocRegister = GetIocRegister();
-            iocRegister.Register(
-                resolver =>
+            var services = GetServices();
+            services.AddSingleton(
+                provider =>
                 {
                     return new SingletonService();
-                }, DependencyLifeStyle.Singleton);
-            iocRegister.Register(
-                resolver =>
+                });
+            services.AddScoped(
+                provider =>
                 {
                     return new ScopedService();
-                }, DependencyLifeStyle.Scoped);
-            iocRegister.Register(
-                resolver =>
+                });
+            services.AddTransient(
+                provider =>
                 {
                     return new TransientService();
-                }, DependencyLifeStyle.Transient);
+                });
 
-            var iocResolver = GetIocResolver(iocRegister);
+            var serviceProvider = GetServiceProvider(services);
 
-            var singletonService1 = iocResolver.Resolve<SingletonService>();
+            var singletonService1 = serviceProvider.GetService<SingletonService>();
             singletonService1.ShouldNotBeNull();
-            var singletonService2 = iocResolver.Resolve<SingletonService>();
+            var singletonService2 = serviceProvider.GetService<SingletonService>();
             singletonService2.ShouldNotBeNull();
             singletonService1.Id.ShouldBe(singletonService2.Id);
 
-            var scopedService1 = iocResolver.Resolve<ScopedService>();
+            var scopedService1 = serviceProvider.GetService<ScopedService>();
             scopedService1.ShouldNotBeNull();
-            var scopedService2 = iocResolver.Resolve<ScopedService>();
+            var scopedService2 = serviceProvider.GetService<ScopedService>();
             scopedService2.ShouldNotBeNull();
             scopedService1.Id.ShouldBe(scopedService2.Id);
 
-            var transientService1 = iocResolver.Resolve<TransientService>();
+            var transientService1 = serviceProvider.GetService<TransientService>();
             transientService1.ShouldNotBeNull();
-            var transientService2 = iocResolver.Resolve<TransientService>();
+            var transientService2 = serviceProvider.GetService<TransientService>();
             transientService2.ShouldNotBeNull();
             transientService1.Id.ShouldNotBe(transientService2.Id);
         }
@@ -104,28 +104,28 @@ namespace Creekdream.Dependency.TestBase
         [Fact]
         public void Test_Register_ServicesAndImplementation()
         {
-            var iocRegister = GetIocRegister();
-            iocRegister.Register<ISingletonService, SingletonService>(DependencyLifeStyle.Singleton);
-            iocRegister.Register<IScopedService, ScopedService>(DependencyLifeStyle.Scoped);
-            iocRegister.Register<ITransientService, TransientService>(DependencyLifeStyle.Transient);
+            var services = GetServices();
+            services.AddSingleton<ISingletonService, SingletonService>();
+            services.AddScoped<IScopedService, ScopedService>();
+            services.AddTransient<ITransientService, TransientService>();
 
-            var iocResolver = GetIocResolver(iocRegister);
+            var serviceProvider = GetServiceProvider(services);
 
-            var singletonService1 = iocResolver.Resolve<ISingletonService>();
+            var singletonService1 = serviceProvider.GetService<ISingletonService>();
             singletonService1.ShouldNotBeNull();
-            var singletonService2 = iocResolver.Resolve<ISingletonService>();
+            var singletonService2 = serviceProvider.GetService<ISingletonService>();
             singletonService2.ShouldNotBeNull();
             singletonService1.Id.ShouldBe(singletonService2.Id);
 
-            var scopedService1 = iocResolver.Resolve<IScopedService>();
+            var scopedService1 = serviceProvider.GetService<IScopedService>();
             scopedService1.ShouldNotBeNull();
-            var scopedService2 = iocResolver.Resolve<IScopedService>();
+            var scopedService2 = serviceProvider.GetService<IScopedService>();
             scopedService2.ShouldNotBeNull();
             scopedService1.Id.ShouldBe(scopedService2.Id);
 
-            var transientService1 = iocResolver.Resolve<ITransientService>();
+            var transientService1 = serviceProvider.GetService<ITransientService>();
             transientService1.ShouldNotBeNull();
-            var transientService2 = iocResolver.Resolve<ITransientService>();
+            var transientService2 = serviceProvider.GetService<ITransientService>();
             transientService2.ShouldNotBeNull();
             transientService1.Id.ShouldNotBe(transientService2.Id);
         }
@@ -133,8 +133,8 @@ namespace Creekdream.Dependency.TestBase
         [Fact]
         public void Test_Register_Interceptor()
         {
-            var iocRegister = GetIocRegister();
-            iocRegister.RegisterInterceptor<ServiceInterceptor>(
+            var services = GetServices();
+            services.RegisterInterceptor<ServiceInterceptor>(
                 implementationType =>
                 {
                     if (typeof(ISingletonService).IsAssignableFrom(implementationType))
@@ -151,21 +151,21 @@ namespace Creekdream.Dependency.TestBase
                     }
                     return false;
                 });
-            iocRegister.Register<ISingletonService, SingletonService>(DependencyLifeStyle.Singleton);
-            iocRegister.Register<IScopedService, ScopedService>(DependencyLifeStyle.Scoped);
-            iocRegister.Register<ITransientService, TransientService>(DependencyLifeStyle.Transient);
+            services.AddSingleton<ISingletonService, SingletonService>();
+            services.AddScoped<IScopedService, ScopedService>();
+            services.AddTransient<ITransientService, TransientService>();
 
-            var iocResolver = GetIocResolver(iocRegister);
+            var serviceProvider = GetServiceProvider(services);
 
-            var singletonService = iocResolver.Resolve<ISingletonService>();
+            var singletonService = serviceProvider.GetService<ISingletonService>();
             var singletonServiceName = singletonService.GetName();
             SingletonService.Interceptor.ShouldBe("Singleton");
 
-            var scopedService = iocResolver.Resolve<IScopedService>();
+            var scopedService = serviceProvider.GetService<IScopedService>();
             var scopedServiceName = scopedService.GetName();
             ScopedService.Interceptor.ShouldBe("Scoped");
 
-            var transientService = iocResolver.Resolve<ITransientService>();
+            var transientService = serviceProvider.GetService<ITransientService>();
             var transientServiceName = transientService.GetName();
             TransientService.Interceptor.ShouldBe("Transient");
         }
@@ -173,9 +173,9 @@ namespace Creekdream.Dependency.TestBase
         [Fact]
         public virtual void Test_Register_Assemblies()
         {
-            var iocRegister = GetIocRegister();
-            iocRegister.RegisterAssemblyByBasicInterface(typeof(TestBase).Assembly);
-            iocRegister.RegisterInterceptor<ServiceInterceptor>(
+            var services = GetServices();
+            services.RegisterAssemblyByBasicInterface(typeof(TestBase).Assembly);
+            services.RegisterInterceptor<ServiceInterceptor>(
                 implementationType =>
                 {
                     if (typeof(ISingletonService).IsAssignableFrom(implementationType))
@@ -193,19 +193,19 @@ namespace Creekdream.Dependency.TestBase
                     return false;
                 });
 
-            var iocResolver = GetIocResolver(iocRegister);
+            var serviceProvider = GetServiceProvider(services);
 
-            var serviceOptions = iocResolver.Resolve<ServiceOptions>();
+            var serviceOptions = serviceProvider.GetService<ServiceOptions>();
             serviceOptions.ShouldNotBeNull();
 
-            var singletonService = iocResolver.Resolve<ISingletonService>();
+            var singletonService = serviceProvider.GetService<ISingletonService>();
             var singletonServiceName = singletonService.GetName();
             singletonService.ShouldNotBeNull();
 
-            var scopedService = iocResolver.Resolve<IScopedService>();
+            var scopedService = serviceProvider.GetService<IScopedService>();
             scopedService.ShouldNotBeNull();
 
-            var transientService = iocResolver.Resolve<ITransientService>();
+            var transientService = serviceProvider.GetService<ITransientService>();
             transientService.ShouldNotBeNull();
         }
     }

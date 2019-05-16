@@ -1,16 +1,17 @@
 ﻿using Autofac;
 using Autofac.Extras.DynamicProxy;
 using Creekdream.Dependency.TestBase.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Dependency.Autofac.Tests
 {
     public class AutofacTest : TestBase.TestBase
     {
-        protected override IocRegisterBase GetIocRegister()
+        protected override IServiceCollection GetServices()
         {
-            var iocRegister = new AutofacIocRegister();
-            iocRegister.Register<IIocResolver, AutofacIocResolver>(DependencyLifeStyle.Transient);
-            return iocRegister;
+            var services = new ServiceCollection();
+            services.AddSingleton<IocRegisterBase, AutofacIocRegister>();
+            return services;
         }
 
         public override void Test_Register_Assemblies()

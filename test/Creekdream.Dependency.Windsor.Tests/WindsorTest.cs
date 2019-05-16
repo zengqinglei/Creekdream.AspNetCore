@@ -1,12 +1,14 @@
-﻿namespace Creekdream.Dependency.Windsor.Tests
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Creekdream.Dependency.Windsor.Tests
 {
     public class WindsorTest : TestBase.TestBase
     {
-        protected override IocRegisterBase GetIocRegister()
+        protected override IServiceCollection GetServices()
         {
-            var iocRegister = new WindsorIocRegister();
-            iocRegister.Register<IIocResolver, WindsorIocResolver>(DependencyLifeStyle.Transient);
-            return iocRegister;
+            var services = new ServiceCollection();
+            services.AddSingleton<IocRegisterBase, WindsorIocRegister>();
+            return services;
         }
     }
 }

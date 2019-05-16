@@ -1,4 +1,5 @@
 ﻿using Creekdream.Dependency.Autofac;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Dependency
 {
@@ -12,8 +13,7 @@ namespace Creekdream.Dependency
         /// </summary>
         public static ServicesBuilderOptions UseAutofac(this ServicesBuilderOptions builder)
         {
-            builder.IocRegister = new AutofacIocRegister();
-            builder.IocRegister.Register<IIocResolver, AutofacIocResolver>(DependencyLifeStyle.Transient);
+            builder.Services.AddSingleton<IocRegisterBase>(new AutofacIocRegister());
             return builder;
         }
     }

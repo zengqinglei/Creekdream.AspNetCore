@@ -1,7 +1,5 @@
-﻿using Creekdream.Dependency;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using System;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.AspNetCore
 {
@@ -20,8 +18,7 @@ namespace Creekdream.AspNetCore
                 throw new ArgumentNullException(nameof(app));
             }
 
-            var iocResolver = app.ApplicationServices.GetService<IIocResolver>();
-            var builder = new AppBuilderOptions(iocResolver);
+            var builder = new AppBuilderOptions(app.ApplicationServices);
             options?.Invoke(builder);
         }
     }

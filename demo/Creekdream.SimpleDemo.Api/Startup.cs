@@ -81,8 +81,9 @@ namespace Creekdream.SimpleDemo.Api
                     options.UseAutoMapper(
                         config =>
                         {
-                            config.AddProfile(options.IocResolver.Resolve<BookProfile>());
-                            config.AddProfile(options.IocResolver.Resolve<UserProfile>());
+                            var serviceProvider = app.ApplicationServices;
+                            config.AddProfile(serviceProvider.GetRequiredService<BookProfile>());
+                            config.AddProfile(serviceProvider.GetRequiredService<UserProfile>());
                         });
                 });
 

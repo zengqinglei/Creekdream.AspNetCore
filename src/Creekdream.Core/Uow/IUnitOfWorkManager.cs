@@ -1,11 +1,9 @@
-﻿using Creekdream.Dependency;
-
-namespace Creekdream.Uow
+﻿namespace Creekdream.Uow
 {
     /// <summary>
     /// Unit of work management service interface
     /// </summary>
-    public interface IUnitOfWorkManager : ITransientDependency
+    public interface IUnitOfWorkManager
     {
         /// <summary>
         /// Open a unit of work

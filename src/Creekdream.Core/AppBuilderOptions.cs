@@ -1,4 +1,4 @@
-﻿using Creekdream.Dependency;
+﻿using System;
 
 namespace Creekdream
 {
@@ -8,14 +8,14 @@ namespace Creekdream
     public class AppBuilderOptions
     {
         /// <summary>
-        /// Ioc resolver
+        /// Service provider
         /// </summary>
-        public readonly IIocResolver IocResolver;
+        public readonly IServiceProvider ServiceProvider;
 
         /// <inheritdoc />
-        public AppBuilderOptions(IIocResolver iocResolver)
+        public AppBuilderOptions(IServiceProvider serviceProvider)
         {
-            IocResolver = iocResolver;
+            ServiceProvider = serviceProvider;
         }
     }
 }

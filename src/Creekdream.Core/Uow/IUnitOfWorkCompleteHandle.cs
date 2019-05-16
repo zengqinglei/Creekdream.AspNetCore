@@ -6,7 +6,7 @@ namespace Creekdream.Uow
     /// <summary>
     /// Unit of work completion processing
     /// </summary>
-    public interface IUnitOfWorkCompleteHandle : ITransientDependency, IDisposable
+    public interface IUnitOfWorkCompleteHandle : IDisposable
     {
         /// <summary>
         /// Submit a unit of work

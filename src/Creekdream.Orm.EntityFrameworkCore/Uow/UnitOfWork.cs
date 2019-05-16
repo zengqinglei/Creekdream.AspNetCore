@@ -1,42 +1,65 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Creekdream.Orm.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Creekdream.Dependency;
+using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Creekdream.Orm.EntityFrameworkCore;
 
 namespace Creekdream.Uow
 {
     /// <summary>
     /// EfCore implemented based on work unit
     /// </summary>
-    public class UnitOfWork : UnitOfWorkBase
+    public class UnitOfWork : UnitOfWorkBase, ITransientDependency
     {
+        private readonly IServiceProvider _serviceProvider;
         private UnitOfWorkOptions _uowOptions;
-        private readonly IDbContextProvider _dbContextProvider;
-        private readonly DbContext _dbContext;
+        private DbContextBase _dbContext;
+        private IDbContextTransaction _dbContextTransaction;
 
         /// <inheritdoc />
-        public UnitOfWork(IDbContextProvider dbContextProvider) : base()
+        public UnitOfWork(IServiceProvider serviceProvider) : base()
         {
-            _dbContextProvider = dbContextProvider;
-            _dbContext = dbContextProvider.GetDbContext();
+            _serviceProvider = serviceProvider;
         }
 
         /// <inheritdoc />
         protected override void BeginUow(UnitOfWorkOptions uowOptions)
         {
             _uowOptions = uowOptions;
-            if (_uowOptions.IsTransactional)
+        }
+
+        /// <summary>
+        /// Get or create dbcontext
+        /// </summary>
+        public virtual DbContextBase GetOrCreateDbContext()
+        {
+            if (_dbContext == null)
             {
-                if (_dbContextProvider.DbContextTransaction == null)
+                _dbContext = _serviceProvider.GetRequiredService<DbContextBase>();
+                if (_uowOptions.IsTransactional)
                 {
-                    var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
-                    _dbContextProvider.DbContextTransaction = _dbContext.Database.BeginTransaction(isoLationLevel);
+                    if (_dbContextTransaction == null)
+                    {
+                        var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
+                        _dbContextTransaction = _dbContext.Database.BeginTransaction(isoLationLevel);
+                    }
+                    else
+                    {
+                        _dbContext.Database.UseTransaction(_dbContextTransaction.GetDbTransaction());
+                    }
                 }
-                else
+
+                bool isRelational = _dbContext.Database.GetInfrastructure().GetService<IRelationalConnection>() != null;
+                if (_uowOptions.Timeout.HasValue &&
+                   isRelational &&
+                   !_dbContext.Database.GetCommandTimeout().HasValue)
                 {
-                    var dbTransaction = _dbContextProvider.DbContextTransaction.GetDbTransaction();
-                    _dbContext.Database.UseTransaction(dbTransaction);
+                    _dbContext.Database.SetCommandTimeout((int)_uowOptions.Timeout.Value.TotalSeconds);
                 }
             }
+            return _dbContext;
         }
 
         /// <inheritdoc />
@@ -44,16 +67,16 @@ namespace Creekdream.Uow
         {
             if (_uowOptions.IsTransactional == true)
             {
-                _dbContextProvider.DbContextTransaction.Commit();
+                _dbContextTransaction.Commit();
             }
         }
 
         /// <inheritdoc />
         protected override void DisposeUow()
         {
-            if (_uowOptions.IsTransactional && _dbContextProvider.DbContextTransaction != null)
+            if (_uowOptions.IsTransactional && _dbContextTransaction != null)
             {
-                _dbContextProvider.DbContextTransaction.Dispose();
+                _dbContextTransaction.Dispose();
             }
             _dbContext.Dispose();
         }

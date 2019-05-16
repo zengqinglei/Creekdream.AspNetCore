@@ -27,47 +27,13 @@ namespace Creekdream.Dependency.Windsor
         /// <inheritdoc />
         public override IServiceProvider GetServiceProvider(IServiceCollection services)
         {
+            var serviceProvider = WindsorRegistrationHelper.CreateServiceProvider(_container, services);
             var handlers = _container.Kernel.GetAssignableHandlers(typeof(object));
             foreach (var componentRegistedEvent in _componentRegistedEvents)
             {
                 componentRegistedEvent.Invoke(handlers.ToList());
             }
-
-            services.AddSingleton(_container);
-            return WindsorRegistrationHelper.CreateServiceProvider(_container, services);
-        }
-
-        /// <inheritdoc />
-        public override void Register<TService>(TService implementationInstance)
-        {
-            _container.Register(Component.For<TService>().Instance(implementationInstance).ApplyLifestyle(DependencyLifeStyle.Singleton));
-        }
-
-        /// <inheritdoc />
-        public override void Register(Type serviceType, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-        {
-            _container.Register(Component.For(serviceType).ApplyLifestyle(lifeStyle));
-        }
-
-        /// <inheritdoc />
-        public override void Register<TService>(
-            Func<IIocResolver, TService> implementationFactory,
-            DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-        {
-            _container.Register(
-                Component.For<TService>()
-                    .UsingFactoryMethod(kernel => implementationFactory.Invoke(kernel.Resolve<IIocResolver>()))
-                    .ApplyLifestyle(lifeStyle)
-            );
-        }
-
-        /// <inheritdoc />
-        public override void Register(
-            Type serviceType,
-            Type implementationType,
-            DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-        {
-            _container.Register(Component.For(serviceType, implementationType).ImplementedBy(implementationType).ApplyLifestyle(lifeStyle));
+            return serviceProvider;
         }
 
         /// <inheritdoc />

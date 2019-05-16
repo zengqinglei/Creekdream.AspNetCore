@@ -1,4 +1,6 @@
-﻿namespace Creekdream.SimpleDemo
+﻿using Creekdream.Dependency;
+
+namespace Creekdream.SimpleDemo
 {
     /// <summary>
     /// SimpleDemo core module extension methods for <see cref="ServicesBuilderOptions" />.
@@ -10,7 +12,7 @@
         /// </summary>
         public static ServicesBuilderOptions AddSimpleDemoCore(this ServicesBuilderOptions builder)
         {
-            builder.IocRegister.RegisterAssemblyByBasicInterface(typeof(SimpleDemoCoreServicesBuilderExtension).Assembly);
+            builder.Services.RegisterAssemblyByBasicInterface(typeof(SimpleDemoCoreServicesBuilderExtension).Assembly);
             return builder;
         }
     }

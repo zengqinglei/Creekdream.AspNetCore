@@ -17,9 +17,9 @@ namespace Creekdream.AspNetCore
             {
                 throw new ArgumentNullException(nameof(services));
             }
-            var builder = new ServicesBuilderOptions();
+            var builder = new ServicesBuilderOptions(services);
             options?.Invoke(builder);
-            return builder.Build(services);
+            return builder.Build();
         }
     }
 }

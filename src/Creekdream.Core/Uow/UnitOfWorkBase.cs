@@ -8,6 +8,15 @@ namespace Creekdream.Uow
     /// </summary>
     public abstract class UnitOfWorkBase : IUnitOfWork
     {
+        /// <inheritdoc/>
+        public event EventHandler Completed;
+
+        /// <inheritdoc/>
+        public event EventHandler<UnitOfWorkFailedEventArgs> Failed;
+
+        /// <inheritdoc/>
+        public event EventHandler Disposed;
+
         /// <inheritdoc />
         public string Id { get; }
 
@@ -16,6 +25,16 @@ namespace Creekdream.Uow
 
         /// <inheritdoc />
         public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Is this unit of work successfully completed.
+        /// </summary>
+        private bool _succeed;
+
+        /// <summary>
+        /// A reference to the exception if this unit of work failed.
+        /// </summary>
+        private Exception _exception;
 
         /// <inheritdoc />
         public UnitOfWorkBase()
@@ -57,7 +76,17 @@ namespace Creekdream.Uow
         public void Complete()
         {
             PreventMultipleComplete();
-            CompleteUow();
+            try
+            {
+                CompleteUow();
+                _succeed = true;
+                OnCompleted();
+            }
+            catch (Exception ex)
+            {
+                _exception = ex;
+                throw;
+            }
         }
 
         private void PreventMultipleComplete()
@@ -80,7 +109,38 @@ namespace Creekdream.Uow
 
             IsDisposed = true;
 
+            if (!_succeed)
+            {
+                OnFailed(_exception);
+            }
+
             DisposeUow();
+            OnDisposed();
+        }
+
+        /// <summary>
+        /// Called to trigger <see cref="Completed"/> event.
+        /// </summary>
+        protected virtual void OnCompleted()
+        {
+            Completed?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Called to trigger <see cref="Failed"/> event.
+        /// </summary>
+        /// <param name="exception">Exception that cause failure</param>
+        protected virtual void OnFailed(Exception exception)
+        {
+            Failed?.Invoke(this, new UnitOfWorkFailedEventArgs(exception));
+        }
+
+        /// <summary>
+        /// Called to trigger <see cref="Disposed"/> event.
+        /// </summary>
+        protected virtual void OnDisposed()
+        {
+            Disposed?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

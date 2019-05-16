@@ -1,10 +1,27 @@
-﻿namespace Creekdream.Uow
+﻿using System;
+
+namespace Creekdream.Uow
 {
     /// <summary>
     /// Unit of work interface
     /// </summary>
     public interface IUnitOfWork : IUnitOfWorkCompleteHandle
     {
+        /// <summary>
+        /// This event is raised when this UOW is successfully completed.
+        /// </summary>
+        event EventHandler Completed;
+
+        /// <summary>
+        /// This event is raised when this UOW is failed.
+        /// </summary>
+        event EventHandler<UnitOfWorkFailedEventArgs> Failed;
+
+        /// <summary>
+        /// This event is raised when this UOW is disposed.
+        /// </summary>
+        event EventHandler Disposed;
+
         /// <summary>
         /// The only unit of work Id
         /// </summary>

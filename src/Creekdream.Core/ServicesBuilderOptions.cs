@@ -1,10 +1,7 @@
-﻿using Creekdream.Application.Service;
-using Creekdream.Dependency;
-using Creekdream.Domain.Repositories;
+﻿using Creekdream.Dependency;
 using Creekdream.Uow;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -16,9 +13,9 @@ namespace Creekdream
     public class ServicesBuilderOptions
     {
         /// <summary>
-        /// Ioc register
+        /// services
         /// </summary>
-        public IocRegisterBase IocRegister { get; set; }
+        public IServiceCollection Services { get; }
 
         /// <summary>
         /// Uow options
@@ -26,19 +23,20 @@ namespace Creekdream
         public UnitOfWorkOptions UowOptions { get; set; }
 
         /// <inheritdoc />
-        public ServicesBuilderOptions()
+        public ServicesBuilderOptions(IServiceCollection services)
         {
+            Services = services;
             UowOptions = new UnitOfWorkOptions();
         }
 
         /// <summary>
         /// Build and initialize
         /// </summary>
-        public IServiceProvider Build(IServiceCollection services)
+        public IServiceProvider Build()
         {
-            IocRegister.Register(UowOptions);
-            IocRegister.Register(this);
-            IocRegister.RegisterInterceptor<UnitOfWorkInterceptor>(
+            Services.AddSingleton(UowOptions);
+            Services.AddSingleton(this);
+            Services.RegisterInterceptor<UnitOfWorkInterceptor>(
                 implementationType =>
                 {
                     if (implementationType.IsDefined(typeof(UnitOfWorkAttribute), true))
@@ -59,8 +57,8 @@ namespace Creekdream
                     }
                     return false;
                 });
-            IocRegister.RegisterAssemblyByBasicInterface(GetType().Assembly);
-            return IocRegister.GetServiceProvider(services);
+            Services.RegisterAssemblyByBasicInterface(GetType().Assembly);
+            return Services.GetServiceProvider();
         }
     }
 }

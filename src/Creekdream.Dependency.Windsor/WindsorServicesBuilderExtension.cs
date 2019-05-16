@@ -1,4 +1,5 @@
 ﻿using Creekdream.Dependency.Windsor;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Dependency
 {
@@ -12,8 +13,7 @@ namespace Creekdream.Dependency
         /// </summary>
         public static ServicesBuilderOptions UseWindsor(this ServicesBuilderOptions builder)
         {
-            builder.IocRegister = new WindsorIocRegister();
-            builder.IocRegister.Register<IIocResolver, WindsorIocResolver>(DependencyLifeStyle.Transient);
+            builder.Services.AddSingleton<IocRegisterBase>(new WindsorIocRegister());
             return builder;
         }
     }
