@@ -25,7 +25,7 @@ namespace Creekdream.Orm.Dapper
         /// <summary>
         /// Gets Database Transaction
         /// </summary>
-        public DbTransaction DbTransaction => _databaseProvider.DbTransaction;
+        public DbTransaction DbTransaction => _databaseProvider.GetDbTransaction();
 
         /// <summary>
         /// Gets Database Connection

@@ -8,6 +8,8 @@ using System.Linq;
 using Autofac.Extras.DynamicProxy;
 using Autofac.Core.Registration;
 using Autofac.Core;
+using Autofac.Features.OpenGenerics;
+using System.Collections.Generic;
 
 namespace Creekdream.Dependency.Autofac
 {
@@ -15,6 +17,7 @@ namespace Creekdream.Dependency.Autofac
     public class AutofacIocRegister : IocRegisterBase
     {
         private readonly ContainerBuilder _builder;
+        // private readonly List<Action<List<IHandler>>> _componentRegistedEvents;
 
         /// <inheritdoc />
         public AutofacIocRegister()
@@ -30,6 +33,15 @@ namespace Creekdream.Dependency.Autofac
             _builder.Register(c => container).SingleInstance();
             container = _builder.Build();
             return new AutofacServiceProvider(container);
+        }
+
+        /// <inheritdoc />
+        public override void RegisterGeneric(Type serviceType, Type implementationType, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
+        {
+            base.RegisterGeneric(serviceType, implementationType, lifeStyle);
+            _builder.RegisterGeneric(implementationType)
+                    .As(serviceType)
+                    .AddLifeStyle(lifeStyle);
         }
 
         /// <inheritdoc />

@@ -15,7 +15,7 @@ namespace Creekdream.Orm
         /// </summary>
         public static ServicesBuilderOptions UseEfCore(this ServicesBuilderOptions builder)
         {
-            builder.Services.AddTransient(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+            builder.Services.RegisterGeneric(typeof(IRepository<,>), typeof(RepositoryBase<,>), lifeStyle: DependencyLifeStyle.Transient);
             builder.Services.RegisterAssemblyByBasicInterface(typeof(EfCoreServicesBuilderExtension).Assembly);
             return builder;
         }

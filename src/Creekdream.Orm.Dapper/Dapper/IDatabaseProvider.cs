@@ -14,9 +14,9 @@ namespace Creekdream.Orm.Dapper
         IDatabase GetDatabase();
 
         /// <summary>
-        /// Database transaction
+        /// Get database transaction
         /// </summary>
-        DbTransaction DbTransaction { get; set; }
+        DbTransaction GetDbTransaction();
     }
 }
 

@@ -9,9 +9,6 @@ namespace Creekdream.Orm.Dapper
     /// <inheritdoc />
     public class DatabaseProvider : IDatabaseProvider, ITransientDependency
     {
-        /// <inheritdoc />
-        public DbTransaction DbTransaction { get; set; }
-
         private readonly ICurrentUnitOfWorkProvider _currentUnitOfWorkProvider;
 
         /// <inheritdoc />
@@ -24,6 +21,12 @@ namespace Creekdream.Orm.Dapper
         public IDatabase GetDatabase()
         {
             return _currentUnitOfWorkProvider.Get().GetDatabase();
+        }
+
+        /// <inheritdoc />
+        public DbTransaction GetDbTransaction()
+        {
+            return _currentUnitOfWorkProvider.Get().GetDbTransaction();
         }
     }
 }

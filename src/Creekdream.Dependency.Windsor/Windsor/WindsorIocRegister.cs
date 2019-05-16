@@ -37,6 +37,13 @@ namespace Creekdream.Dependency.Windsor
         }
 
         /// <inheritdoc />
+        public override void RegisterGeneric(Type serviceType, Type implementationType, DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
+        {
+            base.RegisterGeneric(serviceType, implementationType, lifeStyle);
+            _container.Register(Component.For(serviceType, implementationType).ImplementedBy(implementationType).ApplyLifestyle(lifeStyle));
+        }
+
+        /// <inheritdoc />
         public override void RegisterInterceptor<TInterceptor>(Func<TypeInfo, bool> filterCondition)
         {
             _container.Register(Component.For<TInterceptor>().LifestyleTransient());

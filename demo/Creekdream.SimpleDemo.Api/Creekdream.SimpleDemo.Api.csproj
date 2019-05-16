@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Creekdream.AspNetCore\Creekdream.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\Creekdream.Dependency.Autofac\Creekdream.Dependency.Autofac.csproj" />
     <ProjectReference Include="..\..\src\Creekdream.Dependency.Windsor\Creekdream.Dependency.Windsor.csproj" />
     <ProjectReference Include="..\Creekdream.SimpleDemo.Application\Creekdream.SimpleDemo.Application.csproj" />
   </ItemGroup>

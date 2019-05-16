@@ -1,6 +1,7 @@
 ﻿using Creekdream.Uow;
 using DapperExtensions;
 using System;
+using System.Data.Common;
 
 namespace Creekdream.Orm.Uow
 {
@@ -26,6 +27,24 @@ namespace Creekdream.Orm.Uow
             }
 
             return (unitOfWork as UnitOfWork).GetOrCreateDatabase();
+        }
+        /// <summary>
+        /// Gets database dbtransaction as a part of active unit of work.
+        /// This method can be called when current unit of work is an <see cref="UnitOfWork"/>.
+        /// </summary>
+        public static DbTransaction GetDbTransaction(this IUnitOfWork unitOfWork)
+        {
+            if (unitOfWork == null)
+            {
+                throw new ArgumentNullException("unitOfWork");
+            }
+
+            if (!(unitOfWork is UnitOfWork))
+            {
+                throw new ArgumentException("unitOfWork is not type of " + typeof(UnitOfWork).FullName, "unitOfWork");
+            }
+
+            return (unitOfWork as UnitOfWork).GetCurrentDbTransaction();
         }
     }
 }

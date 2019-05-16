@@ -53,6 +53,14 @@ namespace Creekdream.Uow
             return _database;
         }
 
+        /// <summary>
+        /// Get current dbtransaction
+        /// </summary>
+        public virtual DbTransaction GetCurrentDbTransaction()
+        {
+            return _dbTransaction;
+        }
+
         /// <inheritdoc />
         protected override void CompleteUow()
         {
