@@ -19,7 +19,7 @@ namespace Creekdream.AspNetCore.Tests
                     services.AddCreekdream(
                         options =>
                         {
-                            options.UseAutofac();
+                            options.UseWindsor();
                         });
                 }).Configure(app =>
                 {

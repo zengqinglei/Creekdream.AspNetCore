@@ -77,8 +77,11 @@ namespace Creekdream.Uow
             {
                 _dbTransaction.Dispose();
             }
-            _database.Dispose();
-            _database = null;
+            if (_database != null)
+            {
+                _database.Dispose();
+                _database = null;
+            }
         }
     }
 }
