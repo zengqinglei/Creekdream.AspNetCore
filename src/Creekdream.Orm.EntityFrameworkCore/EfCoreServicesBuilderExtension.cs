@@ -1,7 +1,6 @@
 ﻿using Creekdream.Dependency;
 using Creekdream.Domain.Repositories;
 using Creekdream.Orm.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Orm
 {

@@ -1,5 +1,4 @@
 ﻿using Creekdream.Mapping.AutoMapper.Tests.Entities;
-using System;
 
 namespace Creekdream.Mapping.AutoMapper.Tests.Dtos
 {
