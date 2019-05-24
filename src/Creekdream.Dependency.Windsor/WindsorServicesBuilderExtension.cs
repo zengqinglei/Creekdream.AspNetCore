@@ -1,4 +1,5 @@
-﻿using Creekdream.Dependency.Windsor;
+﻿using Castle.Windsor;
+using Creekdream.Dependency.Windsor;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Dependency
@@ -11,10 +12,11 @@ namespace Creekdream.Dependency
         /// <summary>
         /// Use Autofac as an injection container
         /// </summary>
-        public static ServicesBuilderOptions UseWindsor(this ServicesBuilderOptions builder)
+        public static ServicesBuilderOptions UseWindsor(this ServicesBuilderOptions options)
         {
-            builder.Services.AddSingleton<IocRegisterBase>(new WindsorIocRegister());
-            return builder;
+            var container = new WindsorContainer();
+            options.Services.AddSingleton((IServiceProviderFactory<IWindsorContainer>)new WindsorServiceProviderFactory(container));
+            return options;
         }
     }
 }

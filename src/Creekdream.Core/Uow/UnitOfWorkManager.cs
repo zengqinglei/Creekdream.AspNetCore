@@ -33,7 +33,7 @@ namespace Creekdream.Uow
 
             var outerUow = _currentUnitOfWorkProvider.Get();
 
-            if (options.Scope == TransactionScopeOption.Required && outerUow != null)
+            if (outerUow != null)
             {
                 return new InnerUnitOfWorkCompleteHandle();
             }

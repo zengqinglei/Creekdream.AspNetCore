@@ -41,7 +41,7 @@ namespace Creekdream.SimpleDemo.Api
                 {
                     options.Filters.Add(typeof(CustomExceptionFilter));
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<DbContextBase, SimpleDemoDbContext>(
                 options =>
@@ -63,7 +63,7 @@ namespace Creekdream.SimpleDemo.Api
             return services.AddCreekdream(
                 options =>
                 {
-                    options.UseWindsor();
+                    options.UseAutofac();
                     options.UseEfCore();
                     options.AddSimpleDemoCore();
                     options.AddSimpleDemoApplication();

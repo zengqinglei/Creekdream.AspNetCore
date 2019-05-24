@@ -7,7 +7,6 @@ $srcPath = Join-Path $slnPath "src"
 $projects = (
 	"Creekdream.AspNetCore",
     "Creekdream.Core",
-	"Creekdream.Dependency.Autofac",
 	"Creekdream.Dependency.Windsor",
 	"Creekdream.Mapping.Core",
 	"Creekdream.Mapping.AutoMapper",

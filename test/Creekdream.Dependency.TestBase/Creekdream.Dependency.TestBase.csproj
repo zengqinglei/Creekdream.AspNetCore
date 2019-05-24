@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Creekdream.AspNetCore\Creekdream.AspNetCore.csproj" />
     <ProjectReference Include="..\..\src\Creekdream.Core\Creekdream.Core.csproj" />
   </ItemGroup>
 

@@ -2,7 +2,7 @@
 using Creekdream.Domain.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Transactions;
+using System.Data;
 
 namespace Creekdream.Uow
 {
@@ -11,11 +11,6 @@ namespace Creekdream.Uow
     /// </summary>
     public class UnitOfWorkOptions
     {
-        /// <summary>
-        /// Transaction scope
-        /// </summary>
-        public TransactionScopeOption Scope { get; set; } = TransactionScopeOption.Required;
-
         /// <summary>
         /// Is this UOW transactional?
         /// Uses default value if not supplied.
@@ -33,12 +28,6 @@ namespace Creekdream.Uow
         /// Uses default value if not supplied.
         /// </summary>
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadUncommitted;
-
-        /// <summary>
-        /// This option should be set to <see cref="TransactionScopeAsyncFlowOption.Enabled"/>
-        /// if unit of work is used in an async scope.
-        /// </summary>
-        public TransactionScopeAsyncFlowOption AsyncFlowOption { get; set; } = TransactionScopeAsyncFlowOption.Enabled;
 
         /// <summary>
         /// Apply uow type

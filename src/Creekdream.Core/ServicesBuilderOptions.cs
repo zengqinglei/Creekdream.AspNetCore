@@ -18,6 +18,11 @@ namespace Creekdream
         public IServiceCollection Services { get; }
 
         /// <summary>
+        /// container builder type
+        /// </summary>
+        public Type ServiceProviderFactoryType { get; set; }
+
+        /// <summary>
         /// Uow options
         /// </summary>
         public UnitOfWorkOptions UowOptions { get; set; }
@@ -32,33 +37,34 @@ namespace Creekdream
         /// <summary>
         /// Build and initialize
         /// </summary>
-        public IServiceProvider Build()
+        public void Initialize()
         {
             Services.AddSingleton(UowOptions);
             Services.AddSingleton(this);
-            Services.RegisterInterceptor<UnitOfWorkInterceptor>(
-                implementationType =>
+            Services.AddSingleton<UnitOfWorkInterceptor>();
+            Services.OnRegistred(context =>
+            {
+                if (context.ImplementationType.IsDefined(typeof(UnitOfWorkAttribute), true))
                 {
-                    if (implementationType.IsDefined(typeof(UnitOfWorkAttribute), true))
-                    {
-                        return true;
-                    }
-                    var methods = implementationType.GetMethods(
-                        BindingFlags.Instance |
-                        BindingFlags.Public |
-                        BindingFlags.NonPublic);
-                    if (methods.Any(m => m.IsDefined(typeof(UnitOfWorkAttribute), true)))
-                    {
-                        return true;
-                    }
-                    if (UowOptions.ConventionalUowSelectors.Any(selector => selector(implementationType)))
-                    {
-                        return true;
-                    }
-                    return false;
-                });
+                    context.Interceptors.Add<UnitOfWorkInterceptor>();
+                    return;
+                }
+                var methods = context.ImplementationType.GetMethods(
+                    BindingFlags.Instance |
+                    BindingFlags.Public |
+                    BindingFlags.NonPublic);
+                if (methods.Any(m => m.IsDefined(typeof(UnitOfWorkAttribute), true)))
+                {
+                    context.Interceptors.Add<UnitOfWorkInterceptor>();
+                    return;
+                }
+                if (UowOptions.ConventionalUowSelectors.Any(selector => selector(context.ImplementationType)))
+                {
+                    context.Interceptors.Add<UnitOfWorkInterceptor>();
+                    return;
+                }
+            });
             Services.RegisterAssemblyByBasicInterface(GetType().Assembly);
-            return Services.GetServiceProvider();
         }
     }
 }

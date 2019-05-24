@@ -1,4 +1,5 @@
-﻿using Creekdream.Dependency.Autofac;
+﻿using Autofac;
+using Creekdream.Dependency.Autofac;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Dependency
@@ -11,10 +12,11 @@ namespace Creekdream.Dependency
         /// <summary>
         /// Use Autofac as an injection container
         /// </summary>
-        public static ServicesBuilderOptions UseAutofac(this ServicesBuilderOptions builder)
+        public static ServicesBuilderOptions UseAutofac(this ServicesBuilderOptions options)
         {
-            builder.Services.AddSingleton<IocRegisterBase>(new AutofacIocRegister());
-            return builder;
+            var builder = new ContainerBuilder();
+            options.Services.AddSingleton((IServiceProviderFactory<ContainerBuilder>)new AutofacServiceProviderFactory(builder));
+            return options;
         }
     }
 }

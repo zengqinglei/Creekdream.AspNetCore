@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Castle.Windsor;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Dependency.Windsor.Tests
 {
@@ -7,7 +8,8 @@ namespace Creekdream.Dependency.Windsor.Tests
         protected override IServiceCollection GetServices()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IocRegisterBase, WindsorIocRegister>();
+            var container = new WindsorContainer();
+            services.AddSingleton((IServiceProviderFactory<IWindsorContainer>)new WindsorServiceProviderFactory(container));
             return services;
         }
     }

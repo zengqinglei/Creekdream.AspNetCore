@@ -14,7 +14,6 @@ namespace Creekdream.Orm.Dapper
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TPrimaryKey">The type of the primary key.</typeparam>
-    /// <seealso cref="System.Linq.Expressions.ExpressionVisitor" />
     internal class DapperExpressionVisitor<TEntity, TPrimaryKey> : ExpressionVisitor where TEntity : class, IEntity<TPrimaryKey>
     {
         private PredicateGroup _pg;

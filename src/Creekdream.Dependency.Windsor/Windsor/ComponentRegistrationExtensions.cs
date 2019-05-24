@@ -1,5 +1,5 @@
 ﻿using Castle.MicroKernel.Registration;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Dependency.Windsor
 {
@@ -11,22 +11,24 @@ namespace Creekdream.Dependency.Windsor
         /// <summary>
         /// Lifestyle conversion and application
         /// </summary>
-        public static ComponentRegistration<T> ApplyLifestyle<T>(
+        public static ComponentRegistration<T> ConfigureLifecycle<T>(
             this ComponentRegistration<T> registration,
-            DependencyLifeStyle lifeStyle)
+            ServiceLifetime lifecycleKind)
             where T : class
         {
-            switch (lifeStyle)
+            switch (lifecycleKind)
             {
-                case DependencyLifeStyle.Transient:
-                    return registration.LifestyleTransient();
-                case DependencyLifeStyle.Scoped:
-                    return registration.LifestyleScoped<LocalLifetimeScopeAccessor>();
-                case DependencyLifeStyle.Singleton:
-                    return registration.LifestyleSingleton();
-                default:
-                    throw new ArgumentException(nameof(lifeStyle));
+                case ServiceLifetime.Singleton:
+                    registration.LifestyleSingleton();
+                    break;
+                case ServiceLifetime.Scoped:
+                    registration.LifestyleScoped();
+                    break;
+                case ServiceLifetime.Transient:
+                    registration.LifestyleTransient();
+                    break;
             }
+            return registration;
         }
     }
 }

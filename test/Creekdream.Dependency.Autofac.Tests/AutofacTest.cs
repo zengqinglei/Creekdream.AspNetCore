@@ -10,7 +10,8 @@ namespace Creekdream.Dependency.Autofac.Tests
         protected override IServiceCollection GetServices()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IocRegisterBase, AutofacIocRegister>();
+            var builder = new ContainerBuilder();
+            services.AddSingleton((IServiceProviderFactory<ContainerBuilder>)new AutofacServiceProviderFactory(builder));
             return services;
         }
 

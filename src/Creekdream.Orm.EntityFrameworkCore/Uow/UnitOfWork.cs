@@ -42,8 +42,7 @@ namespace Creekdream.Uow
                 {
                     if (_dbContextTransaction == null)
                     {
-                        var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
-                        _dbContextTransaction = _dbContext.Database.BeginTransaction(isoLationLevel);
+                        _dbContextTransaction = _dbContext.Database.BeginTransaction(_uowOptions.IsolationLevel);
                     }
                     else
                     {

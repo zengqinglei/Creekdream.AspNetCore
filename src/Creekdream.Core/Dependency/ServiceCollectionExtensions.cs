@@ -23,45 +23,30 @@ namespace Creekdream.Dependency
         /// <summary>
         /// Automatically scan the assembly service type and register
         /// </summary>
-        public static IServiceCollection RegisterGeneric(
-            this IServiceCollection services,
-            Type serviceType,
-            Type implementationType,
-            DependencyLifeStyle lifeStyle = DependencyLifeStyle.Singleton)
-        {
-            var iocRegister = services.GetSingletonInstanceOrNull<IocRegisterBase>();
-            iocRegister.RegisterGeneric(serviceType, implementationType, lifeStyle);
-            return services;
-        }
-
-        /// <summary>
-        /// Automatically scan the assembly service type and register
-        /// </summary>
         public static IServiceCollection RegisterAssemblyByBasicInterface(this IServiceCollection services, Assembly assembly)
         {
-            var iocRegister = services.GetSingletonInstanceOrNull<IocRegisterBase>();
-            iocRegister.RegisterAssemblyByBasicInterface(assembly);
+            var registrar = new DefaultConventionalRegistrar();
+            registrar.AddAssembly(services, assembly);
             return services;
         }
 
         /// <summary>
-        /// Automatically scan the assembly service type and register
+        /// Registration service based on event
         /// </summary>
-        public static IServiceCollection RegisterInterceptor<TInterceptor>(this IServiceCollection services, Func<TypeInfo, bool> filterCondition)
-            where TInterceptor : InterceptorBase
+        public static void OnRegistred(this IServiceCollection services, Action<IOnServiceRegistredContext> registrationAction)
         {
-            var iocRegister = services.GetSingletonInstanceOrNull<IocRegisterBase>();
-            iocRegister.RegisterInterceptor<TInterceptor>(filterCondition);
-            return services;
-        }
-
-        /// <summary>
-        /// Automatically scan the assembly service type and register
-        /// </summary>
-        public static IServiceProvider GetServiceProvider(this IServiceCollection services)
-        {
-            var iocRegister = services.GetSingletonInstanceOrNull<IocRegisterBase>();
-            return iocRegister.GetServiceProvider(services);
+            ServiceRegistrationActionList actionList = null;
+            var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(ServiceRegistrationActionList));
+            if (serviceDescriptor != null)
+            {
+                actionList = (ServiceRegistrationActionList)serviceDescriptor.ImplementationInstance;
+            }
+            if (actionList == null)
+            {
+                actionList = new ServiceRegistrationActionList();
+                services.AddSingleton(actionList);
+            }
+            actionList.Add(registrationAction);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Transactions;
+using System.Data;
 
 namespace Creekdream.Uow
 {
@@ -9,11 +9,6 @@ namespace Creekdream.Uow
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Interface)]
     public class UnitOfWorkAttribute : Attribute
     {
-        /// <summary>
-        /// Transaction scope
-        /// </summary>
-        public TransactionScopeOption? Scope { get; set; }
-
         /// <summary>
         /// Timeout of UOW As milliseconds.
         /// Uses default value if not supplied.
@@ -35,11 +30,9 @@ namespace Creekdream.Uow
         {
             return new UnitOfWorkOptions
             {
-                Scope = Scope ?? defaultUnitOfWorkOptions.Scope,
                 IsTransactional = !IsDisabled,
                 IsolationLevel = IsolationLevel ?? defaultUnitOfWorkOptions.IsolationLevel,
-                Timeout = Timeout ?? defaultUnitOfWorkOptions.Timeout,
-                AsyncFlowOption = defaultUnitOfWorkOptions.AsyncFlowOption
+                Timeout = Timeout ?? defaultUnitOfWorkOptions.Timeout
             };
         }
     }

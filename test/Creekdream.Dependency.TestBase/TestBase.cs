@@ -1,4 +1,5 @@
-﻿using Creekdream.Dependency.TestBase.Services;
+﻿using Creekdream.AspNetCore;
+using Creekdream.Dependency.TestBase.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using System;
@@ -12,7 +13,7 @@ namespace Creekdream.Dependency.TestBase
 
         protected IServiceProvider GetServiceProvider(IServiceCollection services)
         {
-            return services.GetServiceProvider();
+            return services.BuildServiceProviderFromFactory();
         }
 
         [Fact]
@@ -134,22 +135,17 @@ namespace Creekdream.Dependency.TestBase
         public void Test_Register_Interceptor()
         {
             var services = GetServices();
-            services.RegisterInterceptor<ServiceInterceptor>(
-                implementationType =>
+            services.OnRegistred(
+                context =>
                 {
-                    if (typeof(ISingletonService).IsAssignableFrom(implementationType))
+                    if (
+                        typeof(ISingletonService).IsAssignableFrom(context.ImplementationType) ||
+                        typeof(IScopedService).IsAssignableFrom(context.ImplementationType) ||
+                        typeof(ITransientService).IsAssignableFrom(context.ImplementationType)
+                    )
                     {
-                        return true;
+                        context.Interceptors.Add<ServiceInterceptor>();
                     }
-                    if (typeof(IScopedService).IsAssignableFrom(implementationType))
-                    {
-                        return true;
-                    }
-                    if (typeof(ITransientService).IsAssignableFrom(implementationType))
-                    {
-                        return true;
-                    }
-                    return false;
                 });
             services.AddSingleton<ISingletonService, SingletonService>();
             services.AddScoped<IScopedService, ScopedService>();
@@ -175,22 +171,17 @@ namespace Creekdream.Dependency.TestBase
         {
             var services = GetServices();
             services.RegisterAssemblyByBasicInterface(typeof(TestBase).Assembly);
-            services.RegisterInterceptor<ServiceInterceptor>(
-                implementationType =>
+            services.OnRegistred(
+                context =>
                 {
-                    if (typeof(ISingletonService).IsAssignableFrom(implementationType))
+                    if (
+                        typeof(ISingletonService).IsAssignableFrom(context.ImplementationType) ||
+                        typeof(IScopedService).IsAssignableFrom(context.ImplementationType) ||
+                        typeof(ITransientService).IsAssignableFrom(context.ImplementationType)
+                    )
                     {
-                        return true;
+                        context.Interceptors.Add<ServiceInterceptor>();
                     }
-                    if (typeof(IScopedService).IsAssignableFrom(implementationType))
-                    {
-                        return true;
-                    }
-                    if (typeof(ITransientService).IsAssignableFrom(implementationType))
-                    {
-                        return true;
-                    }
-                    return false;
                 });
 
             var serviceProvider = GetServiceProvider(services);

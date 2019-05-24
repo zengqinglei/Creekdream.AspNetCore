@@ -46,8 +46,7 @@ namespace Creekdream.Uow
                 _database = new Database(dapperOptions.GetDbConnection(), sqlGenerator);
                 if (_uowOptions.IsTransactional && _dbTransaction == null)
                 {
-                    var isoLationLevel = ToSystemDataIsolationLevel(_uowOptions.IsolationLevel);
-                    _dbTransaction = _database.Connection.BeginTransaction(isoLationLevel);
+                    _dbTransaction = _database.Connection.BeginTransaction(_uowOptions.IsolationLevel);
                 }
             }
             return _database;
