@@ -65,7 +65,7 @@ namespace Creekdream.Uow
         /// <inheritdoc />
         protected override void CompleteUow()
         {
-            if (_uowOptions.IsTransactional == true)
+            if (_uowOptions.IsTransactional == true && _dbContextTransaction != null)
             {
                 _dbContextTransaction.Commit();
             }
