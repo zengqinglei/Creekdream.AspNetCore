@@ -1,4 +1,5 @@
 ﻿using Creekdream.Dependency;
+using Creekdream.DynamicProxy;
 using Creekdream.Uow;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -41,7 +42,7 @@ namespace Creekdream
         {
             Services.AddSingleton(UowOptions);
             Services.AddSingleton(this);
-            Services.AddSingleton<UnitOfWorkInterceptor>();
+            Services.AddSingleton(typeof(CastleInterceptorAdapter<>));
             Services.OnRegistred(context =>
             {
                 if (context.ImplementationType.IsDefined(typeof(UnitOfWorkAttribute), true))

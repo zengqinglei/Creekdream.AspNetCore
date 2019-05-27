@@ -2,6 +2,7 @@
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Castle.Windsor.MsDependencyInjection;
+using Creekdream.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -27,9 +28,8 @@ namespace Creekdream.Dependency.Windsor
         /// <inheritdoc />
         public IWindsorContainer CreateBuilder(IServiceCollection services)
         {
-            RegisterInterceptors(services);
-
             _services = services;
+            RegisterInterceptors(services);
 
             return _container;
         }
@@ -37,22 +37,7 @@ namespace Creekdream.Dependency.Windsor
         /// <inheritdoc />
         public IServiceProvider CreateServiceProvider(IWindsorContainer container)
         {
-            var targetServices = new ServiceCollection();
-            foreach (var service in _services)
-            {
-                var serviceTypeInfo = service.ServiceType.GetTypeInfo();
-                // Generic types need to be injected using the Windsor container, otherwise the interceptor types are inconsistent
-                if (service.ImplementationType != null && serviceTypeInfo.IsGenericTypeDefinition && !container.Kernel.HasComponent(service.ImplementationType))
-                {
-                    container.Register(Component.For(service.ServiceType, service.ImplementationType).ConfigureLifecycle(service.Lifetime));
-                }
-                else
-                {
-                    targetServices.Add(service);
-                }
-            }
-
-            return WindsorRegistrationHelper.CreateServiceProvider(container, targetServices);
+            return WindsorRegistrationHelper.CreateServiceProvider(container, _services);
         }
 
         private void RegisterInterceptors(IServiceCollection services)
@@ -95,7 +80,9 @@ namespace Creekdream.Dependency.Windsor
                 {
                     foreach (var interceptor in serviceRegistredArgs.Interceptors)
                     {
-                        handler.ComponentModel.Interceptors.Add(new InterceptorReference(interceptor));
+                        handler.ComponentModel.Interceptors.Add(
+                            new InterceptorReference(typeof(CastleInterceptorAdapter<>).MakeGenericType(interceptor))
+                        );
                     }
                 }
             };

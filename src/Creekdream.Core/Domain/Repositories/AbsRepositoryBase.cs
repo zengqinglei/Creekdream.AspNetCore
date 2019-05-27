@@ -11,6 +11,15 @@ namespace Creekdream.Domain.Repositories
     public abstract class AbsRepositoryBase<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
         where TEntity : class, IEntity<TPrimaryKey>
     {
+        /// <inheritdoc />
+        public IServiceProvider ServiceProvider { get; }
+
+        /// <inheritdoc />
+        public AbsRepositoryBase(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
         #region Select
 
         /// <inheritdoc />

@@ -17,7 +17,9 @@ namespace Creekdream.Orm.Dapper
         private readonly IDatabaseProvider _databaseProvider;
 
         /// <inheritdoc />
-        public RepositoryBase(IDatabaseProvider dbConnectionProvider)
+        public RepositoryBase(
+            IServiceProvider serviceProvider,
+            IDatabaseProvider dbConnectionProvider) : base(serviceProvider)
         {
             _databaseProvider = dbConnectionProvider;
         }

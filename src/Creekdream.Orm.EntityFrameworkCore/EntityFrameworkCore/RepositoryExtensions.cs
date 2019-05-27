@@ -11,6 +11,7 @@ using System.Data.Common;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Orm.EntityFrameworkCore
 {
@@ -27,8 +28,7 @@ namespace Creekdream.Orm.EntityFrameworkCore
             params Expression<Func<TEntity, object>>[] propertySelectors)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var efcoreRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
-            var table = efcoreRepository.Table;
+            var table = repository.GetDbContext().Set<TEntity>();
             var query = table.AsQueryable();
 
             if (propertySelectors != null && propertySelectors.Count() > 0)
@@ -82,6 +82,16 @@ namespace Creekdream.Orm.EntityFrameworkCore
         }
 
         /// <summary>
+        /// Get an dbcontext
+        /// </summary>
+        private static DbContextBase GetDbContext<TEntity, TPrimaryKey>(this IRepository<TEntity, TPrimaryKey> repository)
+            where TEntity : class, IEntity<TPrimaryKey>
+        {
+            var dbContextProvider = repository.ServiceProvider.GetRequiredService<IDbContextProvider>();
+            return dbContextProvider.GetDbContext();
+        }
+
+        /// <summary>
         /// Get an database command
         /// </summary>
         private static async Task<DbCommand> GetDbCommand<TEntity, TPrimaryKey>(
@@ -90,8 +100,7 @@ namespace Creekdream.Orm.EntityFrameworkCore
             DbParameter[] parameters = null)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var efcoreRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
-            var database = efcoreRepository.DbContext.Database;
+            var database = repository.GetDbContext().Database;
             var dbConnection = database.GetDbConnection();
             var command = dbConnection.CreateCommand();
             command.Transaction = database.CurrentTransaction?.GetDbTransaction();

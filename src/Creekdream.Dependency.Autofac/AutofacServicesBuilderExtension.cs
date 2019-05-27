@@ -15,7 +15,7 @@ namespace Creekdream.Dependency
         public static ServicesBuilderOptions UseAutofac(this ServicesBuilderOptions options)
         {
             var builder = new ContainerBuilder();
-            options.Services.AddSingleton((IServiceProviderFactory<ContainerBuilder>)new AutofacServiceProviderFactory(builder));
+            options.Services.AddSingleton<IServiceProviderFactory<ContainerBuilder>>(new AutofacServiceProviderFactory(builder));
             return options;
         }
     }

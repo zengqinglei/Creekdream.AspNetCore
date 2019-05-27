@@ -2,6 +2,8 @@
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Extras.DynamicProxy;
+using Creekdream.DynamicProxy;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +13,31 @@ namespace Creekdream.Dependency.Autofac
     /// <summary>
     /// Autofac RegistrationBuilder extensions
     /// </summary>
-    public static class RegistrationBuilderExtensions
+    internal static class RegistrationBuilderExtensions
     {
+        /// <summary>
+        /// Configures the lifecycle on a service registration.
+        /// </summary>
+        public static IRegistrationBuilder<object, TActivatorData, TRegistrationStyle> ConfigureLifecycle<TActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<object, TActivatorData, TRegistrationStyle> registrationBuilder,
+                ServiceLifetime lifecycleKind)
+        {
+            switch (lifecycleKind)
+            {
+                case ServiceLifetime.Singleton:
+                    registrationBuilder.SingleInstance();
+                    break;
+                case ServiceLifetime.Scoped:
+                    registrationBuilder.InstancePerLifetimeScope();
+                    break;
+                case ServiceLifetime.Transient:
+                    registrationBuilder.InstancePerDependency();
+                    break;
+            }
+
+            return registrationBuilder;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -33,7 +58,6 @@ namespace Creekdream.Dependency.Autofac
                 return registrationBuilder;
             }
 
-            registrationBuilder = registrationBuilder.PropertiesAutowired();
             registrationBuilder = registrationBuilder.InvokeRegistrationActions(registrationActionList, serviceType, implementationType);
 
             return registrationBuilder;
@@ -77,7 +101,7 @@ namespace Creekdream.Dependency.Autofac
 
             foreach (var interceptor in interceptors)
             {
-                registrationBuilder.InterceptedBy(interceptor);
+                registrationBuilder.InterceptedBy(typeof(CastleInterceptorAdapter<>).MakeGenericType(interceptor));
             }
 
             return registrationBuilder;

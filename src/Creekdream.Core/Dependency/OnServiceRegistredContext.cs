@@ -1,4 +1,5 @@
-﻿using Creekdream.System.Collections;
+﻿using Creekdream.DynamicProxy;
+using Creekdream.System.Collections;
 using System;
 
 namespace Creekdream.Dependency

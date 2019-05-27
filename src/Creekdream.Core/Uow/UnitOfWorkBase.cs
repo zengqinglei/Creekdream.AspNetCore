@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data;
+using System.Threading.Tasks;
 
 namespace Creekdream.Uow
 {
@@ -88,6 +88,22 @@ namespace Creekdream.Uow
                 throw;
             }
         }
+        /// <inheritdoc/>
+        public async Task CompleteAsync()
+        {
+            PreventMultipleComplete();
+            try
+            {
+                await CompleteUowAsync();
+                _succeed = true;
+                OnCompleted();
+            }
+            catch (Exception ex)
+            {
+                _exception = ex;
+                throw;
+            }
+        }
 
         private void PreventMultipleComplete()
         {
@@ -147,6 +163,11 @@ namespace Creekdream.Uow
         /// Should be implemented by derived classes to complete UOW.
         /// </summary>
         protected abstract void CompleteUow();
+
+        /// <summary>
+        /// Should be implemented by derived classes to complete UOW.
+        /// </summary>
+        protected abstract Task CompleteUowAsync();
 
         /// <summary>
         /// Should be implemented by derived classes to dispose UOW.

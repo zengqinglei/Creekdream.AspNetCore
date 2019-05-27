@@ -1,20 +1,20 @@
-﻿using Castle.DynamicProxy;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Creekdream.Dependency;
-using Creekdream.Threading;
+using Creekdream.DynamicProxy;
 
 namespace Creekdream.Uow
 {
     /// <summary>
     /// Unit of work interceptor
     /// </summary>
-    internal class UnitOfWorkInterceptor : InterceptorBase
+    public class UnitOfWorkInterceptor : InterceptorBase, ITransientDependency
     {
         private readonly UnitOfWorkOptions _unitOfWorkOptions;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
+        /// <inheritdoc />
         public UnitOfWorkInterceptor(
             UnitOfWorkOptions unitOfWorkOptions,
             IUnitOfWorkManager unitOfWorkManager)
@@ -24,19 +24,10 @@ namespace Creekdream.Uow
             _unitOfWorkManager = unitOfWorkManager;
         }
 
-        public override void Intercept(IInvocation invocation)
+        /// <inheritdoc />
+        public override void Intercept(IMethodInvocation invocation)
         {
-            MethodInfo method;
-            try
-            {
-                method = invocation.MethodInvocationTarget;
-            }
-            catch
-            {
-                method = invocation.GetConcreteMethod();
-            }
-
-            var unitOfWorkOptions = GetUnitOfWorkAttribute(method);
+            var unitOfWorkOptions = GetUnitOfWorkAttribute(invocation.Method);
             if (unitOfWorkOptions == null)
             {
                 //No need to a uow
@@ -45,7 +36,30 @@ namespace Creekdream.Uow
             }
 
             //No current uow, run a new one
-            PerformUow(invocation, unitOfWorkOptions);
+            using (var uow = _unitOfWorkManager.Begin(unitOfWorkOptions))
+            {
+                invocation.Proceed();
+                uow.Complete();
+            }
+        }
+
+        /// <inheritdoc />
+        public override async Task InterceptAsync(IMethodInvocation invocation)
+        {
+            var unitOfWorkOptions = GetUnitOfWorkAttribute(invocation.Method);
+            if (unitOfWorkOptions == null)
+            {
+                //No need to a uow
+                await invocation.ProceedAsync();
+                return;
+            }
+
+            //No current uow, run a new one
+            using (var uow = _unitOfWorkManager.Begin(unitOfWorkOptions))
+            {
+                await invocation.ProceedAsync();
+                await uow.CompleteAsync();
+            }
         }
 
         private UnitOfWorkOptions GetUnitOfWorkAttribute(MethodInfo methodInfo)
@@ -68,68 +82,6 @@ namespace Creekdream.Uow
             }
 
             return null;
-        }
-
-        private void PerformUow(IInvocation invocation, UnitOfWorkOptions options)
-        {
-            if (invocation.Method.IsAsync())
-            {
-                PerformAsyncUow(invocation, options);
-            }
-            else
-            {
-                PerformSyncUow(invocation, options);
-            }
-        }
-
-        private void PerformSyncUow(IInvocation invocation, UnitOfWorkOptions options)
-        {
-            using (var uow = _unitOfWorkManager.Begin(options))
-            {
-                invocation.Proceed();
-                uow.Complete();
-            }
-        }
-
-        private void PerformAsyncUow(IInvocation invocation, UnitOfWorkOptions options)
-        {
-            var uow = _unitOfWorkManager.Begin(options);
-
-            try
-            {
-                invocation.Proceed();
-            }
-            catch
-            {
-                uow.Dispose();
-                throw;
-            }
-
-            if (invocation.Method.ReturnType == typeof(Task))
-            {
-                invocation.ReturnValue = InternalAsyncHelper.AwaitTaskWithPostActionAndFinally(
-                    (Task)invocation.ReturnValue,
-                    async () =>
-                    {
-                        uow.Complete();
-                        await Task.FromResult(0);
-                    },
-                    exception => uow.Dispose()
-                );
-            }
-            else //Task<TResult>
-            {
-                invocation.ReturnValue = InternalAsyncHelper.CallAwaitTaskWithPostActionAndFinallyAndGetResult(
-                    invocation.Method.ReturnType.GenericTypeArguments[0],
-                    invocation.ReturnValue,
-                    async () =>
-                    {
-                        uow.Complete();
-                        await Task.FromResult(0);
-                    },
-                    exception => uow.Dispose()
-                );
-            }
         }
     }
 }

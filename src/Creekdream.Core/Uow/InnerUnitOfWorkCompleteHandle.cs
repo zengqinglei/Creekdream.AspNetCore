@@ -20,7 +20,7 @@ namespace Creekdream.Uow
         public Task CompleteAsync()
         {
             _isCompleteCalled = true;
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         public void Dispose()

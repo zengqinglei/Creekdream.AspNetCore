@@ -5,6 +5,7 @@ using DapperExtensions.Sql;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Data.Common;
+using System.Threading.Tasks;
 
 namespace Creekdream.Uow
 {
@@ -67,6 +68,13 @@ namespace Creekdream.Uow
             {
                 _dbTransaction.Commit();
             }
+        }
+
+        /// <inheritdoc />
+        protected override Task CompleteUowAsync()
+        {
+            CompleteUow();
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

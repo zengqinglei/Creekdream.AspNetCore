@@ -16,7 +16,9 @@ namespace Creekdream.Orm.EntityFrameworkCore
         private readonly IDbContextProvider _dbContextProvider;
 
         /// <inheritdoc />
-        public RepositoryBase(IDbContextProvider dbContextProvider)
+        public RepositoryBase(
+            IServiceProvider serviceProvider,
+            IDbContextProvider dbContextProvider) : base(serviceProvider)
         {
             _dbContextProvider = dbContextProvider;
         }

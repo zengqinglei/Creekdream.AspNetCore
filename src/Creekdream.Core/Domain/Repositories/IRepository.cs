@@ -1,4 +1,5 @@
 ﻿using Creekdream.Dependency;
+using System;
 
 namespace Creekdream.Domain.Repositories
 {
@@ -8,6 +9,9 @@ namespace Creekdream.Domain.Repositories
     /// </summary>
     public interface IRepository : ITransientDependency
     {
-
+        /// <summary>
+        /// get service provider
+        /// </summary>
+        IServiceProvider ServiceProvider { get; }
     }
 }

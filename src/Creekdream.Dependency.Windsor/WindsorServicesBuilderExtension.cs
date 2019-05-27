@@ -15,7 +15,7 @@ namespace Creekdream.Dependency
         public static ServicesBuilderOptions UseWindsor(this ServicesBuilderOptions options)
         {
             var container = new WindsorContainer();
-            options.Services.AddSingleton((IServiceProviderFactory<IWindsorContainer>)new WindsorServiceProviderFactory(container));
+            options.Services.AddSingleton<IServiceProviderFactory<IWindsorContainer>>(new WindsorServiceProviderFactory(container));
             return options;
         }
     }
