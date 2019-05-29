@@ -4,14 +4,14 @@ using System.Threading;
 namespace Creekdream.Uow
 {
     /// <inheritdoc />
-    public class CurrentUnitOfWorkProvider : ICurrentUnitOfWorkProvider, ITransientDependency
+    public class CurrentUnitOfWorkProvider : ICurrentUnitOfWorkProvider, ISingletonDependency
     {
-        private static readonly AsyncLocal<LocalUowWrapper> AsyncLocalUow = new AsyncLocal<LocalUowWrapper>();
+        private readonly AsyncLocal<LocalUowWrapper> _currentUow = new AsyncLocal<LocalUowWrapper>();
 
         /// <inheritdoc />
         public IUnitOfWork Get()
         {
-            var uow = AsyncLocalUow.Value?.UnitOfWork;
+            var uow = _currentUow.Value?.UnitOfWork;
             if (uow == null)
             {
                 return null;
@@ -19,7 +19,7 @@ namespace Creekdream.Uow
 
             if (uow.IsDisposed)
             {
-                AsyncLocalUow.Value = null;
+                _currentUow.Value = null;
                 return null;
             }
 
@@ -29,39 +29,39 @@ namespace Creekdream.Uow
         /// <inheritdoc />
         public void Set(IUnitOfWork value)
         {
-            lock (AsyncLocalUow)
+            lock (_currentUow)
             {
                 if (value == null)
                 {
-                    if (AsyncLocalUow.Value == null)
+                    if (_currentUow.Value == null)
                     {
                         return;
                     }
 
-                    if (AsyncLocalUow.Value.UnitOfWork?.Outer == null)
+                    if (_currentUow.Value.UnitOfWork?.Outer == null)
                     {
-                        AsyncLocalUow.Value.UnitOfWork = null;
-                        AsyncLocalUow.Value = null;
+                        _currentUow.Value.UnitOfWork = null;
+                        _currentUow.Value = null;
                         return;
                     }
 
-                    AsyncLocalUow.Value.UnitOfWork = AsyncLocalUow.Value.UnitOfWork.Outer;
+                    _currentUow.Value.UnitOfWork = _currentUow.Value.UnitOfWork.Outer;
                 }
                 else
                 {
-                    if (AsyncLocalUow.Value?.UnitOfWork == null)
+                    if (_currentUow.Value?.UnitOfWork == null)
                     {
-                        if (AsyncLocalUow.Value != null)
+                        if (_currentUow.Value != null)
                         {
-                            AsyncLocalUow.Value.UnitOfWork = value;
+                            _currentUow.Value.UnitOfWork = value;
                         }
 
-                        AsyncLocalUow.Value = new LocalUowWrapper(value);
+                        _currentUow.Value = new LocalUowWrapper(value);
                         return;
                     }
 
-                    value.Outer = AsyncLocalUow.Value.UnitOfWork;
-                    AsyncLocalUow.Value.UnitOfWork = value;
+                    value.Outer = _currentUow.Value.UnitOfWork;
+                    _currentUow.Value.UnitOfWork = value;
                 }
             }
         }

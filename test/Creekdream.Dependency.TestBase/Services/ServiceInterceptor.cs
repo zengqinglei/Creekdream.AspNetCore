@@ -1,5 +1,4 @@
-﻿using Castle.DynamicProxy;
-using Creekdream.DynamicProxy;
+﻿using Creekdream.DynamicProxy;
 
 namespace Creekdream.Dependency.TestBase.Services
 {

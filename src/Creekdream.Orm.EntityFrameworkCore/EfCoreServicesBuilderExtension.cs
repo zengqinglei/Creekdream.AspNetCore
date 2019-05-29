@@ -1,6 +1,9 @@
 ﻿using Creekdream.Dependency;
 using Creekdream.Domain.Repositories;
 using Creekdream.Orm.EntityFrameworkCore;
+using Creekdream.Uow;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Creekdream.Orm
 {
@@ -12,11 +15,12 @@ namespace Creekdream.Orm
         /// <summary>
         /// Use EfCore Module
         /// </summary>
-        public static ServicesBuilderOptions UseEfCore(this ServicesBuilderOptions builder)
+        public static ServicesBuilderOptions UseEfCore(this ServicesBuilderOptions options, Action<UnitOfWorkOptions> uowOptions = null)
         {
-            builder.Services.AddTransient(typeof(IRepository<,>), typeof(RepositoryBase<,>));
-            builder.Services.RegisterAssemblyByBasicInterface(typeof(EfCoreServicesBuilderExtension).Assembly);
-            return builder;
+            options.UseUnitOfWork(uowOptions);
+            options.Services.AddTransient(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+            options.Services.RegisterAssemblyByBasicInterface(typeof(EfCoreServicesBuilderExtension).Assembly);
+            return options;
         }
     }
 }

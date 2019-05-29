@@ -13,7 +13,8 @@ $projects = (
 	"Creekdream.Orm.Dapper",
 	"Creekdream.Orm.Dapper.MySql",
 	"Creekdream.Orm.Dapper.Oracle",
-	"Creekdream.Orm.EntityFrameworkCore"
+	"Creekdream.Orm.EntityFrameworkCore",
+	"Creekdream.UnitOfWork"
 )
 
 # Rebuild solution

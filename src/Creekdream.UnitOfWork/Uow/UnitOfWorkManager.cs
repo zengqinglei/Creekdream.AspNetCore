@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Transactions;
 using Creekdream.Dependency;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream.Uow
 {
     /// <inheritdoc />
-    public class UnitOfWorkManager : IUnitOfWorkManager, ITransientDependency
+    public class UnitOfWorkManager : IUnitOfWorkManager, ISingletonDependency
     {
         private readonly UnitOfWorkOptions _defaultUowOptions;
         private readonly IServiceProvider _serviceProvider;

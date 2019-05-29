@@ -2,6 +2,9 @@
 using Creekdream.Dependency;
 using Creekdream.Domain.Repositories;
 using Creekdream.Orm.Dapper;
+using Microsoft.Extensions.DependencyInjection;
+using Creekdream.Uow;
+using System;
 
 namespace Creekdream.Orm
 {
@@ -13,12 +16,13 @@ namespace Creekdream.Orm
         /// <summary>
         /// Use Dapper as the Orm framework
         /// </summary>
-        public static ServicesBuilderOptions UseDapper(this ServicesBuilderOptions builder)
+        public static ServicesBuilderOptions UseDapper(this ServicesBuilderOptions options, Action<UnitOfWorkOptions> uowOptions = null)
         {
-            builder.Services.RegisterGeneric(typeof(IRepository<,>), typeof(RepositoryBase<,>), lifeStyle: DependencyLifeStyle.Transient);
-            builder.Services.RegisterAssemblyByBasicInterface(typeof(DapperServicesBuilderExtension).Assembly);
+            options.UseUnitOfWork(uowOptions);
+            options.Services.AddTransient(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+            options.Services.RegisterAssemblyByBasicInterface(typeof(DapperServicesBuilderExtension).Assembly);
             DapperExtensions.DapperExtensions.DefaultMapper = typeof(PluralizedAutoClassMapper<>);
-            return builder;
+            return options;
         }
     }
 }

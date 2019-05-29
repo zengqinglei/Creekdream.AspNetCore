@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Creekdream.Core\Creekdream.Core.csproj" />
+    <ProjectReference Include="..\Creekdream.UnitOfWork\Creekdream.UnitOfWork.csproj" />
   </ItemGroup>
 
 </Project>

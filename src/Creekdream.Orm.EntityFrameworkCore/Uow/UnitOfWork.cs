@@ -5,7 +5,6 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Creekdream.Orm.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace Creekdream.Uow
 {
@@ -69,13 +68,6 @@ namespace Creekdream.Uow
             {
                 _dbContextTransaction.Commit();
             }
-        }
-
-        /// <inheritdoc />
-        protected override Task CompleteUowAsync()
-        {
-            CompleteUow();
-            return Task.CompletedTask;
         }
 
         /// <inheritdoc />

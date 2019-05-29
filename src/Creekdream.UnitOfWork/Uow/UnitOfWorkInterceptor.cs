@@ -19,7 +19,6 @@ namespace Creekdream.Uow
             UnitOfWorkOptions unitOfWorkOptions,
             IUnitOfWorkManager unitOfWorkManager)
         {
-
             _unitOfWorkOptions = unitOfWorkOptions;
             _unitOfWorkManager = unitOfWorkManager;
         }
@@ -58,7 +57,7 @@ namespace Creekdream.Uow
             using (var uow = _unitOfWorkManager.Begin(unitOfWorkOptions))
             {
                 await invocation.ProceedAsync();
-                await uow.CompleteAsync();
+                uow.Complete();
             }
         }
 
