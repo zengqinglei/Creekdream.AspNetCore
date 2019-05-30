@@ -94,7 +94,7 @@ namespace Creekdream.Uow
         }
 
         /// <inheritdoc/>
-        public virtual async Task CompleteAsync(CancellationToken cancellationToken = default)
+        public virtual async Task CompleteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_isRolledback)
             {
@@ -132,7 +132,7 @@ namespace Creekdream.Uow
         }
 
         /// <inheritdoc/>
-        public virtual async Task RollbackAsync(CancellationToken cancellationToken = default)
+        public virtual async Task RollbackAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_isRolledback)
             {

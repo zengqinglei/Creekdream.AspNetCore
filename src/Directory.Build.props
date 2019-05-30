@@ -1,5 +1,5 @@
 ﻿<Project>
-  
+
   <PropertyGroup>
     <Version>0.5.0-preview1</Version>
     <Authors>zengql</Authors>
@@ -8,10 +8,10 @@
     <Description>Based on the application framework developed by .Net Standard, it is committed to rapid development, standardization of some standards, and so on.</Description>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageProjectUrl>https://github.com/zengqinglei/Creekdream.AspNetCore</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/zengqinglei/Creekdream.AspNetCore/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/zengqinglei/Creekdream.AspNetCore</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>

@@ -68,7 +68,7 @@ namespace Creekdream.Uow
         /// <summary>
         /// Async submit
         /// </summary>
-        Task CompleteAsync(CancellationToken cancellationToken = default);
+        Task CompleteAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Rollback
@@ -78,7 +78,7 @@ namespace Creekdream.Uow
         /// <summary>
         /// Async rollback
         /// </summary>
-        Task RollbackAsync(CancellationToken cancellationToken = default);
+        Task RollbackAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Completed event
