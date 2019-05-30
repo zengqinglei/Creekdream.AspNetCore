@@ -7,61 +7,77 @@ namespace Creekdream.Uow
     /// <inheritdoc />
     public class UnitOfWorkManager : IUnitOfWorkManager, ISingletonDependency
     {
+        /// <inheritdoc />
+        public IUnitOfWork Current => GetCurrentUnitOfWork();
+
         private readonly UnitOfWorkOptions _defaultUowOptions;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ICurrentUnitOfWorkProvider _currentUnitOfWorkProvider;
+        private readonly IAmbientUnitOfWork _ambientUnitOfWork;
 
         /// <inheritdoc />
         public UnitOfWorkManager(
             UnitOfWorkOptions uowOptions,
             IServiceProvider serviceProvider,
-            ICurrentUnitOfWorkProvider currentUnitOfWorkProvider)
+            IAmbientUnitOfWork ambientUnitOfWork)
         {
             _defaultUowOptions = uowOptions;
             _serviceProvider = serviceProvider;
-            _currentUnitOfWorkProvider = currentUnitOfWorkProvider;
+            _ambientUnitOfWork = ambientUnitOfWork;
         }
 
         /// <inheritdoc />
-        public IUnitOfWorkCompleteHandle Begin(UnitOfWorkOptions options = null)
+        public IUnitOfWork Begin(UnitOfWorkOptions options = null, bool requiresNew = true)
         {
-            if (options == null)
+            if (options == null && requiresNew == true)
             {
-                options = _defaultUowOptions;
+                options = _defaultUowOptions.Clone();
+                options.IsTransactional = true;
+            }
+            var currentUow = GetCurrentUnitOfWork();
+            if (currentUow != null && !requiresNew)
+            {
+                return new ChildUnitOfWork(currentUow);
             }
 
-            var outerUow = _currentUnitOfWorkProvider.Get();
+            var unitOfWork = CreateNewUnitOfWork();
+            unitOfWork.Initialize(options);
 
-            if (outerUow != null)
+            return unitOfWork;
+        }
+
+        private IUnitOfWork GetCurrentUnitOfWork()
+        {
+            var uow = _ambientUnitOfWork.Get();
+
+            //Skip reserved unit of work
+            while (uow != null && (uow.IsDisposed || uow.IsCompleted))
             {
-                return new InnerUnitOfWorkCompleteHandle();
+                uow = uow.Outer;
             }
 
+            return uow;
+        }
+
+        private IUnitOfWork CreateNewUnitOfWork()
+        {
             var scope = _serviceProvider.CreateScope();
             try
             {
-                var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                var outerUow = _ambientUnitOfWork.Get();
 
-                uow.Completed += (sender, args) =>
-                {
-                    _currentUnitOfWorkProvider.Set(null);
-                };
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                uow.Failed += (sender, args) =>
-                {
-                    _currentUnitOfWorkProvider.Set(null);
-                };
+                unitOfWork.SetOuter(outerUow);
 
-                uow.Disposed += (sender, args) =>
+                _ambientUnitOfWork.Set(unitOfWork);
+
+                unitOfWork.Disposed += (sender, args) =>
                 {
+                    _ambientUnitOfWork.Set(outerUow);
                     scope.Dispose();
                 };
 
-                uow.Begin(options);
-
-                _currentUnitOfWorkProvider.Set(uow);
-
-                return uow;
+                return unitOfWork;
             }
             catch
             {

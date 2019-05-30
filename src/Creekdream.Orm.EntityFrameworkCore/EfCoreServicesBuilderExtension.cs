@@ -1,6 +1,7 @@
 ﻿using Creekdream.Dependency;
 using Creekdream.Domain.Repositories;
 using Creekdream.Orm.EntityFrameworkCore;
+using Creekdream.Orm.Uow;
 using Creekdream.Uow;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,6 +20,7 @@ namespace Creekdream.Orm
         {
             options.UseUnitOfWork(uowOptions);
             options.Services.AddTransient(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+            options.Services.AddTransient(typeof(IDbContextProvider), typeof(DbContextProvider));
             options.Services.RegisterAssemblyByBasicInterface(typeof(EfCoreServicesBuilderExtension).Assembly);
             return options;
         }

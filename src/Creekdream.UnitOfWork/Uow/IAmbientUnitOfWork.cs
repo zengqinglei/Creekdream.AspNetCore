@@ -3,7 +3,7 @@
     /// <summary>
     /// Used to get/set current <see cref="IUnitOfWork"/>. 
     /// </summary>
-    public interface ICurrentUnitOfWorkProvider
+    public interface IAmbientUnitOfWork
     {
         /// <summary>
         /// Gets current <see cref="IUnitOfWork"/>.

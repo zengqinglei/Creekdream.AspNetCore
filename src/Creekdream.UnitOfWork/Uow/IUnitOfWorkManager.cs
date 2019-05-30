@@ -6,9 +6,13 @@
     public interface IUnitOfWorkManager
     {
         /// <summary>
+        /// Current unit of work
+        /// </summary>
+        IUnitOfWork Current { get; }
+        /// <summary>
         /// Open a unit of work
         /// </summary>
-        IUnitOfWorkCompleteHandle Begin(UnitOfWorkOptions options = null);
+        IUnitOfWork Begin(UnitOfWorkOptions options = null, bool requiresNew = true);
     }
 }
 

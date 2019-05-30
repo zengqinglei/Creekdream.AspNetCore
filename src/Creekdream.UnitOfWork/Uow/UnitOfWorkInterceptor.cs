@@ -35,7 +35,7 @@ namespace Creekdream.Uow
             }
 
             //No current uow, run a new one
-            using (var uow = _unitOfWorkManager.Begin(unitOfWorkOptions))
+            using (var uow = _unitOfWorkManager.Begin(unitOfWorkOptions, requiresNew: false))
             {
                 invocation.Proceed();
                 uow.Complete();
@@ -54,7 +54,7 @@ namespace Creekdream.Uow
             }
 
             //No current uow, run a new one
-            using (var uow = _unitOfWorkManager.Begin(unitOfWorkOptions))
+            using (var uow = _unitOfWorkManager.Begin(unitOfWorkOptions, requiresNew: false))
             {
                 await invocation.ProceedAsync();
                 uow.Complete();
