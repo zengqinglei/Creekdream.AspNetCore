@@ -38,7 +38,7 @@ namespace Creekdream.Domain.Repositories
         /// <inheritdoc />
         public Task<TEntity> InsertAsync(TEntity entity)
         {
-            if (entity is IHasCreationTime && (entity as IHasCreationTime).CreationTime == default(DateTime))
+            if (entity is IHasCreationTime && (entity as IHasCreationTime).CreationTime == default)
             {
                 (entity as IHasCreationTime).CreationTime = DateTime.Now;
             }

@@ -1,12 +1,12 @@
-# Creekdream.AspNetCore ¿ò¼ÜÖ® DtoÓ³Éä
+# Creekdream.AspNetCore æ¡†æ¶ä¹‹ Dtoæ˜ å°„
 
-API»òÕßMVCµÄ½Ó¿Ú¿ª·¢¹ı³ÌÖĞ£¬ÊµÌå(Entity)ÓëUIµÄÄ£ĞÍ(Dto)Ö®¼äĞèÒªÏà»¥×ª»¯£¬ÎÒÃÇÕâÀïÊ¹ÓÃAutoMapperÀ´Íê³ÉÄ£ĞÍÖ®¼äµÄÓ³Éä¹¤×÷¡£
+APIæˆ–è€…MVCçš„æ¥å£å¼€å‘è¿‡ç¨‹ä¸­ï¼Œå®ä½“(Entity)ä¸UIçš„æ¨¡å‹(Dto)ä¹‹é—´éœ€è¦ç›¸äº’è½¬åŒ–ï¼Œæˆ‘ä»¬è¿™é‡Œä½¿ç”¨AutoMapperæ¥å®Œæˆæ¨¡å‹ä¹‹é—´çš„æ˜ å°„å·¥ä½œã€‚
 
-## ³õÊ¼»¯¹¤×÷
+## åˆå§‹åŒ–å·¥ä½œ
 
-ÔÚÄ£¿éÉè¼ÆÉÏ£¬ÈÔÈ»¾¡¿ÉÄÜ±£³ÖÔ­Àà¿âµÄĞ´·¨ÒÔ¼°ÅäÖÃ·½Ê½£¬Ê¹ÓÃÆğÀ´¸ü¼ÓÆ½»¬¡£
+åœ¨æ¨¡å—è®¾è®¡ä¸Šï¼Œä»ç„¶å°½å¯èƒ½ä¿æŒåŸç±»åº“çš„å†™æ³•ä»¥åŠé…ç½®æ–¹å¼ï¼Œä½¿ç”¨èµ·æ¥æ›´åŠ å¹³æ»‘ã€‚
 
-### Ê¹ÓÃAutoMappe ProfileÅäÖÃ
+### ä½¿ç”¨AutoMappe Profileé…ç½®
 ``` csharp
 /// <summary>
 /// Model mapping of book entity
@@ -26,7 +26,7 @@ public class BookProfile : Profile, ISingletonDependency
 }
 ```
 
-### ÔÚ¿ò¼ÜÖĞÅäÖÃ
+### åœ¨æ¡†æ¶ä¸­é…ç½®
 ``` csharp
 /// <inheritdoc />
 public class Startup
@@ -49,19 +49,19 @@ public class Startup
 }
 ```
 
-### Ê¹ÓÃÊ¾Àı
+### ä½¿ç”¨ç¤ºä¾‹
 
-#### Entity ×ª»»Îª Dto
+#### Entity è½¬æ¢ä¸º Dto
 ``` csharp
 var books = _bookRepository.GetQueryIncluding(p => p.User).ToListAsync();
 var booksOutput = books.MapTo<List<GetBookOutput>>();
 ```
 
-#### Dto ×ª»»Îª Entity
+#### Dto è½¬æ¢ä¸º Entity
 ``` csharp
 var input = new AddBookInput();
 var book = input.MapTo<Book>();
 book = await _bookRepository.InsertAsync(book);
 ```
 
-¸ü¶àµÄ¹ØÓÚAutoMapperµÄÊ¹ÓÃ·½Ê½£¬Çë²Î¿¼[¹Ù·½ÎÄµµ](http://docs.automapper.org/en/stable/Getting-started.html)£¡
+æ›´å¤šçš„å…³äºAutoMapperçš„ä½¿ç”¨æ–¹å¼ï¼Œè¯·å‚è€ƒ[å®˜æ–¹æ–‡æ¡£](http://docs.automapper.org/en/stable/Getting-started.html)ï¼

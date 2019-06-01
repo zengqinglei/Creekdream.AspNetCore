@@ -1,16 +1,16 @@
-# Creekdream.AspNetCore ¿ò¼ÜÖ®¿ìËÙ´´½¨ÏîÄ¿
+# Creekdream.AspNetCore æ¡†æ¶ä¹‹å¿«é€Ÿåˆ›å»ºé¡¹ç›®
 
-ÎÒÃÇÓĞÁË¿ò¼Ü»ù´¡×é¼ş£¬ÄÇÃ´ÎÒÃÇĞèÒª½«ËûÃÇ½øĞĞ×éºÏ²¢´î½¨Ò»¸ö½ÏÎª»ù´¡µÄÓ¦ÓÃ¼Ü¹¹ÏîÄ¿£¬ÒÔ·½±ãÎÒÃÇ¿ìËÙ½øÈë¿ª·¢¡£
+æˆ‘ä»¬æœ‰äº†æ¡†æ¶åŸºç¡€ç»„ä»¶ï¼Œé‚£ä¹ˆæˆ‘ä»¬éœ€è¦å°†ä»–ä»¬è¿›è¡Œç»„åˆå¹¶æ­å»ºä¸€ä¸ªè¾ƒä¸ºåŸºç¡€çš„åº”ç”¨æ¶æ„é¡¹ç›®ï¼Œä»¥æ–¹ä¾¿æˆ‘ä»¬å¿«é€Ÿè¿›å…¥å¼€å‘ã€‚
 
-## Ê¹ÓÃÏîÄ¿Ä£°å´´½¨ĞÂÏîÄ¿
+## ä½¿ç”¨é¡¹ç›®æ¨¡æ¿åˆ›å»ºæ–°é¡¹ç›®
 
-°´ÕÕ±¾½Ì³ÌÒ»·ÖÖÓ¼´¿É´´½¨ĞÂÏîÄ¿¡£
+æŒ‰ç…§æœ¬æ•™ç¨‹ä¸€åˆ†é’Ÿå³å¯åˆ›å»ºæ–°é¡¹ç›®ã€‚
 
-1. ÏÂÔØÏîÄ¿Ä£°å£º[Creekdream.AspNetCore.Template](https://github.com/zengqinglei/Creekdream.AspNetCore.Template)
-2. ½øÈëÏîÄ¿¸ùÄ¿Â¼ÕÒµ½ÎÄ¼ş:create.ps1,ÓÒ¼üÒÔ¹ÜÀíÔ±·½Ê½ÔËĞĞ£¬×¢ÒâÈçÓĞ´íÎó»òÎ´Ìæ»»³É¹¦£¬ÇëÉı¼¶Powershell°æ±¾
-3. ¸ù¾İÌáÊ¾ÊäÈë¹«Ë¾Ãû³ÆÒÔ¼°ÏîÄ¿Ãû³Æ£¬Èç£ºCreekdream.SimpleDemo
-4. ½ÓÏÂÀ´°´ÕÕ [Creekdream.AspNetCore.Template](https://github.com/zengqinglei/Creekdream.AspNetCore.Template) µÄREADMEÎÄµµ¼´¿É£¡
+1. ä¸‹è½½é¡¹ç›®æ¨¡æ¿ï¼š[Creekdream.AspNetCore.Template](https://github.com/zengqinglei/Creekdream.AspNetCore.Template)
+2. è¿›å…¥é¡¹ç›®æ ¹ç›®å½•æ‰¾åˆ°æ–‡ä»¶:create.ps1,å³é”®ä»¥ç®¡ç†å‘˜æ–¹å¼è¿è¡Œï¼Œæ³¨æ„å¦‚æœ‰é”™è¯¯æˆ–æœªæ›¿æ¢æˆåŠŸï¼Œè¯·å‡çº§Powershellç‰ˆæœ¬
+3. æ ¹æ®æç¤ºè¾“å…¥å…¬å¸åç§°ä»¥åŠé¡¹ç›®åç§°ï¼Œå¦‚ï¼šCreekdream.SimpleDemo
+4. æ¥ä¸‹æ¥æŒ‰ç…§ [Creekdream.AspNetCore.Template](https://github.com/zengqinglei/Creekdream.AspNetCore.Template) çš„READMEæ–‡æ¡£å³å¯ï¼
 
-## ¼òµ¥Ê¾ÀıÏîÄ¿
+## ç®€å•ç¤ºä¾‹é¡¹ç›®
 
-Ê¾ÀıÏîÄ¿Çë²Î¿¼£º[Creekdream.SimpleDemo](https://github.com/zengqinglei/Creekdream.SimpleDemo)
+ç¤ºä¾‹é¡¹ç›®è¯·å‚è€ƒï¼š[Creekdream.SimpleDemo](https://github.com/zengqinglei/Creekdream.SimpleDemo)

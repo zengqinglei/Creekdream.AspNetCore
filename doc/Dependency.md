@@ -1,17 +1,17 @@
-# Creekdream.AspNetCore ¿ò¼ÜÖ® IoC ºÍ DI
+# Creekdream.AspNetCore æ¡†æ¶ä¹‹ IoC å’Œ DI
 
-* Ioc(¿ØÖÆ·´×ª)£ºÓÉÈİÆ÷¿ØÖÆ³ÌĞòÖ®¼äµÄ£¨ÒÀÀµ£©¹ØÏµ£¬¶ø·Ç´«Í³ÊµÏÖÖĞ£¬ÓÉ³ÌĞò´úÂëÖ±½Ó²Ù¿Ø¡£
-* DI(ÒÀÀµ×¢Èë)£º¼òµ¥À´½²¼´ÓÉÈİÆ÷¶¯Ì¬µÄ½«Ä³ÖÖÒÀÀµ¹ØÏµ×¢Èëµ½×é¼şÖ®ÖĞ¡£
+* Ioc(æ§åˆ¶åè½¬)ï¼šç”±å®¹å™¨æ§åˆ¶ç¨‹åºä¹‹é—´çš„ï¼ˆä¾èµ–ï¼‰å…³ç³»ï¼Œè€Œéä¼ ç»Ÿå®ç°ä¸­ï¼Œç”±ç¨‹åºä»£ç ç›´æ¥æ“æ§ã€‚
+* DI(ä¾èµ–æ³¨å…¥)ï¼šç®€å•æ¥è®²å³ç”±å®¹å™¨åŠ¨æ€çš„å°†æŸç§ä¾èµ–å…³ç³»æ³¨å…¥åˆ°ç»„ä»¶ä¹‹ä¸­ã€‚
 
-¿ò¼Ü³éÏóÁË¿ØÖÆ·´×ªÒÔ¼°ÒÀÀµ×¢ÈëµÄ½Ó¿Ú£¬Ê¹µÃIoCÈİÆ÷Ò²¿ÉÒÔ±»Ìæ»»£¬¿ò¼ÜÖĞÄ¿Ç°Ìá¹©ÁËÁ½ÖÖ±È½ÏÖ÷Á÷µÄ×é¼ş£ºAutofac¡¢Castle.Windsor¡£
+æ¡†æ¶æŠ½è±¡äº†æ§åˆ¶åè½¬ä»¥åŠä¾èµ–æ³¨å…¥çš„æ¥å£ï¼Œä½¿å¾—IoCå®¹å™¨ä¹Ÿå¯ä»¥è¢«æ›¿æ¢ï¼Œæ¡†æ¶ä¸­ç›®å‰æä¾›äº†ä¸¤ç§æ¯”è¾ƒä¸»æµçš„ç»„ä»¶ï¼šAutofacã€Castle.Windsorã€‚
 
-## Ê¹ÓÃ Autofac ×÷ÎªIoCÒÔ¼°DI×é¼ş(ÍÆ¼ö)
+## ä½¿ç”¨ Autofac ä½œä¸ºIoCä»¥åŠDIç»„ä»¶(æ¨è)
 
-1.°²×°×é¼ş
+### 1. å®‰è£…ç»„ä»¶
 ``` csharp
 Install-Package Creekdream.Dependency.Autofac
 ```
-2.ÅäÖÃÆôÓÃ×é¼ş
+### 2. é…ç½®å¯ç”¨ç»„ä»¶
 ``` csharp
 public class Startup
 {
@@ -26,13 +26,13 @@ public class Startup
 }
 ```
 
-## Ê¹ÓÃ Castle.Windsor ×÷ÎªIoCÒÔ¼°DI×é¼ş
+## ä½¿ç”¨ Castle.Windsor ä½œä¸ºIoCä»¥åŠDIç»„ä»¶
 
-1.°²×°×é¼ş
+### 1. å®‰è£…ç»„ä»¶
 ``` csharp
 Install-Package Creekdream.Dependency.Windsor
 ```
-2.ÅäÖÃÆôÓÃ×é¼ş
+### 2. é…ç½®å¯ç”¨ç»„ä»¶
 ``` csharp
 public class Startup
 {
@@ -47,25 +47,24 @@ public class Startup
 }
 ```
 
-## Ê¹ÓÃÊ¾Àı
+## ä½¿ç”¨ç¤ºä¾‹
 
 ``` csharp
-public class UnitOfWorkManager : IUnitOfWorkManager
+public class BookService : ApplicationService, IBookService
 {
-    private readonly IIocResolver _iocResolver;
+    private readonly IRepository<Book, Guid> _bookRepository;
 
-    public UnitOfWorkManager(IIocResolver iocManager)
+    /// <inheritdoc />
+    public BookService(IRepository<Book, Guid> bookRepository)
     {
-        _iocResolver = iocManager;
+        _bookRepository = bookRepository;
     }
-    
-    public IUnitOfWorkCompleteHandle Begin(UnitOfWorkOptions options = null)
-    {
-        // ...
-        var uow = _iocResolver.Resolve<IUnitOfWork>();
-        // ...
 
-        return uow;
+    /// <inheritdoc />
+    public async Task<GetBookOutput> Get(Guid id)
+    {
+        var book = await _bookRepository.GetAsync(id);
+        return book.MapTo<GetBookOutput>();
     }
 }
 ```

@@ -60,7 +60,7 @@ namespace Creekdream.Orm.Dapper
         /// <inheritdoc />
         public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
-            var predicateGroup = CreatePredicateGroup(predicate);
+            var predicateGroup = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
             var entities = Database.GetList<TEntity>(
                 predicateGroup,
                 null,
@@ -110,7 +110,7 @@ namespace Creekdream.Orm.Dapper
         /// <inheritdoc />
         public override async Task<long> CountAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
-            var predicateGroup = CreatePredicateGroup(predicate);
+            var predicateGroup = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
             var count = Database.Count<TEntity>(
                 predicateGroup,
                 transaction: DbTransaction);
@@ -130,24 +130,6 @@ namespace Creekdream.Orm.Dapper
             );
 
             return Expression.Lambda<Func<TEntity, bool>>(lambdaBody, lambdaParam);
-        }
-
-        /// <summary>
-        /// Create grouping conditions
-        /// </summary>
-        public IPredicate CreatePredicateGroup(Expression<Func<TEntity, bool>> predicate = null)
-        {
-            var groups = new PredicateGroup
-            {
-                Operator = GroupOperator.And,
-                Predicates = new List<IPredicate>()
-            };
-            if (predicate != null)
-            {
-                var pg = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
-                groups.Predicates.Add(pg);
-            }
-            return groups;
         }
     }
 }

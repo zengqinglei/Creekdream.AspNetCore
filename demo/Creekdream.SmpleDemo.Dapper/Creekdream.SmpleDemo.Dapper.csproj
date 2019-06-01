@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Creekdream.Orm.Dapper\Creekdream.Orm.Dapper.csproj" />
+    <ProjectReference Include="..\Creekdream.SimpleDemo.Core\Creekdream.SimpleDemo.Core.csproj" />
+  </ItemGroup>
+
+</Project>

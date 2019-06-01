@@ -5,6 +5,7 @@ using Creekdream.Orm.Dapper;
 using Microsoft.Extensions.DependencyInjection;
 using Creekdream.Uow;
 using System;
+using Creekdream.Orm.Uow;
 
 namespace Creekdream.Orm
 {
@@ -20,6 +21,7 @@ namespace Creekdream.Orm
         {
             options.UseUnitOfWork(uowOptions);
             options.Services.AddTransient(typeof(IRepository<,>), typeof(RepositoryBase<,>));
+            options.Services.AddTransient(typeof(IDatabaseProvider), typeof(DatabaseProvider));
             options.Services.RegisterAssemblyByBasicInterface(typeof(DapperServicesBuilderExtension).Assembly);
             DapperExtensions.DapperExtensions.DefaultMapper = typeof(PluralizedAutoClassMapper<>);
             return options;

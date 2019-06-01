@@ -69,7 +69,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.SimpleDemo.Api",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.SimpleDemo.Utility", "demo\Creekdream.SimpleDemo.Utility\Creekdream.SimpleDemo.Utility.csproj", "{834C2687-B566-4898-9FCD-E7D173E88F3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Creekdream.UnitOfWork", "src\Creekdream.UnitOfWork\Creekdream.UnitOfWork.csproj", "{95B29CA1-2B1C-4DD2-A835-5B81BCFDF770}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.UnitOfWork", "src\Creekdream.UnitOfWork\Creekdream.UnitOfWork.csproj", "{95B29CA1-2B1C-4DD2-A835-5B81BCFDF770}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Creekdream.SmpleDemo.Dapper", "demo\Creekdream.SmpleDemo.Dapper\Creekdream.SmpleDemo.Dapper.csproj", "{D5105585-80F2-4D79-AB40-33F5DDA89F28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -165,6 +167,10 @@ Global
 		{95B29CA1-2B1C-4DD2-A835-5B81BCFDF770}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95B29CA1-2B1C-4DD2-A835-5B81BCFDF770}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95B29CA1-2B1C-4DD2-A835-5B81BCFDF770}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5105585-80F2-4D79-AB40-33F5DDA89F28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5105585-80F2-4D79-AB40-33F5DDA89F28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5105585-80F2-4D79-AB40-33F5DDA89F28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5105585-80F2-4D79-AB40-33F5DDA89F28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +198,7 @@ Global
 		{80FD3965-A480-4B7B-90A8-F7E50614190F} = {2802FE22-66E2-49D2-8C5E-6EFEBD7BA617}
 		{834C2687-B566-4898-9FCD-E7D173E88F3B} = {2802FE22-66E2-49D2-8C5E-6EFEBD7BA617}
 		{95B29CA1-2B1C-4DD2-A835-5B81BCFDF770} = {11550172-7975-4644-B8D3-EBB27A81FF78}
+		{D5105585-80F2-4D79-AB40-33F5DDA89F28} = {2802FE22-66E2-49D2-8C5E-6EFEBD7BA617}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8CE44CA3-C5B3-4202-A754-97F27E9C9939}

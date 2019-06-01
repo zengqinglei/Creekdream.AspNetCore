@@ -16,6 +16,6 @@ namespace Creekdream.Uow
         /// <summary>
         /// Async save changes
         /// </summary>
-        Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

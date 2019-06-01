@@ -25,7 +25,7 @@ namespace Creekdream.Orm.Uow
         }
 
         /// <inheritdoc />
-        public Task SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return DbContext.SaveChangesAsync(cancellationToken);
         }

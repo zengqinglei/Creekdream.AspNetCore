@@ -55,7 +55,7 @@ namespace Creekdream.Uow
 
         }
 
-        public Task CompleteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task CompleteAsync(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }
@@ -65,7 +65,7 @@ namespace Creekdream.Uow
             _parent.Rollback();
         }
 
-        public Task RollbackAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task RollbackAsync(CancellationToken cancellationToken = default)
         {
             return _parent.RollbackAsync(cancellationToken);
         }

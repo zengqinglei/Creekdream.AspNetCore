@@ -2,6 +2,7 @@
 using Creekdream.Domain.Repositories;
 using Dapper;
 using DapperExtensions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -22,10 +23,10 @@ namespace Creekdream.Orm.Dapper
             Expression<Func<TEntity, bool>> predicate = null)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var dapperRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
-            var dbTransaction = dapperRepository.DbTransaction;
-            var database = dapperRepository.Database;
-            var predicateGroup = dapperRepository.CreatePredicateGroup(predicate);
+            var databaseProvider = repository.GetDatabaseProvider();
+            var dbTransaction = databaseProvider.GetDbTransaction();
+            var database = databaseProvider.GetDatabase();
+            var predicateGroup = predicate.ToPredicateGroup<TEntity, TPrimaryKey>();
 
             return await Task.FromResult(
                 database.GetList<TEntity>(
@@ -43,9 +44,10 @@ namespace Creekdream.Orm.Dapper
             object parameters = null)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var dapperRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
-            var dbTransaction = dapperRepository.DbTransaction;
-            var dbConnection = dapperRepository.Database.Connection;
+            var databaseProvider = repository.GetDatabaseProvider();
+            var dbTransaction = databaseProvider.GetDbTransaction();
+            var database = databaseProvider.GetDatabase();
+            var dbConnection = database.Connection;
 
             return await dbConnection.QueryAsync<TEntity>(
                 sql,
@@ -62,9 +64,10 @@ namespace Creekdream.Orm.Dapper
             object parameters = null)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var dapperRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
-            var dbTransaction = dapperRepository.DbTransaction;
-            var dbConnection = dapperRepository.Database.Connection;
+            var databaseProvider = repository.GetDatabaseProvider();
+            var dbTransaction = databaseProvider.GetDbTransaction();
+            var database = databaseProvider.GetDatabase();
+            var dbConnection = database.Connection;
 
             return await dbConnection.ExecuteAsync(
                 sql,
@@ -81,9 +84,10 @@ namespace Creekdream.Orm.Dapper
             object parameters = null)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var dapperRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
-            var dbTransaction = dapperRepository.DbTransaction;
-            var dbConnection = dapperRepository.Database.Connection;
+            var databaseProvider = repository.GetDatabaseProvider();
+            var dbTransaction = databaseProvider.GetDbTransaction();
+            var database = databaseProvider.GetDatabase();
+            var dbConnection = database.Connection;
 
             return await dbConnection.ExecuteScalarAsync(
                 sql,
@@ -96,24 +100,32 @@ namespace Creekdream.Orm.Dapper
         /// </summary>
         public static async Task<IEnumerable<TEntity>> GetPaged<TEntity, TPrimaryKey>(
             this IRepository<TEntity, TPrimaryKey> repository,
-            Expression<Func<TEntity, bool>> predicate,
             int pageIndex,
             int pageSize,
-            string ordering = null)
+            string ordering,
+            Expression<Func<TEntity, bool>> predicate = null)
             where TEntity : class, IEntity<TPrimaryKey>
         {
-            var dapperRepository = (RepositoryBase<TEntity, TPrimaryKey>)repository;
-            var dbTransaction = dapperRepository.DbTransaction;
-            var database = dapperRepository.Database;
-            var predicateGroup = dapperRepository.CreatePredicateGroup(predicate);
+            var databaseProvider = repository.GetDatabaseProvider();
+            var dbTransaction = databaseProvider.GetDbTransaction();
+            var database = databaseProvider.GetDatabase();
 
             return await Task.FromResult(
                 database.GetPage<TEntity>(
-                    predicateGroup,
+                    predicate,
                     ToSortable(ordering),
                     pageIndex,
                     pageSize,
                     transaction: dbTransaction));
+        }
+
+        /// <summary>
+        /// Get an database provider
+        /// </summary>
+        private static IDatabaseProvider GetDatabaseProvider<TEntity, TPrimaryKey>(this IRepository<TEntity, TPrimaryKey> repository)
+            where TEntity : class, IEntity<TPrimaryKey>
+        {
+            return repository.ServiceProvider.GetRequiredService<IDatabaseProvider>();
         }
 
         /// <summary>

@@ -1,13 +1,13 @@
-# Creekdream.AspNetCore ¿ò¼ÜÖ®Ä£¿é»¯
+# Creekdream.AspNetCore æ¡†æ¶ä¹‹æ¨¡å—åŒ–
 
-±¾¿ò¼Ü²Î¿¼¹ı [ABP](https://github.com/aspnetboilerplate/aspnetboilerplate)¡¢[OrchardCore](https://github.com/OrchardCMS/OrchardCore)¡¢[Util](https://github.com/twitter/util)µÈ¿ò¼ÜµÄÄ£¿é»¯Éè¼Æ¡£
-* **ABP**£ºÍ¨¹ıÄ£¿éÒÀÀµ¹ØÏµÖ´ĞĞ½øĞĞ×éºÏ²¢ÅÅĞòºó°´Ë³ĞòÏÈºóÖ´ĞĞ³õÊ¼»¯º¯Êı¡£
-* **Util**£ºÍ¨¹ıÉ¨Ãè³ÌĞò¼¯²¢ÔÚÓ¦ÓÃ³ÌĞòÆô¶¯Ê±¼ÓÔØº¬ÓĞ¼¯³ÉÄ£¿é»ùÀàµÄ³ÌĞò¼¯²¢Ö´ĞĞ³õÊ¼»¯º¯Êı
+æœ¬æ¡†æ¶å‚è€ƒè¿‡ [ABP](https://github.com/aspnetboilerplate/aspnetboilerplate)ã€[OrchardCore](https://github.com/OrchardCMS/OrchardCore)ã€[Util](https://github.com/twitter/util)ç­‰æ¡†æ¶çš„æ¨¡å—åŒ–è®¾è®¡ã€‚
+* **ABP**ï¼šé€šè¿‡æ¨¡å—ä¾èµ–å…³ç³»æ‰§è¡Œè¿›è¡Œç»„åˆå¹¶æ’åºåæŒ‰é¡ºåºå…ˆåæ‰§è¡Œåˆå§‹åŒ–å‡½æ•°ã€‚
+* **Util**ï¼šé€šè¿‡æ‰«æç¨‹åºé›†å¹¶åœ¨åº”ç”¨ç¨‹åºå¯åŠ¨æ—¶åŠ è½½å«æœ‰é›†æˆæ¨¡å—åŸºç±»çš„ç¨‹åºé›†å¹¶æ‰§è¡Œåˆå§‹åŒ–å‡½æ•°
 
-±¾ÏîÄ¿²¢²»ÍÆ¼öÕâÁ½ÖÖÊµÏÖ·½°¸£¬Ö÷Òª½áºÏ.NET CORE ĞÂµÄÉè¼ÆÄ£Ê½£¬Ó¦¾¡Á¿½«Ä£¿éµÄ³õÊ¼»¯¹¤×÷·Åµ½StartupÖĞ£¬²¢ÄÜÃ÷È·µÄÁĞ³öËùÊ¹ÓÃµÄÄ£¿é£¬Ó¦¾¡Á¿²»ÒÀÀµ¸÷×ÔµÄÖ´ĞĞË³Ğò¹ØÏµ£¬±ÜÃâ²úÉúÇÖÈë»òñîºÏ¡£
+æœ¬é¡¹ç›®å¹¶ä¸æ¨èè¿™ä¸¤ç§å®ç°æ–¹æ¡ˆï¼Œä¸»è¦ç»“åˆ.NET CORE æ–°çš„è®¾è®¡æ¨¡å¼,å¹¶æ‰€æœ‰åŸºäº.NET CORE å†…ç½® `DI` ç»„ä»¶ï¼Œåº”å°½é‡å°†æ¨¡å—çš„åˆå§‹åŒ–å·¥ä½œæ”¾åˆ° `Startup.cs` ä¸­ï¼Œå¹¶èƒ½æ˜ç¡®çš„åˆ—å‡ºæ‰€ä½¿ç”¨çš„æ¨¡å—ï¼Œåº”å°½é‡ä¸ä¾èµ–å„è‡ªçš„æ‰§è¡Œé¡ºåºå…³ç³»ï¼Œé¿å…äº§ç”Ÿä¾µå…¥æˆ–è€¦åˆã€‚
 
-## ÏîÄ¿²ÉÓÃÀ©Õ¹ServicesBuilderOptions·½·¨½øĞĞÄ£¿é»¯³õÊ¼»¯
-ĞÂ½¨Ò»¸öÄ£¿é,ÔÚÄ£¿éÖĞ¿ÉÍ¨¹ıAppOptionsBuilderÖĞµÄ×¢Èë×é¼ş³õÊ¼»¯¸ÃÄ£¿éµÄÏà¹ØÄÚÈİ
+## é¡¹ç›®é‡‡ç”¨æ‰©å±• `ServicesBuilderOptions` æ–¹æ³•è¿›è¡Œæ¨¡å—åŒ–åˆå§‹åŒ–
+æ–°å»ºä¸€ä¸ªæ¨¡å—,åœ¨æ¨¡å—ä¸­å¯é€šè¿‡AppOptionsBuilderä¸­çš„æ³¨å…¥ç»„ä»¶åˆå§‹åŒ–è¯¥æ¨¡å—çš„ç›¸å…³å†…å®¹
 ``` csharp
 /// <summary>
 /// ProjectName application module extension methods for <see cref="AppOptionsBuilder" />.
@@ -19,13 +19,13 @@ public static class ProjectNameApplicationOptionsBuilderExtension
     /// </summary>
     public static ServicesBuilderOptions AddProjectNameApplication(this ServicesBuilderOptions builder)
     {
-        builder.IocRegister.RegisterAssemblyByBasicInterface(typeof(ProjectNameApplicationOptionsBuilderExtension).Assembly);
+        builder.Services.RegisterAssemblyByBasicInterface(typeof(ProjectNameApplicationOptionsBuilderExtension).Assembly);
         return builder;
     }
 }
 ```
 
-³õÊ¼»¯Ä£¿é£¬ÔÚStartupÆô¶¯ÀàÖĞÆôÓÃÄ£¿é
+åˆå§‹åŒ–æ¨¡å—ï¼Œåœ¨Startupå¯åŠ¨ç±»ä¸­å¯ç”¨æ¨¡å—
 ``` csharp
 /// <inheritdoc />
 public class Startup
