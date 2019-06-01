@@ -5,7 +5,7 @@
 
 框架抽象了控制反转以及依赖注入的接口，使得IoC容器也可以被替换，框架中目前提供了两种比较主流的组件：Autofac、Castle.Windsor。
 
-## 使用 Autofac 作为IoC以及DI组件(推荐)
+## 使用 Autofac 作为IoC以及DI组件(`推荐`)
 
 ### 1. 安装组件
 ``` csharp
