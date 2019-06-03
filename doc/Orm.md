@@ -4,7 +4,7 @@
 
 ## EFCore 的实现功能
 
-**(Demo)[https://github.com/zengqinglei/Creekdream.SimpleDemo]**
+**[Demo](https://github.com/zengqinglei/Creekdream.SimpleDemo)**
 
 * 基于工作单元，实现了DbContext的 `创建`、`释放` 操作
 * 基于工作单元，实现了事务的 `开启`、`提交`、`回滚`、`释放` 操作
@@ -60,7 +60,7 @@ return services.AddCreekdream(
 
 ## Dapper 的实现功能
 
-**(Demo)[https://github.com/zengqinglei/Creekdream.SimpleDemo/tree/dapper]**
+**[Demo](https://github.com/zengqinglei/Creekdream.SimpleDemo/tree/dapper)**
 
 * 基于工作单元，实现了DbContext的 `创建`、`释放` 操作
 * 基于工作单元，实现了事务的 `开启`、`提交`、`回滚`、`释放` 操作

@@ -14,4 +14,5 @@
 ## 简单示例项目
 
 示例项目请参考：[Creekdream.SimpleDemo](https://github.com/zengqinglei/Creekdream.SimpleDemo)
-Dapper版本请参考：https://github.com/zengqinglei/Creekdream.SimpleDemo/tree/dapper
+
+Dapper版本示例，请切换至上面仓库的 `dapper` 分支。
