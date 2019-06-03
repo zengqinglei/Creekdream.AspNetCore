@@ -4,9 +4,12 @@
 
 ## EFCore 的实现功能
 
+**(Demo)[https://github.com/zengqinglei/Creekdream.SimpleDemo]**
+
 * 基于工作单元，实现了DbContext的 `创建`、`释放` 操作
 * 基于工作单元，实现了事务的 `开启`、`提交`、`回滚`、`释放` 操作
 * 提供出仓储基本的操作API外，额外拓展：`GetQueryIncluding` 用以获取获取自定义查询
+* 提供出仓储基本的操作API外，额外拓展：`QueryAsync`、`ExecuteNonQueryAsync`、`ExecuteScalarAsync` 用以支持sql语句查询
 
 **目前已测试 `Mysql`、`MSSQL` 数据库的数据持久化以及事务操作**(*理论支持EFCore支持的所有数据库*)
 
@@ -57,9 +60,12 @@ return services.AddCreekdream(
 
 ## Dapper 的实现功能
 
+**(Demo)[https://github.com/zengqinglei/Creekdream.SimpleDemo/tree/dapper]**
+
 * 基于工作单元，实现了DbContext的 `创建`、`释放` 操作
 * 基于工作单元，实现了事务的 `开启`、`提交`、`回滚`、`释放` 操作
 * 提供出仓储基本的操作API外，额外拓展：`GetPaged` 用以分页查询
+* 提供出仓储基本的操作API外，额外拓展：`QueryAsync`、`ExecuteNonQueryAsync`、`ExecuteScalarAsync` 用以支持sql语句查询
 
 **目前已测试 `Mysql`、`MSSQL`、`Oracle` 数据库的数据持久化以及事务操作**(*理论支持Dapper支持的所有数据库*)
 
@@ -68,7 +74,7 @@ return services.AddCreekdream(
 #### 1. 新建仓储类库：Creekdream.SimpleDemo.Dapper
 
 >引入ORM组件：`Install-Package Creekdream.Orm.Dapper`  
-引入基于EFCore实现的数据库组件：`Install-Package Creekdream.Orm.Dapper.MySql`
+引入基于Dapper实现的数据库组件：`Install-Package Creekdream.Orm.Dapper.MySql`
 
 #### 2. 创建模型映射配置
 
