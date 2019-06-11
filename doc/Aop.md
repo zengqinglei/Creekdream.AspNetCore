@@ -24,18 +24,10 @@ public class UnitOfWorkInterceptor : InterceptorBase, ITransientDependency
     }
 
     /// <inheritdoc />
-    public override void Intercept(IMethodInvocation invocation)
+    public override void Intercept(IInvocation invocation)
     {
         // before do some things
         invocation.Proceed();
-        // Behind do some things
-    }
-
-    /// <inheritdoc />
-    public override async Task InterceptAsync(IMethodInvocation invocation)
-    {
-        // before do some things
-        await invocation.ProceedAsync();
         // Behind do some things
     }
 }

@@ -42,7 +42,7 @@ public class Startup
                 options.UseAutoMapper(
                     config =>
                     {
-                        config.AddProfile(options.IocResolver.Resolve<BookProfile>());
+                        config.AddProfile(options.ServiceProvider.GetRequiredService<BookProfile>());
                     });
             });
     }
