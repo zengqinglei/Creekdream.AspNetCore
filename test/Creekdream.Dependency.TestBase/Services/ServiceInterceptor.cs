@@ -1,20 +1,21 @@
-﻿using Creekdream.DynamicProxy;
+﻿using Castle.DynamicProxy;
+using Creekdream.DynamicProxy;
 
 namespace Creekdream.Dependency.TestBase.Services
 {
     public class ServiceInterceptor : InterceptorBase
     {
-        public override void Intercept(IMethodInvocation invocation)
+        public override void Intercept(IInvocation invocation)
         {
-            if (invocation.TargetObject.GetType() == typeof(SingletonService))
+            if (invocation.TargetType == typeof(SingletonService))
             {
                 SingletonService.Interceptor = "Singleton";
             }
-            if (invocation.TargetObject.GetType() == typeof(ScopedService))
+            if (invocation.TargetType == typeof(ScopedService))
             {
                 ScopedService.Interceptor = "Scoped";
             }
-            if (invocation.TargetObject.GetType() == typeof(TransientService))
+            if (invocation.TargetType == typeof(TransientService))
             {
                 TransientService.Interceptor = "Transient";
             }

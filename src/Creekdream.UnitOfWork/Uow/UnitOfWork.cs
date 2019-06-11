@@ -81,7 +81,10 @@ namespace Creekdream.Uow
             try
             {
                 _isCompleting = true;
-                (_databaseApi as ISupportsSavingChanges)?.SaveChanges();
+                if (_databaseApi != null)
+                {
+                    (_databaseApi as ISupportsSavingChanges)?.SaveChanges();
+                }
                 CommitTransactions();
                 IsCompleted = true;
                 OnCompleted();
@@ -106,7 +109,10 @@ namespace Creekdream.Uow
             try
             {
                 _isCompleting = true;
-                await (_databaseApi as ISupportsSavingChanges)?.SaveChangesAsync(cancellationToken);
+                if (_databaseApi != null)
+                {
+                    await (_databaseApi as ISupportsSavingChanges).SaveChangesAsync(cancellationToken);
+                }
                 await CommitTransactionsAsync();
                 IsCompleted = true;
                 await OnCompletedAsync();
@@ -232,7 +238,10 @@ namespace Creekdream.Uow
         {
             try
             {
-                _transactionApi?.Dispose();
+                if (_transactionApi != null)
+                {
+                    _transactionApi.Dispose();
+                }
             }
             catch
             {
@@ -252,8 +261,14 @@ namespace Creekdream.Uow
         {
             try
             {
-                (_databaseApi as ISupportsRollback)?.Rollback();
-                (_transactionApi as ISupportsRollback)?.Rollback();
+                if (_databaseApi != null)
+                {
+                    (_databaseApi as ISupportsRollback).Rollback();
+                }
+                if (_transactionApi != null)
+                {
+                    (_transactionApi as ISupportsRollback).Rollback();
+                }
             }
             catch { }
         }
@@ -263,8 +278,14 @@ namespace Creekdream.Uow
         {
             try
             {
-                await (_databaseApi as ISupportsRollback)?.RollbackAsync(cancellationToken);
-                await (_transactionApi as ISupportsRollback)?.RollbackAsync(cancellationToken);
+                if (_databaseApi != null)
+                {
+                    await (_databaseApi as ISupportsRollback).RollbackAsync(cancellationToken);
+                }
+                if (_transactionApi != null)
+                {
+                    await (_transactionApi as ISupportsRollback).RollbackAsync(cancellationToken);
+                }
             }
             catch { }
         }
@@ -272,13 +293,19 @@ namespace Creekdream.Uow
         /// <inheritdoc/>
         protected virtual void CommitTransactions()
         {
-            _transactionApi?.Commit();
+            if (_transactionApi != null)
+            {
+                _transactionApi.Commit();
+            }
         }
 
         /// <inheritdoc/>
         protected virtual async Task CommitTransactionsAsync()
         {
-            await _transactionApi?.CommitAsync();
+            if (_transactionApi != null)
+            {
+                await _transactionApi.CommitAsync();
+            }
         }
 
         /// <inheritdoc/>

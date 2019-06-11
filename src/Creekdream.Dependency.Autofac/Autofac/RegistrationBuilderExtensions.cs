@@ -1,8 +1,6 @@
-﻿using Autofac;
-using Autofac.Builder;
+﻿using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Extras.DynamicProxy;
-using Creekdream.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -101,7 +99,7 @@ namespace Creekdream.Dependency.Autofac
 
             foreach (var interceptor in interceptors)
             {
-                registrationBuilder.InterceptedBy(typeof(CastleInterceptorAdapter<>).MakeGenericType(interceptor));
+                registrationBuilder.InterceptedBy(interceptor);
             }
 
             return registrationBuilder;

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using Castle.DynamicProxy;
 
 namespace Creekdream.DynamicProxy
 {
@@ -6,13 +6,6 @@ namespace Creekdream.DynamicProxy
     public abstract class InterceptorBase : IInterceptor
     {
         /// <inheritdoc />
-        public abstract void Intercept(IMethodInvocation invocation);
-
-        /// <inheritdoc />
-        public virtual Task InterceptAsync(IMethodInvocation invocation)
-        {
-            Intercept(invocation);
-            return Task.CompletedTask;
-        }
+        public abstract void Intercept(IInvocation invocation);
     }
 }

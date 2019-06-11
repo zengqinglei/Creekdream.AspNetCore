@@ -81,7 +81,7 @@ namespace Creekdream.Dependency.Windsor
                     foreach (var interceptor in serviceRegistredArgs.Interceptors)
                     {
                         handler.ComponentModel.Interceptors.Add(
-                            new InterceptorReference(typeof(CastleInterceptorAdapter<>).MakeGenericType(interceptor))
+                            new InterceptorReference(interceptor)
                         );
                     }
                 }

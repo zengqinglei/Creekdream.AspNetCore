@@ -25,7 +25,6 @@ namespace Creekdream
         /// </summary>
         public void Initialize()
         {
-            Services.AddTransient(typeof(CastleInterceptorAdapter<>));
             Services.RegisterAssemblyByBasicInterface(GetType().Assembly);
         }
     }
