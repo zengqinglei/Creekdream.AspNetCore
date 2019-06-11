@@ -81,9 +81,10 @@ namespace Creekdream.Uow
             try
             {
                 _isCompleting = true;
-                if (_databaseApi != null)
+                var databaseApi = (_databaseApi as ISupportsSavingChanges);
+                if (databaseApi != null)
                 {
-                    (_databaseApi as ISupportsSavingChanges)?.SaveChanges();
+                    databaseApi.SaveChanges();
                 }
                 CommitTransactions();
                 IsCompleted = true;
@@ -109,9 +110,10 @@ namespace Creekdream.Uow
             try
             {
                 _isCompleting = true;
-                if (_databaseApi != null)
+                var databaseApi = (_databaseApi as ISupportsSavingChanges);
+                if (databaseApi != null)
                 {
-                    await (_databaseApi as ISupportsSavingChanges).SaveChangesAsync(cancellationToken);
+                    await databaseApi.SaveChangesAsync(cancellationToken);
                 }
                 await CommitTransactionsAsync();
                 IsCompleted = true;
@@ -261,13 +263,15 @@ namespace Creekdream.Uow
         {
             try
             {
-                if (_databaseApi != null)
+                var databaseApi = (_databaseApi as ISupportsRollback);
+                if (databaseApi != null)
                 {
-                    (_databaseApi as ISupportsRollback).Rollback();
+                    databaseApi.Rollback();
                 }
-                if (_transactionApi != null)
+                var transactionApi = (_transactionApi as ISupportsRollback);
+                if (transactionApi != null)
                 {
-                    (_transactionApi as ISupportsRollback).Rollback();
+                    transactionApi.Rollback();
                 }
             }
             catch { }
@@ -278,13 +282,15 @@ namespace Creekdream.Uow
         {
             try
             {
-                if (_databaseApi != null)
+                var databaseApi = (_databaseApi as ISupportsRollback);
+                if (databaseApi != null)
                 {
-                    await (_databaseApi as ISupportsRollback).RollbackAsync(cancellationToken);
+                    await databaseApi.RollbackAsync(cancellationToken);
                 }
-                if (_transactionApi != null)
+                var transactionApi = (_transactionApi as ISupportsRollback);
+                if (transactionApi != null)
                 {
-                    await (_transactionApi as ISupportsRollback).RollbackAsync(cancellationToken);
+                    await transactionApi.RollbackAsync(cancellationToken);
                 }
             }
             catch { }
