@@ -66,7 +66,7 @@ namespace Creekdream.Orm.Uow
             var creationContext = new DbContextCreationContext();
             using (DbContextCreationContext.Use(creationContext))
             {
-                IDatabase database = CreateDatabase();
+                var database = CreateDatabase();
                 if (unitOfWork.Options.IsTransactional)
                 {
                     var dbtransaction = unitOfWork.Options.IsolationLevel.HasValue

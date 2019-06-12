@@ -29,5 +29,11 @@ namespace Creekdream.Orm.Uow
         {
             return DbContext.SaveChangesAsync(cancellationToken);
         }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            DbContext.Dispose();
+        }
     }
 }

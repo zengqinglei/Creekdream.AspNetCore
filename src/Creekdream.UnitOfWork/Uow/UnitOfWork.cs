@@ -226,6 +226,7 @@ namespace Creekdream.Uow
 
             IsDisposed = true;
 
+            DisposeDatabases();
             DisposeTransactions();
 
             if (!IsCompleted || _exception != null)
@@ -234,6 +235,20 @@ namespace Creekdream.Uow
             }
 
             OnDisposed();
+        }
+
+        private void DisposeDatabases()
+        {
+            try
+            {
+                if (_databaseApi != null)
+                {
+                    _databaseApi.Dispose();
+                }
+            }
+            catch
+            {
+            }
         }
 
         private void DisposeTransactions()
@@ -274,7 +289,9 @@ namespace Creekdream.Uow
                     transactionApi.Rollback();
                 }
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         /// <inheritdoc/>

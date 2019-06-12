@@ -14,5 +14,11 @@ namespace Creekdream.Orm.Uow
         {
             Database = database;
         }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Database.Dispose();
+        }
     }
 }
