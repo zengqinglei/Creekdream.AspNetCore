@@ -1,4 +1,8 @@
 ﻿using Creekdream.Dependency;
+using Creekdream.SimpleDemo.Interceptors;
+using Creekdream.Uow;
+using System.Linq;
+using System.Reflection;
 
 namespace Creekdream.SimpleDemo
 {
@@ -12,6 +16,23 @@ namespace Creekdream.SimpleDemo
         /// </summary>
         public static ServicesBuilderOptions AddSimpleDemoApplication(this ServicesBuilderOptions builder)
         {
+            builder.Services.OnRegistred(context =>
+            {
+                if (context.ImplementationType.IsDefined(typeof(AuditLogAttribute), true))
+                {
+                    context.Interceptors.Add<AuditLogInterceptor>();
+                    return;
+                }
+                var methods = context.ImplementationType.GetMethods(
+                    BindingFlags.Instance |
+                    BindingFlags.Public |
+                    BindingFlags.NonPublic);
+                if (methods.Any(m => m.IsDefined(typeof(AuditLogAttribute), true)))
+                {
+                    context.Interceptors.Add<AuditLogInterceptor>();
+                    return;
+                }
+            });
             builder.Services.RegisterAssemblyByBasicInterface(typeof(SimpleDemoApplicationServicesBuilderExtension).Assembly);
             return builder;
         }

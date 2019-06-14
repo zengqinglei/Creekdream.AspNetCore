@@ -4,6 +4,7 @@ using Creekdream.Domain.Repositories;
 using Creekdream.Mapping;
 using Creekdream.Orm.EntityFrameworkCore;
 using Creekdream.SimpleDemo.Books.Dto;
+using Creekdream.SimpleDemo.Interceptors;
 using Creekdream.Uow;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 namespace Creekdream.SimpleDemo.Books
 {
     /// <inheritdoc />
+    [AuditLog]
     public class BookService : ApplicationService, IBookService
     {
         private readonly IUnitOfWorkManager _unitOfWorkManager;

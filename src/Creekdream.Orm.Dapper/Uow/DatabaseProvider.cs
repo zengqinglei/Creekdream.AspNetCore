@@ -63,8 +63,8 @@ namespace Creekdream.Orm.Uow
 
         private IDatabase CreateDatabase(IUnitOfWork unitOfWork)
         {
-            var creationContext = new DbContextCreationContext();
-            using (DbContextCreationContext.Use(creationContext))
+            var creationContext = new DatabaseCreationContext();
+            using (DatabaseCreationContext.Use(creationContext))
             {
                 var database = CreateDatabase();
                 if (unitOfWork.Options.IsTransactional)

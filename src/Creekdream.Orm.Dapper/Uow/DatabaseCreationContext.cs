@@ -5,15 +5,15 @@ using System.Threading;
 namespace Creekdream.Orm.Uow
 {
     /// <summary>
-    /// DbContext creation context
+    /// Database creation context
     /// </summary>
-    public class DbContextCreationContext
+    public class DatabaseCreationContext
     {
         /// <summary>
         /// Current dbContext creation context
         /// </summary>
-        public static DbContextCreationContext Current => _current.Value;
-        private static readonly AsyncLocal<DbContextCreationContext> _current = new AsyncLocal<DbContextCreationContext>();
+        public static DatabaseCreationContext Current => _current.Value;
+        private static readonly AsyncLocal<DatabaseCreationContext> _current = new AsyncLocal<DatabaseCreationContext>();
 
         /// <summary>
         /// Existing connection
@@ -21,7 +21,7 @@ namespace Creekdream.Orm.Uow
         public DbConnection ExistingConnection { get; set; }
 
         /// <inheritdoc />
-        public static IDisposable Use(DbContextCreationContext context)
+        public static IDisposable Use(DatabaseCreationContext context)
         {
             var previousValue = Current;
             _current.Value = context;

@@ -112,7 +112,7 @@ namespace Creekdream.Orm.Dapper
 
             return await Task.FromResult(
                 database.GetPage<TEntity>(
-                    predicate,
+                    predicate.ToPredicateGroup<TEntity, TPrimaryKey>(),
                     ToSortable(ordering),
                     pageIndex,
                     pageSize,
