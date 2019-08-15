@@ -1,5 +1,5 @@
-﻿using Creekdream.Dependency;
-using Creekdream.DynamicProxy;
+﻿using Creekdream.DataFilter;
+using Creekdream.Dependency;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Creekdream
@@ -25,6 +25,7 @@ namespace Creekdream
         /// </summary>
         public void Initialize()
         {
+            Services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>));
             Services.RegisterAssemblyByBasicInterface(GetType().Assembly);
         }
     }
