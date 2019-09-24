@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
@@ -24,24 +25,27 @@ namespace Creekdream.SimpleDemo.Api
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         /// <inheritdoc />
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(
+            services.AddControllers(
                 options =>
                 {
                     options.Filters.Add(typeof(CustomExceptionFilter));
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddHealthChecks();
 
             services.AddDbContext<DbContextBase, SimpleDemoDbContext>(
                 options =>
@@ -60,7 +64,7 @@ namespace Creekdream.SimpleDemo.Api
                     options.IncludeXmlComments(Path.Combine(baseDirectory, $"Creekdream.SimpleDemo.Api.xml"));
                 });
 
-            return services.AddCreekdream(
+            services.AddCreekdream(
                 options =>
                 {
                     options.UseAutofac();
@@ -73,7 +77,7 @@ namespace Creekdream.SimpleDemo.Api
         /// <summary>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseCreekdream(
                 options =>
@@ -88,21 +92,26 @@ namespace Creekdream.SimpleDemo.Api
 
             SeedData.Initialize(app.ApplicationServices).Wait();
 
-            if (env.IsDevelopment())
+            if (_webHostEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
 
             app.UseCustomRewriter();
             app.UseStaticFiles();
-            app.UseSwagger();
-            app.UseSwaggerUI(
-                c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "简单示例项目API");
-                });
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseCors();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/v3/health");
+                endpoints.MapDefaultControllerRoute();
+            });
         }
     }
 }
