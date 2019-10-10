@@ -1,5 +1,7 @@
-﻿using Creekdream.Dependency;
+﻿using AutoMapper;
+using Creekdream.Dependency;
 using Creekdream.SimpleDemo.Interceptors;
+using Creekdream.SimpleDemo.MapperProfiles;
 using System.Linq;
 using System.Reflection;
 
@@ -32,6 +34,7 @@ namespace Creekdream.SimpleDemo
                     return;
                 }
             });
+            builder.Services.AddAutoMapper(typeof(BookProfile), typeof(UserProfile));
             builder.Services.RegisterAssemblyByBasicInterface(typeof(SimpleDemoApplicationServicesBuilderExtension).Assembly);
             return builder;
         }

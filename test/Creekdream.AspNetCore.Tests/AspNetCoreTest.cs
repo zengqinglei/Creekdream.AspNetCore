@@ -1,7 +1,6 @@
 using Creekdream.Dependency;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Shouldly;
 using Xunit;
 
@@ -13,22 +12,13 @@ namespace Creekdream.AspNetCore.Tests
 
         public AspNetCoreTest()
         {
-            var builder = new WebHostBuilder()
-                .ConfigureServices(services =>
+            var builder = new HostBuilder()
+                .UseServiceProviderFactory(context =>
                 {
-                    services.AddCreekdream(
-                        options =>
-                        {
-                            options.UseWindsor();
-                        });
-                }).Configure(app =>
-                {
-                    app.UseCreekdream(
-                        options =>
-                        {
-
-                        });
-                });
+                    return context.UseWindsor();
+                })
+                .Build()
+                .Services;
             _server = new TestServer(builder);
         }
 

@@ -28,7 +28,7 @@ namespace Creekdream.Uow
         /// <inheritdoc />
         public IUnitOfWork Begin(UnitOfWorkOptions options = null, bool requiresNew = true)
         {
-            if (options == null && requiresNew == true)
+            if (options == null && requiresNew)
             {
                 options = _defaultUowOptions.Clone();
                 options.IsTransactional = true;

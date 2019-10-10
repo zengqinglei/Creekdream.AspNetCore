@@ -1,12 +1,9 @@
 ﻿using Creekdream.AspNetCore;
-using Creekdream.Dependency;
-using Creekdream.Mapping;
 using Creekdream.Orm;
 using Creekdream.Orm.EntityFrameworkCore;
 using Creekdream.SimpleDemo.Api.Filters;
 using Creekdream.SimpleDemo.Api.Middlewares;
 using Creekdream.SimpleDemo.EntityFrameworkCore;
-using Creekdream.SimpleDemo.MapperProfiles;
 using Creekdream.SimpleDemo.Migrations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -67,7 +64,6 @@ namespace Creekdream.SimpleDemo.Api
             services.AddCreekdream(
                 options =>
                 {
-                    options.UseAutofac();
                     options.UseEfCore();
                     options.AddSimpleDemoCore();
                     options.AddSimpleDemoApplication();
@@ -79,16 +75,7 @@ namespace Creekdream.SimpleDemo.Api
         /// </summary>
         public void Configure(IApplicationBuilder app)
         {
-            app.UseCreekdream(
-                options =>
-                {
-                    options.UseAutoMapper(
-                        config =>
-                        {
-                            config.AddProfile(options.ServiceProvider.GetRequiredService<BookProfile>());
-                            config.AddProfile(options.ServiceProvider.GetRequiredService<UserProfile>());
-                        });
-                });
+            app.UseCreekdream();
 
             SeedData.Initialize(app.ApplicationServices).Wait();
 

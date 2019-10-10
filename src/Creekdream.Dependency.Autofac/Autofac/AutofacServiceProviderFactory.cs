@@ -13,30 +13,41 @@ namespace Creekdream.Dependency.Autofac
     /// </summary>
     public class AutofacServiceProviderFactory : IServiceProviderFactory<ContainerBuilder>
     {
-        private readonly ContainerBuilder _builder;
+        private readonly Action<ContainerBuilder> _configurationAction;
 
         /// <inheritdoc />
-        public AutofacServiceProviderFactory(ContainerBuilder builder)
+        public AutofacServiceProviderFactory(Action<ContainerBuilder> configurationAction = null)
         {
-            _builder = builder;
+            _configurationAction = configurationAction ?? (builder => { });
         }
 
         /// <inheritdoc />
         public ContainerBuilder CreateBuilder(IServiceCollection services)
         {
-            _builder.Populate(new ServiceCollection());
-            RegisterServices(services);
+            var builder = new ContainerBuilder();
 
-            return _builder;
+            builder.Populate(new ServiceCollection());
+            RegisterServices(builder, services);
+
+            _configurationAction(builder);
+
+            return builder;
         }
 
         /// <inheritdoc />
         public IServiceProvider CreateServiceProvider(ContainerBuilder containerBuilder)
         {
-            return new AutofacServiceProvider(containerBuilder.Build());
+            if (containerBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(containerBuilder));
+            }
+
+            var container = containerBuilder.Build();
+
+            return new AutofacServiceProvider(container);
         }
 
-        private void RegisterServices(IServiceCollection services)
+        private void RegisterServices(ContainerBuilder builder, IServiceCollection services)
         {
             ServiceRegistrationActionList actionList = null;
             var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(ServiceRegistrationActionList));
@@ -58,7 +69,7 @@ namespace Creekdream.Dependency.Autofac
                     var serviceTypeInfo = service.ServiceType.GetTypeInfo();
                     if (serviceTypeInfo.IsGenericTypeDefinition)
                     {
-                        _builder
+                        builder
                             .RegisterGeneric(service.ImplementationType)
                             .As(service.ServiceType)
                             .ConfigureLifecycle(service.Lifetime)
@@ -66,7 +77,7 @@ namespace Creekdream.Dependency.Autofac
                     }
                     else
                     {
-                        _builder
+                        builder
                             .RegisterType(service.ImplementationType)
                             .As(service.ServiceType)
                             .ConfigureLifecycle(service.Lifetime)
@@ -84,11 +95,11 @@ namespace Creekdream.Dependency.Autofac
                     .CreateRegistration();
                     //TODO: ConfigureAbpConventions ?
 
-                    _builder.RegisterComponent(registration);
+                    builder.RegisterComponent(registration);
                 }
                 else
                 {
-                    _builder
+                    builder
                         .RegisterInstance(service.ImplementationInstance)
                         .As(service.ServiceType)
                         .ConfigureLifecycle(service.Lifetime);

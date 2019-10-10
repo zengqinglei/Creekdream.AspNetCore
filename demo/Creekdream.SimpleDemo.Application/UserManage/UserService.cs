@@ -1,6 +1,6 @@
-﻿using Creekdream.Application.Service;
+﻿using AutoMapper;
+using Creekdream.Application.Service;
 using Creekdream.Domain.Repositories;
-using Creekdream.Mapping;
 using Creekdream.SimpleDemo.UserManage.Dto;
 using Creekdream.Uow;
 using System;
@@ -15,16 +15,19 @@ namespace Creekdream.SimpleDemo.UserManage
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IRepository<User, Guid> _userRepository;
         private readonly IRepository<UserInfo, Guid> _userInfoRepository;
+        private readonly IMapper _mapper;
 
         /// <inheritdoc />
         public UserService(
             IUnitOfWorkManager unitOfWorkManager,
             IRepository<User, Guid> userRepository,
-            IRepository<UserInfo, Guid> userInfoRepository)
+            IRepository<UserInfo, Guid> userInfoRepository,
+            IMapper mapper)
         {
             _unitOfWorkManager = unitOfWorkManager;
             _userRepository = userRepository;
             _userInfoRepository = userInfoRepository;
+            _mapper = mapper;
         }
 
         /// <inheritdoc />
@@ -40,12 +43,9 @@ namespace Creekdream.SimpleDemo.UserManage
             using (var uow = _unitOfWorkManager.Begin())
             {
                 user.UserInfo = await AddUserInfo(user.Id, input.Name, input.Age);
-
                 uow.Complete();
-
-                return user.MapTo<GetUserOutput>();
             }
-
+            return _mapper.Map<GetUserOutput>(user);
         }
 
         /// <summary>

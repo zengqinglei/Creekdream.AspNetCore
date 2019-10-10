@@ -1,7 +1,7 @@
-﻿using Creekdream.Application.Service;
+﻿using AutoMapper;
+using Creekdream.Application.Service;
 using Creekdream.Application.Service.Dto;
 using Creekdream.Domain.Repositories;
-using Creekdream.Mapping;
 using Creekdream.Orm.EntityFrameworkCore;
 using Creekdream.SimpleDemo.Books.Dto;
 using Creekdream.SimpleDemo.Interceptors;
@@ -22,19 +22,24 @@ namespace Creekdream.SimpleDemo.Books
     {
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IRepository<Book, Guid> _bookRepository;
+        private readonly IMapper _mapper;
 
         /// <inheritdoc />
-        public BookService(IUnitOfWorkManager unitOfWorkManager, IRepository<Book, Guid> bookRepository)
+        public BookService(
+            IUnitOfWorkManager unitOfWorkManager,
+            IRepository<Book, Guid> bookRepository,
+            IMapper mapper)
         {
             _unitOfWorkManager = unitOfWorkManager;
             _bookRepository = bookRepository;
+            _mapper = mapper;
         }
 
         /// <inheritdoc />
         public async Task<GetBookOutput> Get(Guid id)
         {
             var book = await _bookRepository.GetAsync(id);
-            return book.MapTo<GetBookOutput>();
+            return _mapper.Map<GetBookOutput>(book);
         }
 
         /// <inheritdoc />
@@ -54,7 +59,7 @@ namespace Creekdream.SimpleDemo.Books
             return new PagedResultOutput<GetBookOutput>()
             {
                 TotalCount = totalCount,
-                Items = books.MapTo<List<GetBookOutput>>()
+                Items = _mapper.Map<List<GetBookOutput>>(books)
             };
         }
 
@@ -77,7 +82,7 @@ namespace Creekdream.SimpleDemo.Books
             }).Start();
             using (var uow = _unitOfWorkManager.Begin())
             {
-                var book = input.MapTo<Book>();
+                var book = _mapper.Map<Book>(input);
                 book = await _bookRepository.InsertAsync(book);
 
                 var bookQuery1 = await _bookRepository.QueryAsync<Book, Guid, Book>("select * from Books");
@@ -89,7 +94,7 @@ namespace Creekdream.SimpleDemo.Books
 
                 uow.Complete();
 
-                return book.MapTo<GetBookOutput>();
+                return _mapper.Map<GetBookOutput>(book);
             }
         }
 
@@ -97,9 +102,9 @@ namespace Creekdream.SimpleDemo.Books
         public async Task<GetBookOutput> Update(Guid id, UpdateBookInput input)
         {
             var book = await _bookRepository.GetAsync(id);
-            input.MapTo(book);
+            _mapper.Map(input, book);
             book = await _bookRepository.UpdateAsync(book);
-            return book.MapTo<GetBookOutput>();
+            return _mapper.Map<GetBookOutput>(book);
         }
 
         /// <inheritdoc />

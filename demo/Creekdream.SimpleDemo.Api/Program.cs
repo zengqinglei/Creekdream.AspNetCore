@@ -1,4 +1,4 @@
-﻿using Autofac.Extensions.DependencyInjection;
+﻿using Creekdream.Dependency;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -20,6 +20,8 @@ namespace Creekdream.SimpleDemo.Api
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory());
+                .UseServiceProviderFactory(context => { 
+                    return context.UseAutofac();
+                });
     }
 }

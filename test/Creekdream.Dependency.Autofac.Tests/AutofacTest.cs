@@ -11,7 +11,7 @@ namespace Creekdream.Dependency.Autofac.Tests
         {
             var services = new ServiceCollection();
             var builder = new ContainerBuilder();
-            services.AddSingleton((IServiceProviderFactory<ContainerBuilder>)new AutofacServiceProviderFactory(builder));
+            services.AddSingleton((IServiceProviderFactory<ContainerBuilder>)new AutofacServiceProviderFactory());
             return services;
         }
 

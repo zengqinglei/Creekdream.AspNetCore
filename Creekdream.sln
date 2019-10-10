@@ -38,8 +38,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Core.Tests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Mapping.Core", "src\Creekdream.Mapping.Core\Creekdream.Mapping.Core.csproj", "{52A5AC81-953B-455E-8D99-0202040D909A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Mapping.AutoMapper", "src\Creekdream.Mapping.AutoMapper\Creekdream.Mapping.AutoMapper.csproj", "{9E130A02-50F3-403D-A390-8AB81C72887A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Orm.Dapper.MySql", "src\Creekdream.Orm.Dapper.MySql\Creekdream.Orm.Dapper.MySql.csproj", "{C18E9ED1-0EB4-4582-853C-B6772F4BCBEA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Orm.Dapper.Oracle", "src\Creekdream.Orm.Dapper.Oracle\Creekdream.Orm.Dapper.Oracle.csproj", "{296578AD-E67E-4A40-B736-3423BD658E44}"
@@ -49,8 +47,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Dependency.TestBase", "test\Creekdream.Dependency.TestBase\Creekdream.Dependency.TestBase.csproj", "{2E5FA962-8FD7-42F7-9CBE-983F3FC22D13}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Dependency.Windsor.Tests", "test\Creekdream.Dependency.Windsor.Tests\Creekdream.Dependency.Windsor.Tests.csproj", "{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.Mapping.AutoMapper.Tests", "test\Creekdream.Mapping.AutoMapper.Tests\Creekdream.Mapping.AutoMapper.Tests.csproj", "{2ABBB304-FEF4-4FE7-BB96-5BA0C31D07D9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.AspNetCore.Tests", "test\Creekdream.AspNetCore.Tests\Creekdream.AspNetCore.Tests.csproj", "{30F0940C-3126-4478-8D11-9857A296CA8B}"
 EndProject
@@ -71,7 +67,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.SimpleDemo.Utili
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.UnitOfWork", "src\Creekdream.UnitOfWork\Creekdream.UnitOfWork.csproj", "{95B29CA1-2B1C-4DD2-A835-5B81BCFDF770}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Creekdream.SmpleDemo.Dapper", "demo\Creekdream.SmpleDemo.Dapper\Creekdream.SmpleDemo.Dapper.csproj", "{D5105585-80F2-4D79-AB40-33F5DDA89F28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Creekdream.SmpleDemo.Dapper", "demo\Creekdream.SmpleDemo.Dapper\Creekdream.SmpleDemo.Dapper.csproj", "{D5105585-80F2-4D79-AB40-33F5DDA89F28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,10 +107,6 @@ Global
 		{52A5AC81-953B-455E-8D99-0202040D909A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52A5AC81-953B-455E-8D99-0202040D909A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52A5AC81-953B-455E-8D99-0202040D909A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E130A02-50F3-403D-A390-8AB81C72887A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E130A02-50F3-403D-A390-8AB81C72887A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E130A02-50F3-403D-A390-8AB81C72887A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E130A02-50F3-403D-A390-8AB81C72887A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C18E9ED1-0EB4-4582-853C-B6772F4BCBEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C18E9ED1-0EB4-4582-853C-B6772F4BCBEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C18E9ED1-0EB4-4582-853C-B6772F4BCBEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -135,10 +127,6 @@ Global
 		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2ABBB304-FEF4-4FE7-BB96-5BA0C31D07D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2ABBB304-FEF4-4FE7-BB96-5BA0C31D07D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2ABBB304-FEF4-4FE7-BB96-5BA0C31D07D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2ABBB304-FEF4-4FE7-BB96-5BA0C31D07D9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30F0940C-3126-4478-8D11-9857A296CA8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30F0940C-3126-4478-8D11-9857A296CA8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30F0940C-3126-4478-8D11-9857A296CA8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -184,13 +172,11 @@ Global
 		{E03B2151-501E-4DEB-A46D-383C218D8645} = {11550172-7975-4644-B8D3-EBB27A81FF78}
 		{49212974-AC8C-4BB7-A84C-407409F4125A} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
 		{52A5AC81-953B-455E-8D99-0202040D909A} = {11550172-7975-4644-B8D3-EBB27A81FF78}
-		{9E130A02-50F3-403D-A390-8AB81C72887A} = {11550172-7975-4644-B8D3-EBB27A81FF78}
 		{C18E9ED1-0EB4-4582-853C-B6772F4BCBEA} = {11550172-7975-4644-B8D3-EBB27A81FF78}
 		{296578AD-E67E-4A40-B736-3423BD658E44} = {11550172-7975-4644-B8D3-EBB27A81FF78}
 		{C13CF2C2-07ED-4F73-96BF-F83C7AF90873} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
 		{2E5FA962-8FD7-42F7-9CBE-983F3FC22D13} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
 		{B35AD6FE-A4B0-4167-82E2-AADD1187B23E} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
-		{2ABBB304-FEF4-4FE7-BB96-5BA0C31D07D9} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
 		{30F0940C-3126-4478-8D11-9857A296CA8B} = {77990EE7-EA4E-42A5-80B6-B7DA6B69FC39}
 		{54295B93-05D1-4D2F-A531-927342A8488B} = {2802FE22-66E2-49D2-8C5E-6EFEBD7BA617}
 		{B26757FA-84F5-4F5E-B631-6280A2092338} = {2802FE22-66E2-49D2-8C5E-6EFEBD7BA617}
