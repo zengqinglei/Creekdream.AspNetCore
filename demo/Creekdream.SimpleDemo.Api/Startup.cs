@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 
@@ -55,7 +55,7 @@ namespace Creekdream.SimpleDemo.Api
             services.AddSwaggerGen(
                 options =>
                 {
-                    options.SwaggerDoc("v1", new Info { Version = "v1", Title = "简单示例项目API" });
+                    options.SwaggerDoc("v1", new OpenApiInfo { Version = "v1", Title = "简单示例项目API" });
                     var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
                     options.IncludeXmlComments(Path.Combine(baseDirectory, $"Creekdream.SimpleDemo.Application.xml"));
                     options.IncludeXmlComments(Path.Combine(baseDirectory, $"Creekdream.SimpleDemo.Api.xml"));
@@ -91,6 +91,13 @@ namespace Creekdream.SimpleDemo.Api
 
             app.UseCustomRewriter();
             app.UseStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(
+                c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "简单示例项目API");
+                });
 
             app.UseRouting();
             app.UseCors();
