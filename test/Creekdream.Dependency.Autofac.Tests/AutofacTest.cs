@@ -2,6 +2,8 @@
 using Autofac.Extras.DynamicProxy;
 using Creekdream.Dependency.TestBase.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
+using Xunit;
 
 namespace Creekdream.Dependency.Autofac.Tests
 {
@@ -15,6 +17,7 @@ namespace Creekdream.Dependency.Autofac.Tests
             return services;
         }
 
+        [Fact]
         public override void Test_Register_Assemblies()
         {
             base.Test_Register_Assemblies();
@@ -28,6 +31,7 @@ namespace Creekdream.Dependency.Autofac.Tests
             var container = builder.Build();
             var singletonService = container.Resolve<ISingletonService>();
             var name = singletonService.GetName();
+            name.ShouldNotBeNull();
         }
     }
 }

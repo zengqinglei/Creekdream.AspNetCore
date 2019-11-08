@@ -64,11 +64,9 @@ namespace Creekdream.Uow
 
         private void PerformSyncUow(IInvocation invocation, UnitOfWorkOptions options)
         {
-            using (var uow = _unitOfWorkManager.Begin(options, requiresNew: false))
-            {
-                invocation.Proceed();
-                uow.Complete();
-            }
+            using var uow = _unitOfWorkManager.Begin(options, requiresNew: false);
+            invocation.Proceed();
+            uow.Complete();
         }
 
         private void PerformAsyncUow(IInvocation invocation, UnitOfWorkOptions options)
