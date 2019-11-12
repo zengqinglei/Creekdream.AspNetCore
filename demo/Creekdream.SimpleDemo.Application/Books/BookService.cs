@@ -65,7 +65,7 @@ namespace Creekdream.SimpleDemo.Books
 
         /// <inheritdoc />
         [UnitOfWork]
-        public async Task<GetBookOutput> Add(AddBookInput input)
+        public async Task<GetBookOutput> Create(CreateBookInput input)
         {
             // 以下为工作单元多种适用场景
             new Thread(() =>
@@ -103,7 +103,6 @@ namespace Creekdream.SimpleDemo.Books
         {
             var book = await _bookRepository.GetAsync(id);
             _mapper.Map(input, book);
-            book = await _bookRepository.UpdateAsync(book);
             return _mapper.Map<GetBookOutput>(book);
         }
 

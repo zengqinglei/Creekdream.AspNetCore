@@ -24,7 +24,7 @@ namespace Creekdream.SimpleDemo.Books
         /// <summary>
         /// 新增书信息
         /// </summary>
-        Task<GetBookOutput> Add(AddBookInput input);
+        Task<GetBookOutput> Create(CreateBookInput input);
 
         /// <summary>
         /// 修改书信息

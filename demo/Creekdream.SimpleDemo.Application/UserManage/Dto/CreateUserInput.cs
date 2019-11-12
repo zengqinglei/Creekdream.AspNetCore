@@ -5,7 +5,7 @@ namespace Creekdream.SimpleDemo.UserManage.Dto
     /// <summary>
     /// 用户信息输入
     /// </summary>
-    public class AddUserInput
+    public class CreateUserInput
     {
         /// <summary>
         /// 用户名

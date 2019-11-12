@@ -42,9 +42,9 @@ namespace Creekdream.SimpleDemo.Api.Controllers
         /// 新增书信息
         /// </summary>
         [HttpPost]
-        public async Task<GetBookOutput> Post([FromBody]AddBookInput input)
+        public async Task<GetBookOutput> Post([FromBody]CreateBookInput input)
         {
-            return await _bookService.Add(input);
+            return await _bookService.Create(input);
         }
 
         /// <summary>

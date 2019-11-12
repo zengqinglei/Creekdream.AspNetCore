@@ -22,9 +22,9 @@ namespace Creekdream.SimpleDemo.Api.Controllers
         /// 新用户信息
         /// </summary>
         [HttpPost]
-        public async Task<GetUserOutput> Post([FromBody]AddUserInput input)
+        public async Task<GetUserOutput> Post([FromBody]CreateUserInput input)
         {
-            return await _userService.Add(input);
+            return await _userService.Create(input);
         }
     }
 }

@@ -12,6 +12,6 @@ namespace Creekdream.SimpleDemo.UserManage
         /// <summary>
         /// 新增用户信息
         /// </summary>
-        Task<GetUserOutput> Add(AddUserInput input);
+        Task<GetUserOutput> Create(CreateUserInput input);
     }
 }

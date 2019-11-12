@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Creekdream.Dependency;
 using Creekdream.Domain.Repositories;
 using Creekdream.SimpleDemo.Books;
 using Creekdream.SimpleDemo.Books.Dto;
@@ -11,17 +10,17 @@ namespace Creekdream.SimpleDemo.MapperProfiles
     /// <summary>
     /// Model mapping of book entity
     /// </summary>
-    public class BookProfile : Profile, ISingletonDependency
+    public class BookProfile : Profile
     {
         /// <inheritdoc />
         public BookProfile()
         {
-            // Use bookService do something
-
             CreateMap<Book, GetBookOutput>().ForMember(
                 t => t.UserName,
                 opts => opts.MapFrom<DependencyResolver>()
             );
+            CreateMap<CreateBookInput, Book>();
+            CreateMap<UpdateBookInput, Book>();
         }
     }
 

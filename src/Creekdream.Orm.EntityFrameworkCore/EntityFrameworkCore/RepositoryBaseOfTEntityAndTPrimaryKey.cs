@@ -89,11 +89,7 @@ namespace Creekdream.Orm.EntityFrameworkCore
         public override async Task<TEntity> UpdateEntityAsync(TEntity entity)
         {
             AttachIfNot(entity);
-            var entityEntry = DbContext.Entry(entity);
-            if (!DbContext.ChangeTracker.AutoDetectChangesEnabled)
-            {
-                entityEntry.State = EntityState.Modified;
-            }
+            DbContext.Entry(entity).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
             return entity;
         }

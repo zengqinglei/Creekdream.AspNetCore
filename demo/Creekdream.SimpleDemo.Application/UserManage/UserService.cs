@@ -32,7 +32,7 @@ namespace Creekdream.SimpleDemo.UserManage
 
         /// <inheritdoc />
         [UnitOfWork]
-        public async Task<GetUserOutput> Add(AddUserInput input)
+        public async Task<GetUserOutput> Create(CreateUserInput input)
         {
             var user = new User()
             {

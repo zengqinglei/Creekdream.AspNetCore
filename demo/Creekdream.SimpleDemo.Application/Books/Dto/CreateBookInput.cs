@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Creekdream.SimpleDemo.Books.Dto
 {
     /// <summary>
-    /// Add an book
+    /// Create an book
     /// </summary>
-    public class AddBookInput
+    public class CreateBookInput
     {
         /// <summary>
         /// User Id
