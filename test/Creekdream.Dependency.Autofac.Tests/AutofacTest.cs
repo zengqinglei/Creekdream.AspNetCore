@@ -3,18 +3,18 @@ using Autofac.Extras.DynamicProxy;
 using Creekdream.Dependency.TestBase.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
+using System;
 using Xunit;
 
 namespace Creekdream.Dependency.Autofac.Tests
 {
     public class AutofacTest : TestBase.TestBase
     {
-        protected override IServiceCollection GetServices()
+        protected override IServiceProvider GetServiceProvider(IServiceCollection services)
         {
-            var services = new ServiceCollection();
-            var builder = new ContainerBuilder();
-            services.AddSingleton((IServiceProviderFactory<ContainerBuilder>)new AutofacServiceProviderFactory());
-            return services;
+            var factory = new AutofacServiceProviderFactory();
+            var builder = factory.CreateBuilder(services);
+            return factory.CreateServiceProvider(builder);
         }
 
         [Fact]
@@ -31,7 +31,7 @@ namespace Creekdream.Dependency.Autofac.Tests
             var container = builder.Build();
             var singletonService = container.Resolve<ISingletonService>();
             var name = singletonService.GetName();
-            name.ShouldNotBeNull();
+            name.ShouldBeNull();
         }
     }
 }

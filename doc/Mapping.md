@@ -6,6 +6,11 @@ API或者MVC的接口开发过程中，实体(Entity)与UI的模型(Dto)之间�
 
 在模块设计上，仍然尽可能保持原类库的写法以及配置方式，使用起来更加平滑。
 
+```
+Install-Package AutoMapper
+Install-Package AutoMapper.Extensions.Microsoft.DependencyInjection
+```
+
 ### 使用AutoMappe Profile配置
 ``` csharp
 public class BookProfile : Profile

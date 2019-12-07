@@ -9,12 +9,12 @@ namespace Creekdream.Dependency.TestBase
 {
     public abstract class TestBase
     {
-        protected abstract IServiceCollection GetServices();
-
-        protected IServiceProvider GetServiceProvider(IServiceCollection services)
+        protected virtual IServiceCollection GetServices()
         {
-            return services.BuildServiceProviderFromFactory();
+            return new ServiceCollection();
         }
+
+        protected abstract IServiceProvider GetServiceProvider(IServiceCollection services);
 
         [Fact]
         public void Test_Register_SingleInstance()
@@ -135,6 +135,7 @@ namespace Creekdream.Dependency.TestBase
         public void Test_Register_Interceptor()
         {
             var services = GetServices();
+            services.AddSingleton<ServiceInterceptor>();
             services.OnRegistred(
                 context =>
                 {
@@ -170,6 +171,7 @@ namespace Creekdream.Dependency.TestBase
         public virtual void Test_Register_Assemblies()
         {
             var services = GetServices();
+            services.AddSingleton<ServiceInterceptor>();
             services.RegisterAssemblyByBasicInterface(typeof(TestBase).Assembly);
             services.OnRegistred(
                 context =>

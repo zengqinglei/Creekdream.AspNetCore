@@ -103,7 +103,7 @@ namespace Creekdream.SimpleDemo.Api
             app.UseCors();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHealthChecks("/v3/health");
+                endpoints.MapHealthChecks("/health");
                 endpoints.MapDefaultControllerRoute();
             });
         }

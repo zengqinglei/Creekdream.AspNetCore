@@ -1,16 +1,17 @@
 ﻿using Castle.Windsor;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Creekdream.Dependency.Windsor.Tests
 {
     public class WindsorTest : TestBase.TestBase
     {
-        protected override IServiceCollection GetServices()
+        protected override IServiceProvider GetServiceProvider(IServiceCollection services)
         {
-            var services = new ServiceCollection();
             var container = new WindsorContainer();
-            services.AddSingleton((IServiceProviderFactory<IWindsorContainer>)new WindsorServiceProviderFactory(container));
-            return services;
+            var factory = new WindsorServiceProviderFactory(container);
+            var builder = factory.CreateBuilder(services);
+            return factory.CreateServiceProvider(builder);
         }
     }
 }

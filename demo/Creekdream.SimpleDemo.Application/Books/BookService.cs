@@ -80,22 +80,21 @@ namespace Creekdream.SimpleDemo.Books
                     throw ex;
                 }
             }).Start();
-            using (var uow = _unitOfWorkManager.Begin())
-            {
-                var book = _mapper.Map<Book>(input);
-                book = await _bookRepository.InsertAsync(book);
 
-                var bookQuery1 = await _bookRepository.QueryAsync<Book, Guid, Book>("select * from Books");
-                var a1 = bookQuery1.Take(10).ToList();
-                var a2 = bookQuery1.Take(10).ToList();
+            using var uow = _unitOfWorkManager.Begin();
+            var book = _mapper.Map<Book>(input);
+            book = await _bookRepository.InsertAsync(book);
 
-                var bookQuery2 = await _bookRepository.QueryAsync<Book, Guid, Book>("select * from Books");
-                var b1 = bookQuery2.Take(10).ToList();
+            var bookQuery1 = await _bookRepository.QueryAsync<Book, Guid, Book>("select * from Books");
+            var a1 = bookQuery1.Take(10).ToList();
+            var a2 = bookQuery1.Take(10).ToList();
 
-                uow.Complete();
+            var bookQuery2 = await _bookRepository.QueryAsync<Book, Guid, Book>("select * from Books");
+            var b1 = bookQuery2.Take(10).ToList();
 
-                return _mapper.Map<GetBookOutput>(book);
-            }
+            uow.Complete();
+
+            return _mapper.Map<GetBookOutput>(book);
         }
 
         /// <inheritdoc />
