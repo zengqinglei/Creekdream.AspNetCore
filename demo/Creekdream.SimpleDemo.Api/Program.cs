@@ -20,8 +20,6 @@ namespace Creekdream.SimpleDemo.Api
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .UseServiceProviderFactory(context => { 
-                    return context.UseAutofac();
-                });
+                .UseServiceProviderFactory(context => context.UseAutofac());
     }
 }
