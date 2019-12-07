@@ -13,17 +13,13 @@ Install-Package Creekdream.Dependency.Autofac
 ```
 ### 2. 配置启用组件
 ``` csharp
-public class Startup
-{
-    public IServiceProvider ConfigureServices(IServiceCollection services)
-    {
-        return services.AddCreekdream(
-            options =>
-            {
-                options.UseAutofac();
-            });
-    }
-}
+public static IHostBuilder CreateHostBuilder(string[] args) =>
+    Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.UseStartup<Startup>();
+        })
+        .UseServiceProviderFactory(context => context.UseAutofac());
 ```
 
 ## 使用 Castle.Windsor 作为IoC以及DI组件
@@ -34,6 +30,7 @@ Install-Package Creekdream.Dependency.Windsor
 ```
 ### 2. 配置启用组件
 ``` csharp
+// Windsor目前不支持.net core 3.0+ 版本，请改用Autofac
 public class Startup
 {
     public IServiceProvider ConfigureServices(IServiceCollection services)
