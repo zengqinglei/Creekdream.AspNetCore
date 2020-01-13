@@ -47,9 +47,7 @@ namespace Creekdream.SimpleDemo.Api
             services.AddDbContext<DbContextBase, SimpleDemoDbContext>(
                 options =>
                 {
-                    options.UseSqlServer(
-                        _configuration.GetConnectionString("Default"),
-                        option => option.UseRowNumberForPaging());
+                    options.UseSqlServer(_configuration.GetConnectionString("Default"));
                 });
 
             services.AddSwaggerGen(
