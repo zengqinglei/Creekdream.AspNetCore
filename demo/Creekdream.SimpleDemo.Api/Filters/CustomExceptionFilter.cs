@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using System.Text;
 
 namespace Creekdream.SimpleDemo.Api.Filters
 {
@@ -27,24 +26,18 @@ namespace Creekdream.SimpleDemo.Api.Filters
             {
                 friendlyException = new UserFriendlyException(
                     ErrorCode.InternalServerError,
-                    exception.Message);
+                    exception.Message,
+                    innerException: exception);
             }
+            _logger.LogError(friendlyException, "请求异常");
+
             var httpStatusCode = int.Parse(((int)friendlyException.Code).ToString().Substring(0, 3));
-            if (httpStatusCode == 422)
+            context.Result = new ContentResult
             {
-                httpStatusCode = 400;
-            }
-
-            var logStr = new StringBuilder();
-            logStr.Append($"LogId: {friendlyException.Id}, Message: {friendlyException.Message}");
-            logStr.AppendLine();
-            logStr.Append($"Exception: {exception.ToString()}");
-            _logger.LogError(logStr.ToString());
-
-            context.HttpContext.Response.StatusCode = httpStatusCode;
-            context.Result = new JsonResult(friendlyException);
+                ContentType = "application/json",
+                Content = friendlyException.ToString(),
+                StatusCode = httpStatusCode
+            };
         }
     }
 }
-
-
