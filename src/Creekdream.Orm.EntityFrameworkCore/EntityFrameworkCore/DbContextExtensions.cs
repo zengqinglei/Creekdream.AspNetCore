@@ -12,9 +12,11 @@ namespace Creekdream.Orm.EntityFrameworkCore
             return dbContext.Database.GetService<IDbContextTransactionManager>() is IRelationalTransactionManager;
         }
 
+        /*
         public static bool IsRelational(this DatabaseFacade database)
         {
             return database.GetInfrastructure().GetService<IRelationalConnection>() != null;
         }
+        */
     }
 }
