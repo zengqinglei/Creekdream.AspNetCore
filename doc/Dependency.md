@@ -65,3 +65,23 @@ public class BookService : ApplicationService, IBookService
     }
 }
 ```
+# 常见问题
+
+## 1. 接口与实现命名不规范导致服务注入异常
+``` csharp
+    在swagger下调试Api时提示以下异常：
+    Code:500
+    Error: Internal Server Error
+    "message": "An exception was thrown while activating xxx.xxx.xxxxxxService."
+    看到上面熟悉的代码抛异常信息，有一点可以知道服务没有注入成功。
+    这个时候检查一下代码，Startup.cs，Program.cs,构造函数，好像都没有什么问题。
+
+    “难道是框架的Ioc、DI做的有缺憾？”
+    
+    “请不要怀疑框架，也请不要有这样的想法。”
+    
+    Creekdream 框架对所有继承IsingletonDependency，ItransientDependency 服务接口在构造函数进行统一注入。
+    约定: 接口类与实现类的命名必须一致，如接口IabcService，那么实现类必须是abcService，否则无法正常实例化注入。
+    如 public class BoookService : ApplicationService, IBookService 必定必所示必定异常的
+    
+    所以当你的服务没法正常注入时，第一时间先看接口类与实现类的命名是否一致。
